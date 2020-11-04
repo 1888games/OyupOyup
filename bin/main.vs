@@ -1,0 +1,14 @@
+al C:827 .Loop
+al C:800 .PerformFrameCodeFlag
+al C:80d .IRQ
+al C:80b .upstartEnd
+al C:80d .DisableCIAInterrupts
+al C:81c .GameActive
+al C:80d .VIC
+al C:81d .GameMode
+al C:81e .Entry
+al C:dc0d .IRQ_CONTROL_1
+al C:dd0d .IRQ_CONTROL_2
+al C:824 .StartGame
+al C:2000 .MAIN
+al C:821 .Finish

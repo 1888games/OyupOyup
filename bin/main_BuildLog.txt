@@ -1,0 +1,20 @@
+parsing
+flex pass 1
+flex pass 2
+flex pass 3
+Output pass
+Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
+
+Memory Map
+----------
+Default-segment:
+  *$0002-$0001 Temp vars zero page
+  $0800-$0800 Upstart
+  $0801-$080c Basic
+  $080d-$080c End Of Basic
+  $080d-$081b IRQ
+  $080e-$080d Basic End
+  $081c-$0829 Main
+
+Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs
+Writing Symbol file: main.sym

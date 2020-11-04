@@ -1,0 +1,20 @@
+.label VIC=$80d {
+  .label IRQ_CONTROL_1=$dc0d
+  .label IRQ_CONTROL_2=$dd0d
+}
+.label IRQ=$80d {
+  .label DisableCIAInterrupts=$80d {
+  }
+}
+.label MAIN=$2000 {
+  .label Loop=$827 {
+  }
+  .label GameMode=$81d
+  .label PerformFrameCodeFlag=$800
+  .label Entry=$81e {
+    .label Finish=$821
+  }
+  .label StartGame=$824 {
+  }
+  .label GameActive=$81c
+}
