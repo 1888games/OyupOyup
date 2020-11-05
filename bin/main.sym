@@ -1,20 +1,203 @@
-.label VIC=$80d {
+.label ZERO=$0
+.label GREEN_MULTI=$d
+.label INPUT=$99d {
+  .label PortToRead=$99f
+  .label joyLeftMask=$4
+  .label JOY_FIRE_NOW=$9b2
+  .label joyRightMask=$8
+  .label JOY_LEFT_LAST=$9a2
+  .label ReadC64Joystick=$9b6 {
+    .label StoreReading=$9c3
+    .label PortOne=$9c0
+  }
+  .label JOY_DOWN_NOW=$9ae
+  .label JOY_FIRE_LAST=$9a8
+  .label JOY_LEFT_NOW=$9ac
+  .label joyFireMask=$10
+  .label joyDownMask=$2
+  .label JOY_UP_NOW=$9b0
+  .label JOY_READING=$99d
+  .label JOY_RIGHT_NOW=$9aa
+  .label ReadJoystick=$a1c {
+  }
+  .label FIRE_UP_THIS_FRAME=$9b4
+  .label CalculateButtons=$9c7 {
+    .label DownUp=$a0c
+    .label CheckFire=$9ca
+    .label CheckUp=$9ee
+    .label CheckRight=$a0c
+    .label CheckFireUp=$9d9
+    .label CheckDown=$9fd
+    .label LeftUp=$9ee
+    .label Finish=$a1b
+    .label UpUp=$9fd
+    .label CheckLeft=$9df
+    .label RightUp=$a1b
+  }
+  .label JOY_RIGHT_LAST=$9a0
+  .label JOY_UP_LAST=$9a6
+  .label JOY_DOWN_LAST=$9a4
+  .label joyUpMask=$1
+}
+.label ONE=$1
+.label IRQ=$80e {
+  .label INTERRUPT_CONTROL=$d01a
+  .label RASTER_INTERRUPT_VECTOR=$fffe
+  .label INTERRUPT_STATUS=$d019
+  .label SetNextInterrupt=$834 {
+  }
+  .label Setup=$81d {
+  }
+  .label MainIRQLine=$dc
+  .label DisableCIAInterrupts=$80e {
+  }
+  .label MainIRQ=$846 {
+    .label CheckFireButton=$869
+    .label Finish=$870
+    .label GameActive=$866
+    .label Paused=$869
+  }
+}
+.label ShowDebug=$80d
+.label GAME_MODE_TITLE=$2
+.label RED_MULTI=$a
+.label YELLOW_MULTI=$f
+.label PURPLE_MULTI=$c
+.label CHAR_SET=$f000
+.label MAIN=$2000 {
+  .label Loop=$cd6 {
+  }
+  .label GameMode=$c70
+  .label SetupSprites=$ca7 {
+  }
+  .label PerformFrameCodeFlag=$800
+  .label Entry=$c71 {
+  }
+  .label FrameCode=$ce1 {
+  }
+  .label StartGame=$c7d {
+  }
+  .label SetupGameColours=$cc1 {
+  }
+  .label SetupVIC=$c8f {
+  }
+  .label GameActive=$c6f
+  .label BankOutKernalandBasic=$ce5 {
+  }
+}
+.label PROCESSOR_PORT=$1
+.label DRAW=$883 {
+  .label ClearScreen=$8c5 {
+    .label Loop=$8c9
+  }
+  .label ColorCharacterOnly=$940 {
+  }
+  .label PlotCharacterWithAddress=$91d {
+    .label Finish=$925
+  }
+  .label GetCharacter=$8fb {
+  }
+  .label PlotCharacter=$926 {
+    .label Finish=$93f
+  }
+  .label ScreenRowMSB=$8ac
+  .label ScreenRowLSB=$893
+  .label GetColor=$90b {
+  }
+  .label GameScreen=$963 {
+    .label Loop=$965
+  }
+  .label CalculateAddresses=$8d9 {
+  }
+  .label MSB_On=$883
+  .label MSB_Off=$88b
+  .label ColorCharacter=$956 {
+    .label Finish=$962
+  }
+}
+.label BLUE_MULTI=$e
+.label GRID=$a56 {
+  .label RowLookup=$ae8
+  .label PlayerOneStartColumn=$2
+  .label TotalSquaresOnScreen=$90
+  .label ColumnLookup=$b78
+  .label Columns=$6
+  .label Clear=$c08 {
+    .label Loop=$c0a
+    .label Finish=$c1e
+  }
+  .label PlayerLookup=$ae6
+  .label ClearSquare=$c1f {
+    .label BottomRight=$c51
+    .label BottomLeft=$c45
+    .label TopRight=$c39
+    .label TopLeft=$c29
+  }
+  .label PlayerTwo=$a9e
+  .label PlayerOne=$a56
+  .label TotalSquaresOnGrid=$48
+  .label BackgroundCharID=$ca
+  .label PlayerTwoStartColumn=$1a
+  .label Rows=$c
+}
+.label GAME_MAP=$dee
+.label CYAN_MULTI=$b
+.label SPRITE_POINTERS=$c3f8
+.label GAME_MODE_PAUSE=$1
+.label BEAN=$c5e {
+  .label All=$c6b
+  .label Down=$c5f
+  .label Left=$c63
+  .label Right_Left=$c64
+  .label Rock=$c6e
+  .label Up_Left=$c65
+  .label Down_Right=$c68
+  .label Right_Down_Up=$c6c
+  .label Right=$c62
+  .label Up_Left_Right=$c6a
+  .label Up_Down=$c61
+  .label Down_Left=$c66
+  .label Single=$c5e
+  .label Down_Left_Right=$c69
+  .label Up_Right=$c67
+  .label Up=$c60
+  .label Chars=$c5e
+  .label Left_Down_Up=$c6d
+}
+.label MemoryAddresses=$80e
+.label VIC=$80e {
+  .label EXTENDED_BG_COLOR_1=$d022
+  .label EXTENDED_BG_COLOR_2=$d023
+  .label SPRITE_MULTICOLOR_2=$d026
+  .label SPRITE_PRIORITY=$d01b
+  .label SPRITE_MULTICOLOR_1=$d025
+  .label RASTER_LINE=$d012
+  .label BACKGROUND_COLOUR=$d021
+  .label SPRITE_MULTICOLOR=$d01c
+  .label BORDER_COLOUR=$d020
+  .label BANK_SELECT=$dd00
+  .label SCREEN_CONTROL_2=$d016
+  .label SPRITE_ENABLE=$d015
   .label IRQ_CONTROL_1=$dc0d
   .label IRQ_CONTROL_2=$dd0d
+  .label SCREEN_CONTROL=$d011
+  .label MEMORY_SETUP=$d018
 }
-.label IRQ=$80d {
-  .label DisableCIAInterrupts=$80d {
-  }
+.label WHITE_MULTI=$9
+.label ZP=$2 {
+  .label RowOffset=$9
+  .label Column=$8
+  .label FrameCounter=$2
+  .label ScreenAddress=$3
+  .label X=$c
+  .label ColourAddress=$5
+  .label Y=$d
+  .label Row=$7
+  .label CharID=$a
+  .label Colour=$b
 }
-.label MAIN=$2000 {
-  .label Loop=$827 {
-  }
-  .label GameMode=$81d
-  .label PerformFrameCodeFlag=$800
-  .label Entry=$81e {
-    .label Finish=$821
-  }
-  .label StartGame=$824 {
-  }
-  .label GameActive=$81c
-}
+.label SCREEN_RAM=$c000
+.label GAME_MODE_PLAY=$0
+.label COLOR_RAM=$d800
+.label CHAR_COLORS=$cee
+.label BLACK_MULTI=$8
