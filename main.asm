@@ -17,6 +17,7 @@ MAIN: {
 	#import "/scripts/common/input.asm"
 	#import "/scripts/game/grid.asm"
 	#import "/scripts/game/bean.asm"
+	#import "/scripts/common/rnd.asm"
 
 	* = * "Main"
 
@@ -141,6 +142,8 @@ MAIN: {
 	FrameCode: {
 
 		dec PerformFrameCodeFlag
+
+		jsr GRID.FrameUpdate
 		
 		rts
 

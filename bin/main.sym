@@ -1,4 +1,5 @@
 .label ZERO=$0
+.label DOWN=$4
 .label GREEN_MULTI=$d
 .label INPUT=$99d {
   .label PortToRead=$99f
@@ -60,32 +61,39 @@
 }
 .label ShowDebug=$80d
 .label GAME_MODE_TITLE=$2
+.label RIGHT_SIDE=$1
 .label RED_MULTI=$a
 .label YELLOW_MULTI=$f
 .label PURPLE_MULTI=$c
 .label CHAR_SET=$f000
+.label GRID_MODE_PAUSE=$0
+.label RIGHT=$1
 .label MAIN=$2000 {
-  .label Loop=$cd6 {
+  .label Loop=$e60 {
   }
-  .label GameMode=$c70
-  .label SetupSprites=$ca7 {
+  .label GameMode=$dfa
+  .label SetupSprites=$e31 {
   }
   .label PerformFrameCodeFlag=$800
-  .label Entry=$c71 {
+  .label Entry=$dfb {
   }
-  .label FrameCode=$ce1 {
+  .label FrameCode=$e6b {
   }
-  .label StartGame=$c7d {
+  .label StartGame=$e07 {
   }
-  .label SetupGameColours=$cc1 {
+  .label SetupGameColours=$e4b {
   }
-  .label SetupVIC=$c8f {
+  .label SetupVIC=$e19 {
   }
-  .label GameActive=$c6f
-  .label BankOutKernalandBasic=$ce5 {
+  .label GameActive=$df9
+  .label BankOutKernalandBasic=$e72 {
   }
 }
+.label GRID_MODE_NORMAL=$1
+.label UP=$8
+.label LEFT_SIDE=$0
 .label PROCESSOR_PORT=$1
+.label LEFT=$2
 .label DRAW=$883 {
   .label ClearScreen=$8c5 {
     .label Loop=$8c9
@@ -115,54 +123,104 @@
     .label Finish=$962
   }
 }
+.label RANDOM=$d9e {
+  .label RandomAdd=$d9e
+  .label init=$de8
+  .label Get=$d9f {
+  }
+  .label init2=$dab {
+  }
+  .label Change=$ddf {
+  }
+  .label Get2=$dc8 {
+    .label seed=$dde
+    .label noEor=$dda
+    .label doEor=$dd2
+  }
+}
 .label BLUE_MULTI=$e
 .label GRID=$a56 {
   .label RowLookup=$ae8
   .label PlayerOneStartColumn=$2
+  .label RowStart=$c08
   .label TotalSquaresOnScreen=$90
+  .label LastRowID=$b
+  .label Mode=$c14
   .label ColumnLookup=$b78
+  .label CurrentRow=$c15
   .label Columns=$6
-  .label Clear=$c08 {
-    .label Loop=$c0a
-    .label Finish=$c1e
+  .label CurrentSide=$c16
+  .label Clear=$c17 {
+    .label Loop=$c19
+    .label Finish=$c32
   }
+  .label LastColumnID=$5
   .label PlayerLookup=$ae6
-  .label ClearSquare=$c1f {
-    .label BottomRight=$c51
-    .label BottomLeft=$c45
-    .label TopRight=$c39
-    .label TopLeft=$c29
+  .label UpdateRow=$c69 {
+    .label Loop=$c83
+    .label CheckRight=$cd7
+    .label Draw=$cec
+    .label MatchToRight=$ce6
+    .label CheckDown=$c9f
+    .label MatchAbove=$cb4
+    .label CalculateEndID=$c7c
+    .label ResetForNextBean=$cef
+    .label MatchToLeft=$c99
+    .label CheckUp=$cbe
+    .label GetFirstGridID=$c69
+    .label EmptyBelow=$cbd
+    .label MatchUp=$cd1
+    .label EndLoop=$cf3
+    .label AddIfRightSide=$c71
+    .label CheckLeft=$c8c
+  }
+  .label FrameUpdate=$c48 {
+    .label Finish=$c62
+  }
+  .label ClearSquare=$d4e {
+    .label BottomRight=$d80
+    .label BottomLeft=$d74
+    .label TopRight=$d68
+    .label TopLeft=$d58
   }
   .label PlayerTwo=$a9e
   .label PlayerOne=$a56
   .label TotalSquaresOnGrid=$48
   .label BackgroundCharID=$ca
+  .label Reset=$c38 {
+  }
+  .label DrawBean=$cfb {
+    .label BottomRight=$d2f
+    .label BottomLeft=$d3e
+    .label TopRight=$d20
+    .label TopLeft=$d07
+  }
   .label PlayerTwoStartColumn=$1a
   .label Rows=$c
 }
-.label GAME_MAP=$dee
+.label GAME_MAP=$f7b
 .label CYAN_MULTI=$b
 .label SPRITE_POINTERS=$c3f8
 .label GAME_MODE_PAUSE=$1
-.label BEAN=$c5e {
-  .label All=$c6b
-  .label Down=$c5f
-  .label Left=$c63
-  .label Right_Left=$c64
-  .label Rock=$c6e
-  .label Up_Left=$c65
-  .label Down_Right=$c68
-  .label Right_Down_Up=$c6c
-  .label Right=$c62
-  .label Up_Left_Right=$c6a
-  .label Up_Down=$c61
-  .label Down_Left=$c66
-  .label Single=$c5e
-  .label Down_Left_Right=$c69
-  .label Up_Right=$c67
-  .label Up=$c60
-  .label Chars=$c5e
-  .label Left_Down_Up=$c6d
+.label BEAN=$d8d {
+  .label All=$d9c
+  .label Down=$d91
+  .label Left=$d8f
+  .label Right_Left=$d90
+  .label Rock=$d9d
+  .label Up_Left=$d97
+  .label Down_Right=$d92
+  .label Right_Down_Up=$d9a
+  .label Right=$d8e
+  .label Up_Left_Right=$d98
+  .label Down_Left=$d93
+  .label Up_Down=$d99
+  .label Single=$d8d
+  .label Down_Left_Right=$d94
+  .label Up_Right=$d96
+  .label Up=$d95
+  .label Chars=$d8d
+  .label Left_Down_Up=$d9b
 }
 .label MemoryAddresses=$80e
 .label VIC=$80e {
@@ -186,18 +244,24 @@
 .label WHITE_MULTI=$9
 .label ZP=$2 {
   .label RowOffset=$9
-  .label Column=$8
   .label FrameCounter=$2
+  .label ColourAddress=$5
+  .label EndID=$f
+  .label CharID=$a
+  .label BeanColour=$11
+  .label Colour=$b
+  .label Column=$8
+  .label BeanType=$10
   .label ScreenAddress=$3
   .label X=$c
-  .label ColourAddress=$5
   .label Y=$d
   .label Row=$7
-  .label CharID=$a
-  .label Colour=$b
+  .label StartID=$e
 }
 .label SCREEN_RAM=$c000
 .label GAME_MODE_PLAY=$0
+.label PLAYER_1=$0
 .label COLOR_RAM=$d800
-.label CHAR_COLORS=$cee
+.label PLAYER_2=$1
+.label CHAR_COLORS=$e7b
 .label BLACK_MULTI=$8

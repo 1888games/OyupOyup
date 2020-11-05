@@ -35,3 +35,9 @@ MemoryAddresses:
 .label PLAYER_1 = 0
 .label PLAYER_2 = 1
 
+
+.label RIGHT = 1
+.label LEFT= 2
+.label DOWN = 4
+.label UP = 8
+

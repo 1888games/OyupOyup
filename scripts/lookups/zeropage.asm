@@ -12,5 +12,9 @@ ZP: {
 	Colour:				.byte $00
 	X:					.byte $00
 	Y:					.byte $00
+	StartID:			.byte $00
+	EndID:				.byte $00
+	BeanType:			.byte $00
+	BeanColour:			.byte $00
 
 }
