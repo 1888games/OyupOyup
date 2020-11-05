@@ -16,5 +16,6 @@ ZP: {
 	EndID:				.byte $00
 	BeanType:			.byte $00
 	BeanColour:			.byte $00
+	TempY:				.byte $00
 
 }

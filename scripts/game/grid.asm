@@ -12,9 +12,12 @@ GRID: {
 	.label LastRowID = 11
 	.label LastColumnID = 5
 	
+	* = * "Grid Data"
 
 	PlayerOne:	.fill Rows * Columns, GREEN
 	PlayerTwo:	.fill Rows * Columns, BLACK
+
+	PreviousType:	.fill TotalSquaresOnScreen, 99
 
 	PlayerLookup:	.byte 0, Rows * Columns
 
@@ -28,9 +31,10 @@ GRID: {
 	RowStart:	.fill 12, (i * Columns)
 
 
-	Mode:			.byte 0
-	CurrentRow:		.byte LastRowID
-	CurrentSide:	.byte 0
+	Mode:				.byte 0
+	CurrentRow:			.byte LastRowID
+	CurrentSide:		.byte 0
+	InitialDrawDone:	.byte 0
 
 
 	Clear: {
@@ -41,13 +45,17 @@ GRID: {
 
 			stx ZP.X
 
-			lda #BLACK
 
 			jsr RANDOM.Get
 			and #%00000111
+
+			lda #BLACK
 			sta PlayerOne, x
 
 			jsr ClearSquare
+
+			lda #99
+			sta PreviousType, x
 
 			ldx ZP.X
 
@@ -59,14 +67,38 @@ GRID: {
 
 		Finish:
 
-		lda #RED
-		sta PlayerOne
+			ldy #0
+
+		Loop2:
+
+			sty ZP.TempY
+
+			jsr RANDOM.Get
+			and #%01111111
+			tax
+
+			jsr RANDOM.Get
+			and #%00000111	
+
+			sta PlayerOne, x
+
+			ldy ZP.TempY
+
+			iny
+			cpy #50
+			bcc Loop2
 
 
+		lda #1
+		sta MAIN.GameActive
+
+		
 		rts
 
 
 	}
+
+
 
 
 
@@ -80,42 +112,70 @@ GRID: {
 		lda #0
 		sta CurrentSide
 		sta ZP.BeanType
+		sta InitialDrawDone
 
 
 
 
 		rts
 	}
+
+
+
 
 
 	FrameUpdate: {
 
-		inc $d020
+		///inc $d020
 
-		jsr UpdateRow
+		lda MAIN.GameActive
+		beq Finish
 
-		inc CurrentSide
-		jsr UpdateRow
+		
+		ldy #3
 
-		ldx CurrentRow
-		dex
-		stx CurrentRow
-		bpl Finish
+		Loop:
 
-		lda #LastRowID
-		sta CurrentRow
+			sty ZP.Y
+
+			jsr UpdateRow
+
+			inc CurrentSide
+			jsr UpdateRow
+
+			dec CurrentSide
+
+			ldx CurrentRow
+			dex
+			stx CurrentRow
+			bpl EndLoop
+
+			lda #LastRowID
+			sta CurrentRow
+
+			lda #1
+			sta InitialDrawDone
+
+			EndLoop:
+
+				ldy ZP.Y
+				dey
+				bpl Loop
+
+
+		
 
 		Finish:
-
-		dec CurrentSide
-		dec $d020
-
+	
+	//	dec $d020
 
 		rts
 	}
 
-
 	UpdateRow: {
+
+		lda #0
+		sta ZP.BeanType
 
 		GetFirstGridID:
 
@@ -146,9 +206,14 @@ GRID: {
 
 			lda PlayerOne, x
 			sta ZP.BeanColour
-			beq EndLoop
+			bne CheckLeft
+
+			jmp EndLoop
 
 			CheckLeft:
+
+				lda InitialDrawDone
+				beq Draw
 
 				cpx ZP.StartID
 				beq CheckDown
@@ -193,8 +258,23 @@ GRID: {
 
 				EmptyBelow:
 
-					//.break
-					nop
+					lda ZP.BeanColour
+					sta PlayerOne, x
+
+					lda #99
+					sta PreviousType, x
+
+					jsr DrawBean
+
+					ldx ZP.X
+					lda #0
+					sta PlayerOne, x
+
+					lda #99
+					sta PreviousType, x
+
+					jsr ClearSquare
+					jmp ResetForNextBean
 
 
 			CheckUp:
@@ -206,7 +286,7 @@ GRID: {
 
 				txa
 				sec
-				sbc #6
+				sbc #Columns
 				tax
 
 				lda PlayerOne, x
@@ -241,8 +321,8 @@ GRID: {
 
 			Draw:
 
+				ldx ZP.X
 				jsr DrawBean
-
 
 			ResetForNextBean:
 
@@ -254,7 +334,12 @@ GRID: {
 				ldx ZP.X
 				inx
 				cpx ZP.EndID
-				bcc Loop
+				beq Finish
+
+				jmp Loop
+
+
+		Finish:
 
 
 
@@ -264,7 +349,9 @@ GRID: {
 
 	DrawBean: {
 
-		ldx ZP.X
+		lda ZP.BeanType
+		cmp PreviousType, x
+		beq Finish
 
 		lda RowLookup, x
 		sta ZP.Row
@@ -274,7 +361,10 @@ GRID: {
 
 		TopLeft:
 
-			ldy ZP.BeanType
+			lda ZP.BeanType
+			sta PreviousType, x
+			tay
+
 			lda BEAN.Chars, y
 			clc
 			adc #3
@@ -336,7 +426,7 @@ GRID: {
 			sta (ZP.ColourAddress), y
 
 
-
+		Finish:
 
 
 

@@ -3,7 +3,7 @@ RANDOM: {
 
 	* = * "-Random"
 
-	RandomAdd: .byte 0
+	RandomAdd: .byte random() * 256
 
 
 	Get: {
@@ -74,6 +74,9 @@ RANDOM: {
 		sta $D40F //voice 3 frequency high byte
 		lda #$80  //noise waveform, gate bit off
 		sta $D412 //voice 3 control register
+
+
+
 		rts
 		
 
