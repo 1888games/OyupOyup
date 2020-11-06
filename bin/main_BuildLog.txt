@@ -8,7 +8,7 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$0012 Temp vars zero page
+  *$0002-$0013 Temp vars zero page
   $0800-$0800 Upstart
   $0801-$080c Basic
   $080d-$080c End Of Basic
@@ -17,11 +17,11 @@ Default-segment:
   $080e-$0882 IRQ
   $0883-$099c Draw
   $099d-$0a55 -Input
-  $0a56-$0e94 Grid Data
-  $0e95-$0eef -Random
-  $0ef0-$0f71 Main
-  $0f72-$1071 Game Colours
-  $1072-$1481 Game Map
+  $0a56-$0fa5 Grid Data
+  $0fa6-$1000 -Random
+  $1001-$1082 Main
+  $1083-$1182 Game Colours
+  $1183-$1592 Game Map
   $f000-$f7ff Charset
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

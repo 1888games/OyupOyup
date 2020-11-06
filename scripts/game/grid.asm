@@ -11,6 +11,8 @@ GRID: {
 	.label PlayerTwoStartColumn = 26
 	.label LastRowID = 11
 	.label LastColumnID = 5
+	.label CheckTime = 30
+
 	
 	* = * "Grid Data"
 
@@ -29,17 +31,30 @@ GRID: {
 					.fill TotalSquaresOnGrid, PlayerTwoStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
 
 	RowStart:	.fill 12, (i * Columns)
+	BottomRightIDs:	.byte 71, 143
 
 
-	Mode:				.byte 0
+
 	CurrentRow:			.byte LastRowID
+	StartRow:			.byte LastRowID
+
 	CurrentSide:		.byte 0
 	InitialDrawDone:	.byte 0
 
 
+	CheckTimer:			.byte 255, 255
+	Mode:				.byte 0, 0
+	CheckProgress:		.byte 0, 0
+
+	QueueLength:		.byte 0, 0
+	QueueColour:		.byte 0, 0
+	QueueLeft: 			.fill 32, 0
+	QueueRight:			.fill 32, 0
+
+
 	Clear: {
 
-		ldx #143
+		ldx BottomRightIDs + 1
 
 		Loop:
 
@@ -108,13 +123,16 @@ GRID: {
 
 		lda #LastRowID
 		sta CurrentRow
+		sta StartRow
 
 		lda #0
 		sta CurrentSide
 		sta ZP.BeanType
 		sta InitialDrawDone
 
-
+		lda #255
+		sta CheckTimer
+		sta CheckTimer + 1
 
 
 		rts
@@ -123,27 +141,191 @@ GRID: {
 
 
 
+	CheckGrid: {
 
-	FrameUpdate: {
+		rts
 
-		///inc $d020
+		CheckIfAlreadyInCheckMode:
 
-		lda MAIN.GameActive
-		beq Finish
+			ldx CurrentSide
+			lda Mode, x
+			cmp #GRID_MODE_CHECK
+			beq Checking
 
-		
+		CheckIfNotAboutToCheck:
+
+			lda CheckTimer, x
+			bmi Finish
+
+		CheckIfTimerZeroYet:
+
+			beq ReadyToCheck
+
+		DecreaseTimer:
+
+			dec CheckTimer, x
+			jmp Finish
+
+		ReadyToCheck:
+
+			lda #GRID_MODE_CHECK
+			sta Mode, x
+
+			lda BottomRightIDs, x
+			sta CheckProgress, x
+
+			jsr NextSlot
+
+
+		Checking:
+
+			jsr DoScan
+
+
+		Finish:
+
+		rts
+	}
+
+
+
+	NextSlot: {
+
+
+		lda CheckProgress, x
+		bne SlotIsOccupied
+
+		MoveToNextSlot:
+
+			dec CheckProgress, x
+			bne NextSlot
+
+			jsr CheckComplete
+			jmp Finish
+
+		SlotIsOccupied:
+
+			ldy CurrentSide
+			beq Left
+
+		Right:
+
+			sta QueueRight, x
+			jmp Done
+
+		Left:
+
+			sta QueueLeft, x
+
+		Done:
+
+		lda #1
+		sta QueueLength
+
+		Finish:
+
+
+		rts
+	}
+
+
+
+	ProcessSlot: {
+
+		ldy CurrentSide
+		lda QueueLength, y
+		tax
+		dex
+
+		cpy #0
+		beq Left
+
+		Right:
+
+			lda QueueRight, x
+			jmp GetSlotInfo
+
+		Left:
+
+			lda QueueLeft, x
+
+		GetSlotInfo:	
+
+			sta ZP.SlotID
+			tax
+			lda RowLookup, x
+			sta ZP.Row
+
+			lda ColumnLookup, x
+			sta ZP.Column
+
+
+
+		rts
+	}
+
+	DoScan: {
+
+		lda QueueLength, x
+		bne ProcessNextInQueue
+
+		QueueEmpty:
+
+			dec CheckProgress, x
+			beq CheckCompleted
+
+			jsr NextSlot
+
+		ProcessNextInQueue:
+
+			jsr ProcessSlot
+
+		jmp Finish
+
+		CheckCompleted:
+
+			jsr CheckComplete
+
+		Finish:
+
+
+		rts
+	}
+
+
+	CheckComplete: {
+
+		lda #255
+		sta CheckTimer, x
+
+		lda #GRID_MODE_NORMAL
+		sta Mode, x
+
+
+		rts
+	}
+
+
+
+	UpdateSide: {
+
+		jsr CheckGrid
+
+		ldy CurrentSide
+
+		lda Mode, y
+		bne Finish
+
 		ldy #3
+
+		lda StartRow
+		sta CurrentRow
 
 		Loop:
 
 			sty ZP.Y
 
 			jsr UpdateRow
-
-			inc CurrentSide
-			jsr UpdateRow
-
-			dec CurrentSide
 
 			ldx CurrentRow
 			dex
@@ -167,10 +349,40 @@ GRID: {
 
 		Finish:
 	
+
+
+
+
+		rts
+	}
+
+	FrameUpdate: {
+
+
+		lda MAIN.GameActive
+		beq Finish
+
+		jsr UpdateSide
+
+		inc CurrentSide
+		jsr UpdateSide
+
+		dec CurrentSide
+
+		lda CurrentRow
+		sta StartRow
+
+
+		Finish:
+
+		
 	//	dec $d020
 
 		rts
 	}
+
+
+
 
 	UpdateRow: {
 
@@ -213,7 +425,11 @@ GRID: {
 			CheckLeft:
 
 				lda InitialDrawDone
-				beq Draw
+				bne Continue
+
+				jmp Draw
+
+				Continue:
 
 				cpx ZP.StartID
 				beq CheckDown
@@ -272,6 +488,10 @@ GRID: {
 
 					lda #99
 					sta PreviousType, x
+
+					ldy CurrentSide
+					lda #CheckTime
+					sta CheckTimer, y
 
 					jsr ClearSquare
 					jmp ResetForNextBean

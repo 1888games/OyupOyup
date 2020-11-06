@@ -17,5 +17,6 @@ ZP: {
 	BeanType:			.byte $00
 	BeanColour:			.byte $00
 	TempY:				.byte $00
+	SlotID:				.byte $00
 
 }
