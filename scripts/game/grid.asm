@@ -108,7 +108,7 @@ GRID: {
 			ldy ZP.TempY
 
 			iny
-			cpy #50
+			cpy #100
 			bcc Loop2
 
 
@@ -417,6 +417,7 @@ GRID: {
 		Remove:
 
 			lda #0
+			ldx ZP.X
 			sta PlayerOne, x
 			jsr ClearSquare
 
@@ -471,7 +472,8 @@ GRID: {
 			bcc CheckIfEmpty
 
 			AnimatePop:
-
+			
+				tay
 				jsr UpdateAnimation
 				ldx ZP.X
 
@@ -524,6 +526,15 @@ GRID: {
 
 				SolidBelow:
 
+					jsr RANDOM.Get
+					cmp #2
+					bcs NoPop
+
+					jsr PopBean
+					jmp Draw
+
+				NoPop:
+
 					ldy ZP.PreviousType
 					bmi NotAnimating
 
@@ -550,15 +561,6 @@ GRID: {
 					bne CheckUp
 
 				MatchAbove:
-
-
-					jsr RANDOM.Get
-					cmp #30
-					bcs NoPop
-
-					jsr PopBean
-
-					NoPop:
 
 					lda ZP.BeanType
 					ora #DOWN

@@ -31,9 +31,11 @@ BEAN: {
  	Squished3:			.byte 230 // 21
     Falling:			.byte 126 // 22
 
-    Popped3:			.byte 226 // 23
-    Popped2:			.byte 121 // 24
+
+    Popped5:			.byte 226 // 23
+    Popped3:			.byte 121 // 24
     Popped1:			.byte 42 // 25
+
 
 
 

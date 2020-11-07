@@ -1,6 +1,6 @@
 
-//* = $c400 "Sprites" //Start at frame #16
- //	.import binary "../../assets/sprites.bin"
+* = $c400 "Sprites" //Start at frame #16
+ 	.import binary "../../assets/puyo - Sprites.bin"
 
  // * = $8000 "Game Map"
  //MAP: .import binary "../assets/blank - Map (20x13).bin"

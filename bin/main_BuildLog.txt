@@ -1,0 +1,29 @@
+parsing
+flex pass 1
+flex pass 2
+flex pass 3
+Output pass
+Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
+
+Memory Map
+----------
+Default-segment:
+  *$0002-$0014 Temp vars zero page
+  $0800-$0800 Upstart
+  $0801-$080c Basic
+  $080d-$080c End Of Basic
+  $080d-$080d -Macros
+  $080e-$080d Basic End
+  $080e-$0882 IRQ
+  $0883-$099c Draw
+  $099d-$0a55 -Input
+  $0a56-$10a8 Grid Data
+  $10a9-$1103 -Random
+  $1104-$1185 Main
+  $c400-$c8ff Sprites
+  $c900-$c9fd Game Colours
+  $c9fe-$ce0d Game Map
+  $f000-$f7ef Charset
+
+Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs
+Writing Symbol file: main.sym
