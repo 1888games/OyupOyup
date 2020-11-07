@@ -1,324 +1,115 @@
 .label ZERO=$0
 .label DOWN=$4
 .label GREEN_MULTI=$d
-.label INPUT=$99d {
-  .label PortToRead=$99f
+.label INPUT=$a3c {
+  .label PortToRead=$a3e
   .label joyLeftMask=$4
-  .label JOY_FIRE_NOW=$9b2
+  .label JOY_FIRE_NOW=$a51
   .label joyRightMask=$8
-  .label JOY_LEFT_LAST=$9a2
-  .label ReadC64Joystick=$9b6 {
-    .label StoreReading=$9c3
-    .label PortOne=$9c0
+  .label JOY_LEFT_LAST=$a41
+  .label ReadC64Joystick=$a55 {
+    .label StoreReading=$a62
+    .label PortOne=$a5f
   }
-  .label JOY_DOWN_NOW=$9ae
-  .label JOY_FIRE_LAST=$9a8
-  .label JOY_LEFT_NOW=$9ac
+  .label JOY_DOWN_NOW=$a4d
+  .label JOY_FIRE_LAST=$a47
+  .label JOY_LEFT_NOW=$a4b
   .label joyFireMask=$10
   .label joyDownMask=$2
-  .label JOY_UP_NOW=$9b0
-  .label JOY_READING=$99d
-  .label JOY_RIGHT_NOW=$9aa
-  .label ReadJoystick=$a1c {
+  .label JOY_UP_NOW=$a4f
+  .label JOY_READING=$a3c
+  .label JOY_RIGHT_NOW=$a49
+  .label ReadJoystick=$abb {
   }
-  .label FIRE_UP_THIS_FRAME=$9b4
-  .label CalculateButtons=$9c7 {
-    .label DownUp=$a0c
-    .label CheckFire=$9ca
-    .label CheckUp=$9ee
-    .label CheckRight=$a0c
-    .label CheckFireUp=$9d9
-    .label CheckDown=$9fd
-    .label LeftUp=$9ee
-    .label Finish=$a1b
-    .label UpUp=$9fd
-    .label CheckLeft=$9df
-    .label RightUp=$a1b
+  .label FIRE_UP_THIS_FRAME=$a53
+  .label CalculateButtons=$a66 {
+    .label DownUp=$aab
+    .label CheckFire=$a69
+    .label CheckUp=$a8d
+    .label CheckRight=$aab
+    .label CheckFireUp=$a78
+    .label CheckDown=$a9c
+    .label LeftUp=$a8d
+    .label Finish=$aba
+    .label UpUp=$a9c
+    .label CheckLeft=$a7e
+    .label RightUp=$aba
   }
-  .label JOY_RIGHT_LAST=$9a0
-  .label JOY_UP_LAST=$9a6
-  .label JOY_DOWN_LAST=$9a4
+  .label JOY_RIGHT_LAST=$a3f
+  .label JOY_UP_LAST=$a45
+  .label JOY_DOWN_LAST=$a43
   .label joyUpMask=$1
 }
-.label ONE=$1
-.label IRQ=$80e {
-  .label INTERRUPT_CONTROL=$d01a
-  .label RASTER_INTERRUPT_VECTOR=$fffe
-  .label INTERRUPT_STATUS=$d019
-  .label SetNextInterrupt=$834 {
-  }
-  .label Setup=$81d {
-  }
-  .label MainIRQLine=$dc
-  .label DisableCIAInterrupts=$80e {
-  }
-  .label MainIRQ=$846 {
-    .label CheckFireButton=$869
-    .label Finish=$870
-    .label GameActive=$866
-    .label Paused=$869
-  }
-}
-.label ShowDebug=$80d
-.label GAME_MODE_TITLE=$2
-.label RIGHT_SIDE=$1
 .label RED_MULTI=$a
-.label YELLOW_MULTI=$f
+.label StopChannel0=$852 {
+}
 .label PURPLE_MULTI=$c
 .label CHAR_SET=$f000
-.label GRID_MODE_PAUSE=$0
-.label RIGHT=$1
 .label MAIN=$2000 {
-  .label Loop=$116b {
+  .label Loop=$1388 {
   }
-  .label GameMode=$1105
-  .label SetupSprites=$113c {
+  .label GameMode=$131f
+  .label SetupSprites=$1359 {
   }
   .label PerformFrameCodeFlag=$800
-  .label Entry=$1106 {
+  .label Entry=$1320 {
   }
-  .label FrameCode=$1176 {
+  .label FrameCode=$1393 {
   }
-  .label StartGame=$1112 {
+  .label StartGame=$132f {
   }
-  .label SetupGameColours=$1156 {
+  .label SetupGameColours=$1373 {
   }
-  .label SetupVIC=$1124 {
+  .label SetupVIC=$1341 {
   }
-  .label GameActive=$1104
-  .label BankOutKernalandBasic=$117d {
+  .label GameActive=$131e
+  .label BankOutKernalandBasic=$139d {
   }
 }
 .label GRID_MODE_NORMAL=$1
 .label UP=$8
 .label LEFT_SIDE=$0
-.label PROCESSOR_PORT=$1
+.label play_no_music=$82d {
+  .label channel=$842
+  .label times7=$843
+}
 .label LEFT=$2
-.label DRAW=$883 {
-  .label ClearScreen=$8c5 {
-    .label Loop=$8c9
-  }
-  .label ColorCharacterOnly=$940 {
-  }
-  .label PlotCharacterWithAddress=$91d {
-    .label Finish=$925
-  }
-  .label GetCharacter=$8fb {
-  }
-  .label PlotCharacter=$926 {
-    .label Finish=$93f
-  }
-  .label ScreenRowMSB=$8ac
-  .label ScreenRowLSB=$893
-  .label GetColor=$90b {
-  }
-  .label GameScreen=$963 {
-    .label Loop=$965
-  }
-  .label CalculateAddresses=$8d9 {
-  }
-  .label MSB_On=$883
-  .label MSB_Off=$88b
-  .label ColorCharacter=$956 {
-    .label Finish=$962
-  }
-}
-.label RANDOM=$10a9 {
-  .label RandomAdd=$10a9
-  .label init=$10f3
-  .label Get=$10aa {
-  }
-  .label init2=$10b6 {
-  }
-  .label Change=$10ea {
-  }
-  .label Get2=$10d3 {
-    .label seed=$10e9
-    .label noEor=$10e5
-    .label doEor=$10dd
-  }
-}
-.label BLUE_MULTI=$e
-.label GRID=$a56 {
-  .label UpdateAnimation=$ec3 {
-    .label Remove=$ecf
-    .label Reset=$ed9
-  }
-  .label RowStart=$d28
-  .label DoScan=$e58 {
-    .label QueueEmpty=$e5d
-    .label CheckCompleted=$e6b
-    .label ProcessNextInQueue=$e65
-    .label Finish=$e6e
-  }
-  .label TotalSquaresOnScreen=$90
-  .label QueueRight=$d64
-  .label LastPoppedFrame=$17
-  .label InitialDrawDone=$d39
-  .label CheckComplete=$e6f {
-  }
-  .label ClearSquare=$1050 {
-    .label BottomRight=$1082
-    .label BottomLeft=$1076
-    .label TopRight=$106a
-    .label TopLeft=$105a
-  }
-  .label ProcessSlot=$e35 {
-    .label Left=$e47
-    .label Right=$e41
-    .label GetSlotInfo=$e4a
-  }
-  .label Reset=$dc4 {
-  }
-  .label PopBean=$e30 {
-  }
-  .label ColumnLookup=$c98
-  .label CurrentRow=$d36
-  .label QueueLength=$d40
-  .label FrameUpdate=$eab {
-    .label Finish=$ec2
-  }
-  .label BeanPoppedType=$19
-  .label DrawBean=$ff2 {
-    .label BottomRight=$1031
-    .label BottomLeft=$1040
-    .label TimeToDraw=$1013
-    .label TopRight=$1022
-    .label Finish=$104f
-    .label TopLeft=$1004
-  }
-  .label SquashedBean=$e9
-  .label RowLookup=$c08
-  .label PlayerOneStartColumn=$2
-  .label PreviousType=$b76
-  .label BeanFallingType=$16
-  .label UpdateSide=$e7a {
-    .label Loop=$e8d
-    .label EndLoop=$ea5
-    .label Finish=$eaa
-  }
-  .label Clear=$d84 {
-    .label Loop=$d87
-    .label Finish=$da5
-    .label Loop2=$da7
-  }
-  .label LastColumnID=$5
-  .label PlayerLookup=$c06
-  .label QueueColour=$d42
-  .label CheckProgress=$d3e
-  .label PlayerTwo=$a9e
-  .label QueueLeft=$d44
-  .label TotalSquaresOnGrid=$48
-  .label BottomRightIDs=$d34
-  .label PlayerTwoStartColumn=$1a
-  .label Rows=$c
-  .label CheckGrid=$de2 {
-    .label DecreaseTimer=$df4
-    .label CheckIfAlreadyInCheckMode=$de3
-    .label CheckIfTimerZeroYet=$df2
-    .label Finish=$e0b
-    .label CheckIfNotAboutToCheck=$ded
-    .label ReadyToCheck=$dfa
-    .label Checking=$e08
-  }
-  .label CheckTime=$1e
-  .label LastRowID=$b
-  .label Mode=$d3c
-  .label Columns=$6
-  .label StartRow=$d37
-  .label CurrentSide=$d38
-  .label CheckTimer=$d3a
-  .label NextSlot=$e0c {
-    .label Done=$e2a
-    .label Left=$e27
-    .label MoveToNextSlot=$e11
-    .label SlotIsOccupied=$e1c
-    .label Right=$e21
-    .label Finish=$e2f
-  }
-  .label UpdateRow=$ede {
-    .label Loop=$efc
-    .label CheckIfEmpty=$f14
-    .label CheckRight=$fc4
-    .label Draw=$fd9
-    .label NotAnimating=$f72
-    .label MatchToRight=$fd3
-    .label CheckDown=$f39
-    .label MatchAbove=$f76
-    .label Continue=$f26
-    .label NoPop=$f57
-    .label CalculateEndID=$ef5
-    .label ResetForNextBean=$fe3
-    .label FinishedFalling=$f69
-    .label MatchToLeft=$f33
-    .label CheckUp=$fab
-    .label GetFirstGridID=$ee2
-    .label EmptyBelow=$f7f
-    .label AnimatePop=$f0e
-    .label MatchUp=$fbe
-    .label EndLoop=$fe7
-    .label SolidBelow=$f4a
-    .label AddIfRightSide=$eea
-    .label Finish=$ff1
-    .label CheckLeft=$f1e
-  }
-  .label CurrentType=$ae6
-  .label BeanLandedType=$15
-  .label PlayerOne=$a56
-  .label BackgroundCharID=$ca
+.label ROCKS=$131e {
 }
 .label GAME_MAP=$c9fe
 .label CYAN_MULTI=$b
 .label SPRITE_POINTERS=$c3f8
 .label GAME_MODE_PAUSE=$1
-.label BEAN=$108f {
-  .label All=$109e
-  .label Squished=$10a0
-  .label Left=$1091
-  .label Right_Left=$1092
-  .label Up_Left=$1099
-  .label Right_Down_Up=$109c
-  .label Right=$1090
-  .label Popped1=$10a8
-  .label Popped5=$10a6
-  .label Popped3=$10a7
-  .label Single2=$10a1
-  .label Single3=$10a3
-  .label Chars=$108f
-  .label Left_Down_Up=$109d
-  .label Down=$1093
-  .label Rock=$109f
-  .label Down_Right=$1094
-  .label Up_Left_Right=$109a
-  .label Squished2=$10a2
-  .label Down_Left=$1095
-  .label Up_Down=$109b
-  .label Squished3=$10a4
-  .label Single=$108f
-  .label Down_Left_Right=$1096
-  .label Up_Right=$1098
-  .label Falling=$10a5
-  .label Up=$1097
+.label BEAN=$1175 {
+  .label All=$1184
+  .label Squished=$1186
+  .label Left=$1177
+  .label Right_Left=$1178
+  .label Up_Left=$117f
+  .label Right_Down_Up=$1182
+  .label Right=$1176
+  .label Popped1=$118e
+  .label Popped5=$118c
+  .label Popped3=$118d
+  .label Single2=$1187
+  .label Single3=$1189
+  .label Chars=$1175
+  .label Left_Down_Up=$1183
+  .label Down=$1179
+  .label Rock=$1185
+  .label Down_Right=$117a
+  .label Up_Left_Right=$1180
+  .label Squished2=$1188
+  .label Down_Left=$117b
+  .label Up_Down=$1181
+  .label Squished3=$118a
+  .label Single=$1175
+  .label Down_Left_Right=$117c
+  .label Up_Right=$117e
+  .label Falling=$118b
+  .label Up=$117d
 }
-.label MemoryAddresses=$80e
-.label VIC=$80e {
-  .label EXTENDED_BG_COLOR_1=$d022
-  .label EXTENDED_BG_COLOR_2=$d023
-  .label SPRITE_MULTICOLOR_2=$d026
-  .label SPRITE_PRIORITY=$d01b
-  .label SPRITE_MULTICOLOR_1=$d025
-  .label RASTER_LINE=$d012
-  .label BACKGROUND_COLOUR=$d021
-  .label SPRITE_MULTICOLOR=$d01c
-  .label BORDER_COLOUR=$d020
-  .label BANK_SELECT=$dd00
-  .label SCREEN_CONTROL_2=$d016
-  .label SPRITE_ENABLE=$d015
-  .label IRQ_CONTROL_1=$dc0d
-  .label IRQ_CONTROL_2=$dd0d
-  .label SCREEN_CONTROL=$d011
-  .label MEMORY_SETUP=$d018
-}
+.label channels=$858
 .label GRID_MODE_CHECK=$2
 .label WHITE_MULTI=$9
 .label ZP=$2 {
@@ -327,11 +118,12 @@
   .label FrameCounter=$2
   .label ColourAddress=$5
   .label EndID=$f
-  .label TempY=$13
+  .label TempY=$14
+  .label TempX=$13
   .label CharID=$a
   .label BeanColour=$12
   .label Colour=$b
-  .label SlotID=$14
+  .label SlotID=$15
   .label Column=$8
   .label BeanType=$10
   .label ScreenAddress=$3
@@ -342,8 +134,293 @@
 }
 .label SCREEN_RAM=$c000
 .label GAME_MODE_PLAY=$0
-.label PLAYER_1=$0
+.label sfx_play=$82a {
+  .label sfx_routine=$82a
+}
+.label set_sfx_routine=$80f {
+}
 .label COLOR_RAM=$d800
-.label PLAYER_2=$1
 .label CHAR_COLORS=$c900
 .label BLACK_MULTI=$8
+.label ONE=$1
+.label IRQ=$8aa {
+  .label INTERRUPT_CONTROL=$d01a
+  .label RASTER_INTERRUPT_VECTOR=$fffe
+  .label INTERRUPT_STATUS=$d019
+  .label SetNextInterrupt=$8d0 {
+  }
+  .label Setup=$8b9 {
+  }
+  .label MainIRQLine=$dc
+  .label DisableCIAInterrupts=$8aa {
+  }
+  .label MainIRQ=$8e2 {
+    .label CheckFireButton=$908
+    .label Finish=$90f
+    .label GameActive=$905
+    .label Paused=$908
+  }
+}
+.label ShowDebug=$80d
+.label GAME_MODE_TITLE=$2
+.label RIGHT_SIDE=$1
+.label YELLOW_MULTI=$f
+.label GRID_MODE_PAUSE=$0
+.label wavetable_l=$8a6
+.label sfx_bloop=$881
+.label RIGHT=$1
+.label PROCESSOR_PORT=$1
+.label DRAW=$922 {
+  .label ClearScreen=$964 {
+    .label Loop=$968
+  }
+  .label ColorCharacterOnly=$9df {
+  }
+  .label PlotCharacterWithAddress=$9bc {
+    .label Finish=$9c4
+  }
+  .label GetCharacter=$99a {
+  }
+  .label PlotCharacter=$9c5 {
+    .label Finish=$9de
+  }
+  .label ScreenRowMSB=$94b
+  .label ScreenRowLSB=$932
+  .label GetColor=$9aa {
+  }
+  .label GameScreen=$a02 {
+    .label Loop=$a04
+  }
+  .label CalculateAddresses=$978 {
+  }
+  .label MSB_On=$922
+  .label MSB_Off=$92a
+  .label ColorCharacter=$9f5 {
+    .label Finish=$a01
+  }
+}
+.label RANDOM=$118f {
+  .label RandomAdd=$118f
+  .label init=$11d9
+  .label Get=$1190 {
+  }
+  .label init2=$119c {
+  }
+  .label Change=$11d0 {
+  }
+  .label Get2=$11b9 {
+    .label seed=$11cf
+    .label noEor=$11cb
+    .label doEor=$11c3
+  }
+}
+.label BLUE_MULTI=$e
+.label GRID=$af5 {
+  .label UpdateAnimation=$f81 {
+    .label Remove=$f8d
+    .label Reset=$fab
+  }
+  .label RowStart=$dc7
+  .label DoScan=$f16 {
+    .label QueueEmpty=$f1b
+    .label CheckCompleted=$f29
+    .label ProcessNextInQueue=$f23
+    .label Finish=$f2c
+  }
+  .label TotalSquaresOnScreen=$90
+  .label QueueRight=$e03
+  .label LastPoppedFrame=$17
+  .label InitialDrawDone=$dd8
+  .label CheckComplete=$f2d {
+  }
+  .label ClearSquare=$1136 {
+    .label BottomRight=$1168
+    .label BottomLeft=$115c
+    .label TopRight=$1150
+    .label TopLeft=$1140
+  }
+  .label ProcessSlot=$ef3 {
+    .label Left=$f05
+    .label Right=$eff
+    .label GetSlotInfo=$f08
+  }
+  .label Reset=$e68 {
+  }
+  .label PopBean=$ed4 {
+  }
+  .label ColumnLookup=$d37
+  .label CurrentRow=$dd5
+  .label QueueLength=$ddf
+  .label FrameUpdate=$f69 {
+    .label Finish=$f80
+  }
+  .label BeanPoppedType=$19
+  .label DrawBean=$10d8 {
+    .label BottomRight=$1117
+    .label BottomLeft=$1126
+    .label TimeToDraw=$10f9
+    .label TopRight=$1108
+    .label Finish=$1135
+    .label TopLeft=$10ea
+  }
+  .label SquashedBean=$e9
+  .label RowLookup=$ca7
+  .label PlayerOneStartColumn=$2
+  .label PreviousType=$c15
+  .label BeanFallingType=$16
+  .label UpdateSide=$f38 {
+    .label Loop=$f4b
+    .label EndLoop=$f63
+    .label Finish=$f68
+  }
+  .label Clear=$e23 {
+    .label Loop=$e26
+    .label Finish=$e44
+    .label Loop2=$e46
+  }
+  .label LastColumnID=$5
+  .label PlayerLookup=$ca5
+  .label QueueColour=$de1
+  .label CheckProgress=$ddd
+  .label PlayerTwo=$b3d
+  .label QueueLeft=$de3
+  .label TotalSquaresOnGrid=$48
+  .label BottomRightIDs=$dd3
+  .label PlayerTwoStartColumn=$1a
+  .label Rows=$c
+  .label CheckGrid=$e86 {
+    .label DecreaseTimer=$e98
+    .label CheckIfAlreadyInCheckMode=$e87
+    .label CheckIfTimerZeroYet=$e96
+    .label Finish=$eaf
+    .label CheckIfNotAboutToCheck=$e91
+    .label ReadyToCheck=$e9e
+    .label Checking=$eac
+  }
+  .label CheckTime=$1e
+  .label LastRowID=$b
+  .label Mode=$ddb
+  .label Columns=$6
+  .label StartRow=$dd6
+  .label CurrentSide=$dd7
+  .label CheckTimer=$dd9
+  .label NextSlot=$eb0 {
+    .label Done=$ece
+    .label Left=$ecb
+    .label MoveToNextSlot=$eb5
+    .label SlotIsOccupied=$ec0
+    .label Right=$ec5
+    .label Finish=$ed3
+  }
+  .label UpdateRow=$fb2 {
+    .label Loop=$fd0
+    .label CheckIfEmpty=$fe8
+    .label CheckRight=$10aa
+    .label Draw=$10bf
+    .label NotAnimating=$1055
+    .label MatchToRight=$10b9
+    .label CheckDown=$100d
+    .label MatchAbove=$105c
+    .label Continue=$ffa
+    .label NoPop=$102b
+    .label CalculateEndID=$fc9
+    .label ResetForNextBean=$10c9
+    .label FinishedFalling=$103d
+    .label MatchToLeft=$1007
+    .label CheckUp=$1091
+    .label GetFirstGridID=$fb6
+    .label EmptyBelow=$1065
+    .label AnimatePop=$fe2
+    .label MatchUp=$10a4
+    .label EndLoop=$10cd
+    .label SolidBelow=$101e
+    .label AddIfRightSide=$fbe
+    .label Finish=$10d7
+    .label CheckLeft=$ff2
+  }
+  .label CurrentType=$b85
+  .label BeanLandedType=$15
+  .label PlayerOne=$af5
+  .label BackgroundCharID=$ca
+}
+.label wavetable_h=$8a8
+.label sfx_land=$862
+.label MemoryAddresses=$8aa
+.label VIC=$8aa {
+  .label SPRITE_MULTICOLOR_2=$d026
+  .label SPRITE_MULTICOLOR_1=$d025
+  .label SPRITE_0_X=$d000
+  .label SPRITE_COLOR_5=$d02c
+  .label SPRITE_COLOR_4=$d02b
+  .label SPRITE_COLOR_3=$d02a
+  .label SPRITE_COLOR_2=$d029
+  .label SPRITE_MULTICOLOR=$d01c
+  .label SPRITE_COLOR_1=$d028
+  .label SPRITE_COLOR_0=$d027
+  .label BORDER_COLOUR=$d020
+  .label SPRITE_ENABLE=$d015
+  .label IRQ_CONTROL_1=$dc0d
+  .label IRQ_CONTROL_2=$dd0d
+  .label SPRITE_0_Y=$d001
+  .label SPRITE_1_X=$d002
+  .label SPRITE_2_X=$d004
+  .label SPRITE_1_Y=$d003
+  .label SPRITE_3_Y=$d007
+  .label SPRITE_4_X=$d008
+  .label SPRITE_2_Y=$d005
+  .label SPRITE_3_X=$d006
+  .label SCREEN_CONTROL=$d011
+  .label SPRITE_5_Y=$d00b
+  .label SPRITE_6_X=$d00c
+  .label SPRITE_4_Y=$d009
+  .label SPRITE_5_X=$d00a
+  .label MEMORY_SETUP=$d018
+  .label SPRITE_7_Y=$d00f
+  .label SPRITE_DOUBLE_Y=$d017
+  .label SPRITE_6_Y=$d00d
+  .label SPRITE_7_X=$d00e
+  .label SPRITE_DOUBLE_X=$d01d
+  .label EXTENDED_BG_COLOR_1=$d022
+  .label EXTENDED_BG_COLOR_2=$d023
+  .label SPRITE_PRIORITY=$d01b
+  .label RASTER_LINE=$d012
+  .label BACKGROUND_COLOUR=$d021
+  .label SPRITE_MSB=$d010
+  .label BANK_SELECT=$dd00
+  .label SCREEN_CONTROL_2=$d016
+  .label SPRITE_COLOR_7=$d02e
+  .label SPRITE_COLOR_6=$d02d
+}
+.label EXPLOSIONS=$11ea {
+  .label EndFrame=$1254
+  .label EndPointers=$1267
+  .label StartPointers=$1264
+  .label MaxSprites=$6
+  .label XPosLSB=$11ea
+  .label FirstSprite=$2
+  .label FrameTime=$3
+  .label FrameTimer=$125c
+  .label YPos=$123a
+  .label FrameUpdate=$12db {
+    .label Loop=$12dd
+    .label Delete=$1309
+    .label Ready=$12ef
+    .label EndLoop=$1316
+  }
+  .label XPosMSB=$1212
+  .label NextSprite=$1253
+  .label StartExplosion=$126a {
+    .label Okay=$12da
+    .label NoMSB=$12bf
+    .label MSB=$12b3
+    .label Finish=$12c8
+  }
+}
+.label SFX_EXPLODE=$0
+.label play_with_music=$846 {
+}
+.label music_on=$80e
+.label whoosh=$894
+.label PLAYER_1=$0
+.label SFX_LAND=$1
+.label PLAYER_2=$1

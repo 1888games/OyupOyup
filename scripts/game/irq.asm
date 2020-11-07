@@ -64,7 +64,7 @@ IRQ: {
 
 		:StoreState()
 
-		//jsr sid.play
+		jsr sid.play
 
 
 		SetDebugBorder(2)

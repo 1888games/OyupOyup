@@ -1,4 +1,8 @@
+.var sid = LoadSid("assets/Quickfire.sid")
+
 MAIN: {
+
+	
 
 	#import "/scripts/lookups/zeropage.asm"
 
@@ -9,7 +13,9 @@ MAIN: {
 	BasicUpstart2(Entry)
 	* = $080d "End Of Basic"
 
+
 	#import "/scripts/common/macros.asm"
+	#import "/scripts/common/sfx.asm"
 	#import "/scripts/lookups/labels.asm"
 	#import "/scripts/lookups/vic.asm"
 	#import "/scripts/game/irq.asm"
@@ -18,6 +24,10 @@ MAIN: {
 	#import "/scripts/game/grid.asm"
 	#import "/scripts/game/bean.asm"
 	#import "/scripts/common/rnd.asm"
+	#import "/scripts/game/explosions.asm"
+	#import "/scripts/game/rocks.asm"
+	#import "/scripts/game/panel.asm"
+
 
 	* = * "Main"
 
@@ -31,7 +41,9 @@ MAIN: {
 
 		jsr IRQ.DisableCIAInterrupts
 		jsr BankOutKernalandBasic
+		jsr set_sfx_routine
 		jsr IRQ.Setup
+		
 
 		jmp StartGame
 
@@ -95,10 +107,10 @@ MAIN: {
 		sta VIC.SPRITE_MULTICOLOR
 
 
-		lda #BLACK
+		lda #GRAY
 		sta VIC.SPRITE_MULTICOLOR_1
 
-		lda #RED
+		lda #WHITE
 		sta VIC.SPRITE_MULTICOLOR_2
 
 
@@ -144,6 +156,7 @@ MAIN: {
 		dec PerformFrameCodeFlag
 
 		jsr GRID.FrameUpdate
+		jsr EXPLOSIONS.FrameUpdate
 		
 		rts
 

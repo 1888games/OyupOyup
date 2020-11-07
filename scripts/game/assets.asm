@@ -16,3 +16,8 @@ GAME_MAP: .import binary "../../assets/puyo - Map (40x26).bin"
 * = $f000 "Charset"
 CHAR_SET:
 		.import binary "../../assets/puyo - Chars.bin"   //roll 12!
+
+
+.pc = sid.location "sid"
+.fill sid.size, sid.getData(i)
+

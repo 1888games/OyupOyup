@@ -108,8 +108,11 @@ GRID: {
 			ldy ZP.TempY
 
 			iny
-			cpy #100
+			cpy #80
 			bcc Loop2
+
+		lda #RED
+		sta PlayerOne
 
 
 		lda #1
@@ -238,11 +241,30 @@ GRID: {
 
 
 
-	PopBean: {	
+	PopBean: {
+
 
 		lda #BeanPoppedType
 		sta ZP.BeanType
 
+
+		ldx ZP.X
+		lda RowLookup, x
+		sta ZP.Row
+
+		lda ColumnLookup, x
+		sta ZP.Column
+
+
+		jsr RANDOM.Get
+		and #%00000001
+		clc
+		adc #1
+		tax
+
+		ldy ZP.BeanColour
+
+		jsr EXPLOSIONS.StartExplosion
 
 
 		rts
@@ -401,6 +423,9 @@ GRID: {
 
 
 
+
+
+
 	UpdateAnimation: {
 
 		dey
@@ -416,15 +441,25 @@ GRID: {
 
 		Remove:
 
-			lda #0
 			ldx ZP.X
+			lda #0
 			sta PlayerOne, x
+
+			lda #255
+			//sta CurrentType, x
+			sta PreviousType, x
+
 			jsr ClearSquare
+			sfx(SFX_EXPLODE)
+
+
 
 		Reset:	
 
+			ldx ZP.X
 			lda #0
 			sta ZP.BeanType
+
 
 		rts
 	}
@@ -472,7 +507,7 @@ GRID: {
 			bcc CheckIfEmpty
 
 			AnimatePop:
-			
+
 				tay
 				jsr UpdateAnimation
 				ldx ZP.X
@@ -527,7 +562,7 @@ GRID: {
 				SolidBelow:
 
 					jsr RANDOM.Get
-					cmp #2
+					cmp #1
 					bcs NoPop
 
 					jsr PopBean
@@ -553,10 +588,13 @@ GRID: {
 					lda #BeanLandedType
 					sta ZP.BeanType
 
+					sfx(SFX_LAND)
+
 					jmp Draw
 
 				NotAnimating:
 
+					lda PlayerOne, x
 					cmp ZP.BeanColour
 					bne CheckUp
 
