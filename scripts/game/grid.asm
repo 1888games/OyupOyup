@@ -12,6 +12,13 @@ GRID: {
 	.label LastRowID = 11
 	.label LastColumnID = 5
 	.label CheckTime = 30
+	.label SquashedBean = 233
+
+	.label BeanFallingType = 22
+	.label BeanLandedType = BeanFallingType - 1
+	.label BeanPoppedType = 25
+
+	.label LastPoppedFrame = 23
 
 	
 	* = * "Grid Data"
@@ -19,13 +26,14 @@ GRID: {
 	PlayerOne:	.fill Rows * Columns, GREEN
 	PlayerTwo:	.fill Rows * Columns, BLACK
 
-	PreviousType:	.fill TotalSquaresOnScreen, 99
+	CurrentType:	.fill TotalSquaresOnScreen, 255
+	PreviousType:	.fill TotalSquaresOnScreen, 255
 
 	PlayerLookup:	.byte 0, Rows * Columns
 
 
-	RowLookup:	.fill TotalSquaresOnGrid, floor(i / Columns) * 2
-				.fill TotalSquaresOnGrid, floor(i / Columns) * 2
+	RowLookup:	.fill TotalSquaresOnGrid, 1 + (floor(i / Columns) * 2)
+				.fill TotalSquaresOnGrid, 1 + (floor(i / Columns) * 2)
 
 	ColumnLookup:	.fill TotalSquaresOnGrid, PlayerOneStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
 					.fill TotalSquaresOnGrid, PlayerTwoStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
@@ -69,7 +77,7 @@ GRID: {
 
 			jsr ClearSquare
 
-			lda #99
+			lda #255
 			sta PreviousType, x
 
 			ldx ZP.X
@@ -230,6 +238,16 @@ GRID: {
 
 
 
+	PopBean: {	
+
+		lda #BeanPoppedType
+		sta ZP.BeanType
+
+
+
+		rts
+	}
+
 	ProcessSlot: {
 
 		ldy CurrentSide
@@ -383,6 +401,32 @@ GRID: {
 
 
 
+	UpdateAnimation: {
+
+		dey
+		sty ZP.BeanType
+
+		cpy #16
+		beq Reset
+
+		cpy #BeanFallingType
+		beq Remove
+
+		rts
+
+		Remove:
+
+			lda #0
+			sta PlayerOne, x
+			jsr ClearSquare
+
+		Reset:	
+
+			lda #0
+			sta ZP.BeanType
+
+		rts
+	}
 
 	UpdateRow: {
 
@@ -416,11 +460,28 @@ GRID: {
 
 			stx ZP.X
 
-			lda PlayerOne, x
-			sta ZP.BeanColour
-			bne CheckLeft
+			lda #0
+			sta CurrentType, x
 
-			jmp EndLoop
+			lda PreviousType, x
+			sta ZP.PreviousType
+			bmi CheckIfEmpty
+
+			cmp #LastPoppedFrame
+			bcc CheckIfEmpty
+
+			AnimatePop:
+
+				jsr UpdateAnimation
+				ldx ZP.X
+
+			CheckIfEmpty:
+
+				lda PlayerOne, x
+				sta ZP.BeanColour
+				bne CheckLeft
+
+				jmp EndLoop
 
 			CheckLeft:
 
@@ -451,7 +512,7 @@ GRID: {
 
 				lda CurrentRow
 				cmp #LastRowID
-				beq CheckUp
+				beq SolidBelow
 
 				txa
 				clc
@@ -461,10 +522,43 @@ GRID: {
 				lda PlayerOne, x
 				beq EmptyBelow
 
-				cmp ZP.BeanColour
-				bne CheckUp
+				SolidBelow:
+
+					ldy ZP.PreviousType
+					bmi NotAnimating
+
+					cpy #BeanFallingType
+					beq FinishedFalling
+
+					cpy #17
+					bcc NotAnimating
+
+					jsr UpdateAnimation
+					jmp Draw
+
+				FinishedFalling:
+
+					ldx ZP.X
+					lda #BeanLandedType
+					sta ZP.BeanType
+
+					jmp Draw
+
+				NotAnimating:
+
+					cmp ZP.BeanColour
+					bne CheckUp
 
 				MatchAbove:
+
+
+					jsr RANDOM.Get
+					cmp #30
+					bcs NoPop
+
+					jsr PopBean
+
+					NoPop:
 
 					lda ZP.BeanType
 					ora #DOWN
@@ -477,7 +571,10 @@ GRID: {
 					lda ZP.BeanColour
 					sta PlayerOne, x
 
-					lda #99
+					lda #BeanFallingType
+					sta CurrentType, x
+
+					lda #255
 					sta PreviousType, x
 
 					jsr DrawBean
@@ -486,7 +583,7 @@ GRID: {
 					lda #0
 					sta PlayerOne, x
 
-					lda #99
+					lda #255
 					sta PreviousType, x
 
 					ldy CurrentSide
@@ -542,6 +639,8 @@ GRID: {
 			Draw:
 
 				ldx ZP.X
+				lda ZP.BeanType
+				sta CurrentType, x
 				jsr DrawBean
 
 			ResetForNextBean:
@@ -569,7 +668,7 @@ GRID: {
 
 	DrawBean: {
 
-		lda ZP.BeanType
+		lda CurrentType, x
 		cmp PreviousType, x
 		beq Finish
 
@@ -581,25 +680,27 @@ GRID: {
 
 		TopLeft:
 
-			lda ZP.BeanType
-			sta PreviousType, x
-			tay
+				lda CurrentType, x
+				sta PreviousType, x
+				tay
 
-			lda BEAN.Chars, y
-			clc
-			adc #3
-			sta ZP.CharID
+				lda BEAN.Chars, y
+				clc
+				adc #3
+				sta ZP.CharID
 
-			ldx ZP.Column
-			ldy ZP.Row
+			TimeToDraw:
 
-			jsr DRAW.PlotCharacter
+				ldx ZP.Column
+				ldy ZP.Row
 
-			lda ZP.BeanColour
-			clc
-			adc #8
+				jsr DRAW.PlotCharacter
 
-			jsr DRAW.ColorCharacter
+				lda ZP.BeanColour
+				clc
+				adc #8
+
+				jsr DRAW.ColorCharacter
 
 		TopRight:
 
