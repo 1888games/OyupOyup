@@ -61,14 +61,14 @@ MAIN: {
 		jsr SetupSprites
 
 		jsr DRAW.GameScreen
-		
+		 
 		jsr GRID.Clear
+		jsr PANEL.Reset
 
 		jmp Loop
 
 
 	}
-
 
 
 	SetupVIC: {
@@ -157,6 +157,8 @@ MAIN: {
 
 		jsr GRID.FrameUpdate
 		jsr EXPLOSIONS.FrameUpdate
+		jsr PANEL.FrameUpdate
+
 		
 		rts
 

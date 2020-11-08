@@ -20,5 +20,6 @@ ZP: {
 	TempX:				.byte $00
 	TempY:				.byte $00
 	SlotID:				.byte $00
+	AtTarget:			.byte $00
 
 }
