@@ -1,7 +1,7 @@
 PLAYER: {
 
 	.label AutoDropTime = 20
-	.label FlashTime = 10
+	.label FlashTime = 12
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
@@ -14,14 +14,14 @@ PLAYER: {
 	
 	Status:				.byte 1, 1
 	DropTimer:			.byte AutoDropTime, AutoDropTime
-	FlashTimer:			.byte 0, 0, 0, 0
-	Flashing:			.byte 0, 0, 0, 0
+	FlashTimer:			.byte 0, 0
+	Flashing:			.byte 0, 0
 	Rotation:			.byte 0, 0, 0, 0
 	ClearUp:			.byte 1, 0, 1, 0
 
 	RotationAdd:		.byte 
 
-	CharIDs:			.byte 129, 200
+	CharIDs:			.byte 129, 197
 	StartGridPositions:	.byte 2, 2, 74, 74
 	StartOffsets:		.byte 253, 255, 253, 255
 
@@ -30,6 +30,7 @@ PLAYER: {
 	CurrentAutoDropTime:	.byte AutoDropTime
 
 	TableOffset:		.byte 0, 2
+	FlashBeans:			.byte 1, 3
 
 
 
@@ -42,6 +43,90 @@ PLAYER: {
 
 		rts
 	}
+
+
+	FrameUpdate: {
+
+		ldx #0
+
+		Loop:
+
+			stx ZP.X
+
+			CheckActive:
+
+				lda Status, x
+				bne EndLoop
+
+			CheckDrop:
+
+				lda DropTimer, x
+				beq ReadyToDrop
+
+			NoDrop:
+
+				dec DropTimer, x
+				jmp CheckFlash
+
+			ReadyToDrop:	
+
+				lda #AutoDropTime
+				sta DropTimer, x
+
+				jsr DeleteBeans
+
+				ldx ZP.X
+
+				jsr DropBeans
+
+			CheckFlash:
+
+				ldx ZP.X
+
+				lda FlashTimer, x
+				beq ReadyToFlash
+
+				dec FlashTimer, x
+				jmp EndLoop
+
+				ReadyToFlash:
+
+				lda #FlashTime
+				sta FlashTimer, x
+
+				lda Flashing, x
+				beq MakeOne
+
+				lda #0
+				sta Flashing, x
+				jmp Draw
+
+				MakeOne:
+
+				lda #1
+				sta Flashing, x
+
+			Draw:	
+
+				lda FlashBeans, x
+				tay
+
+				jsr DrawBean
+
+
+			EndLoop:
+
+			ldx ZP.X
+			inx
+			cpx #2
+			bcc Loop
+
+
+
+
+		rts
+	}	
+
 
 	DrawBean: {
 
@@ -74,8 +159,20 @@ PLAYER: {
 
 		GetChars:
 
-			lda Flashing, y
+			ldx #0
+
+			cpy #0
+			beq NoFlash
+
+			cpy #2
+			beq NoFlash
+
+			ldx ZP.X
+			lda Flashing, x
 			tax
+
+			NoFlash:
+
 			lda CharIDs, x
 			sta ZP.CharID
 
@@ -132,56 +229,6 @@ PLAYER: {
 
 		rts
 	}
-
-	FrameUpdate: {
-
-		ldx #0
-
-		Loop:
-
-			stx ZP.X
-
-			CheckActive:
-
-				lda Status, x
-				bne EndLoop
-
-			CheckDrop:
-
-				lda DropTimer, x
-				beq ReadyToDrop
-
-			NoDrop:
-
-				dec DropTimer, x
-				jmp CheckFlash
-
-			ReadyToDrop:	
-
-				lda #AutoDropTime
-				sta DropTimer, x
-
-				jsr DeleteBeans
-
-				ldx ZP.X
-
-				jsr DropBeans
-
-			CheckFlash:
-
-
-			EndLoop:
-
-			ldx ZP.X
-			inx
-			cpx #2
-			bcc Loop
-
-
-
-
-		rts
-	}	
 
 
 
@@ -396,12 +443,6 @@ PLAYER: {
 
 		lda StartGridPositions + 1, y
 		sta GridPosition + 1, y
-
-		lda #255
-		sta FlashTimer, y
-
-		lda #FlashTime
-		sta FlashTimer + 1, y
 
 		lda StartOffsets, y
 		sta Offset, y

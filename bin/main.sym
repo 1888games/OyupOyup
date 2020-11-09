@@ -46,24 +46,24 @@
 .label PURPLE_MULTI=$c
 .label CHAR_SET=$f000
 .label MAIN=$2000 {
-  .label Loop=$17e4 {
+  .label Loop=$180f {
   }
-  .label GameMode=$1775
-  .label SetupSprites=$17b5 {
+  .label GameMode=$17a0
+  .label SetupSprites=$17e0 {
   }
   .label PerformFrameCodeFlag=$800
-  .label Entry=$1776 {
+  .label Entry=$17a1 {
   }
-  .label FrameCode=$17ef {
+  .label FrameCode=$181a {
   }
-  .label StartGame=$1785 {
+  .label StartGame=$17b0 {
   }
-  .label SetupGameColours=$17cf {
+  .label SetupGameColours=$17fa {
   }
-  .label SetupVIC=$179d {
+  .label SetupVIC=$17c8 {
   }
-  .label GameActive=$1774
-  .label BankOutKernalandBasic=$17ff {
+  .label GameActive=$179f
+  .label BankOutKernalandBasic=$182a {
   }
 }
 .label GRID_MODE_NORMAL=$1
@@ -76,7 +76,7 @@
 .label LEFT=$2
 .label ROCKS=$1327 {
 }
-.label GAME_MAP=$c9fe
+.label GAME_MAP=$ca08
 .label CYAN_MULTI=$b
 .label SPRITE_POINTERS=$c3f8
 .label GAME_MODE_PAUSE=$1
@@ -111,70 +111,75 @@
 }
 .label PLAYER=$15be {
   .label DropTimer=$15cc
-  .label StartGridPositions=$15e0
-  .label DropBeans=$16f6 {
-    .label Loop=$16fa
-    .label Draw=$1718
-    .label EndLoop=$171b
-    .label MoveDownGrid=$170a
+  .label StartGridPositions=$15dc
+  .label DropBeans=$172b {
+    .label Loop=$172f
+    .label Draw=$174d
+    .label EndLoop=$1750
+    .label MoveDownGrid=$173f
   }
-  .label CharIDs=$15de
-  .label DrawCharacter=$1639 {
-    .label NoDraw=$164b
+  .label CharIDs=$15da
+  .label DrawCharacter=$1697 {
+    .label NoDraw=$16a9
   }
   .label GridPosition=$15c2
-  .label DeleteBeans=$1675 {
-    .label Loop=$167f
-    .label EndLoop=$168d
-    .label NoChange=$168a
+  .label DeleteBeans=$16aa {
+    .label Loop=$16b4
+    .label EndLoop=$16c2
+    .label NoChange=$16bf
   }
-  .label Reset=$15ef {
+  .label Reset=$15ed {
   }
-  .label RotationAdd=$15de
+  .label RotationAdd=$15da
   .label Status=$15ca
-  .label BackgroundColours=$15e8
-  .label TableOffset=$15ed
-  .label ClearUp=$15da
-  .label StartOffsets=$15e4
-  .label CurrentAutoDropTime=$15ec
-  .label SetupBeans=$1723 {
+  .label BackgroundColours=$15e4
+  .label TableOffset=$15e9
+  .label ClearUp=$15d6
+  .label StartOffsets=$15e0
+  .label CurrentAutoDropTime=$15e8
+  .label SetupBeans=$1758 {
   }
-  .label Flashing=$15d2
-  .label DeleteBean=$1695 {
-    .label BottomRight=$16df
-    .label BottomLeft=$16ea
-    .label GetColours=$169a
-    .label GetPosition=$16b2
-    .label GetChars=$1695
-    .label TopRight=$16d4
-    .label Finish=$16f5
-    .label TopLeft=$16c8
+  .label FlashBeans=$15eb
+  .label Flashing=$15d0
+  .label DeleteBean=$16ca {
+    .label BottomRight=$1714
+    .label BottomLeft=$171f
+    .label GetColours=$16cf
+    .label GetPosition=$16e7
+    .label GetChars=$16ca
+    .label TopRight=$1709
+    .label Finish=$172a
+    .label TopLeft=$16fd
   }
   .label AutoDropTime=$14
-  .label FlashTime=$a
+  .label FlashTime=$c
   .label PLAYER_STATUS_NORMAL=$0
-  .label Rotation=$15d6
+  .label Rotation=$15d2
   .label FlashTimer=$15ce
   .label Offset=$15c6
   .label Beans=$15be
-  .label FrameUpdate=$164c {
-    .label Loop=$164e
-    .label CheckFlash=$166d
-    .label NoDrop=$165a
-    .label EndLoop=$166d
-    .label ReadyToDrop=$1660
-    .label CheckActive=$1650
-    .label CheckDrop=$1655
+  .label FrameUpdate=$15f6 {
+    .label Loop=$15f8
+    .label CheckFlash=$1617
+    .label MakeOne=$1636
+    .label ReadyToFlash=$1624
+    .label Draw=$163b
+    .label NoDrop=$1604
+    .label EndLoop=$1642
+    .label ReadyToDrop=$160a
+    .label CheckActive=$15fa
+    .label CheckDrop=$15ff
   }
-  .label DrawBean=$15f8 {
-    .label BottomRight=$162c
-    .label BottomLeft=$1632
-    .label GetPosition=$15f8
-    .label GetColour=$160e
-    .label GetChars=$1616
-    .label TopRight=$1626
-    .label Finish=$1638
-    .label TopLeft=$161f
+  .label DrawBean=$164a {
+    .label BottomRight=$168a
+    .label NoFlash=$1678
+    .label BottomLeft=$1690
+    .label GetPosition=$164a
+    .label GetColour=$1660
+    .label GetChars=$1668
+    .label TopRight=$1684
+    .label Finish=$1696
+    .label TopLeft=$167d
   }
   .label PLAYER_STATUS_WAIT=$1
 }
