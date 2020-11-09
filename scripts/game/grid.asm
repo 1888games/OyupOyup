@@ -41,6 +41,8 @@ GRID: {
 	RowStart:	.fill 12, (i * Columns)
 	BottomRightIDs:	.byte 71, 143
 
+	BackgroundCharIDs:	.byte 202, 203, 204, 205, 202, 203
+	BackgroundColours:	.byte GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE
 
 
 	CurrentRow:			.byte LastRowID
@@ -92,27 +94,27 @@ GRID: {
 
 			ldy #0
 
-		// Loop2:
+		Loop2:
 
-		// 	sty ZP.TempY
+			sty ZP.TempY
 
-		// 	jsr RANDOM.Get
-		// 	and #%01111111
-		// 	tax
+			jsr RANDOM.Get
+			and #%01111111
+			tax
 
-		// 	jsr RANDOM.Get
-		// 	and #%00000111	
+			jsr RANDOM.Get
+			and #%00000111	
 
-		// 	sta PlayerOne, x
+			sta PlayerOne, x
 
-		// 	ldy ZP.TempY
+			ldy ZP.TempY
 
-		// 	iny
-		// 	cpy #80
-		// 	bcc Loop2
+			iny
+			cpy #80
+			bcc Loop2
 
-		// lda #RED
-		// sta PlayerOne
+		lda #RED
+		sta PlayerOne
 
 
 		lda #1
@@ -855,9 +857,6 @@ GRID: {
 
 			lda #CYAN
 			sta (ZP.ColourAddress), y
-
-
-
 
 
 

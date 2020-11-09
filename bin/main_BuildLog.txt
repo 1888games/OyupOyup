@@ -17,10 +17,10 @@ Default-segment:
   $08aa-$091e IRQ
   $091f-$0a38 Draw
   $0a39-$0af1 -Input
-  $0af2-$116f Grid Data
-  $1170-$134c -Random
-  $134d-$159c Queue Data
-  $159d-$162a Main
+  $0af2-$1197 Grid Data
+  $1198-$1374 -Random
+  $1375-$1773 Queue Data
+  $1774-$1807 Main
   $3000-$38e9 sid
   $c400-$c8ff Sprites
   $c900-$c9fd Game Colours

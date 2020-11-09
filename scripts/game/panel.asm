@@ -106,12 +106,12 @@ PANEL: {
 
 			EndLoop:
 
-			jsr RANDOM.Get
-			cmp #1
-			bcs NoForce
+			//jsr RANDOM.Get
+			//cmp #1
+			//bcs NoForce
 
-			lda #1
-			sta Mode, x
+			//lda #1
+			//sta Mode, x
 
 			NoForce:
 
@@ -203,6 +203,9 @@ PANEL: {
 		lda ZP.AtTarget
 		bne Finish
 
+		ldy ZP.TempX
+
+		jsr PLAYER.SetupBeans
 
 		ldx ZP.TempX
 

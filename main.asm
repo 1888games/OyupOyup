@@ -27,7 +27,7 @@ MAIN: {
 	#import "/scripts/game/explosions.asm"
 	#import "/scripts/game/rocks.asm"
 	#import "/scripts/game/panel.asm"
-
+	#import "/scripts/game/player.asm"
 
 	* = * "Main"
 
@@ -64,6 +64,7 @@ MAIN: {
 		 
 		jsr GRID.Clear
 		jsr PANEL.Reset
+		jsr PLAYER.Reset
 
 		jmp Loop
 
@@ -158,6 +159,7 @@ MAIN: {
 		jsr GRID.FrameUpdate
 		jsr EXPLOSIONS.FrameUpdate
 		jsr PANEL.FrameUpdate
+		jsr PLAYER.FrameUpdate
 
 		
 		rts
