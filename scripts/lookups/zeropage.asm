@@ -21,6 +21,8 @@ ZP: {
 	TempY:				.byte $00
 	SlotID:				.byte $00
 	AtTarget:			.byte $00
+	GridPosition:		.byte $00
+	Okay:				.byte $00
 
 
 }

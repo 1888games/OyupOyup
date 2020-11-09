@@ -8,19 +8,19 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$0016 Temp vars zero page
+  *$0002-$0018 Temp vars zero page
   $0800-$0800 Upstart
   $0801-$080c Basic
   $080d-$080c End Of Basic
   $080d-$08a9 -Macros
   $080e-$080d Basic End
-  $08aa-$091e IRQ
-  $091f-$0a38 Draw
-  $0a39-$0af1 -Input
-  $0af2-$1197 Grid Data
-  $1198-$1374 -Random
-  $1375-$179e Queue Data
-  $179f-$1832 Main
+  $08aa-$0923 IRQ
+  $0924-$0a3d Draw
+  $0a3e-$0af6 -Input
+  $0af7-$14df Grid Data
+  $14e0-$16bc -Random
+  $16bd-$1c12 Queue Data
+  $1c13-$1ca6 Main
   $3000-$38e9 sid
   $c400-$c8ff Sprites
   $c900-$ca07 Game Colours
@@ -28,4 +28,3 @@ Default-segment:
   $f000-$f83f Charset
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs
-Writing Symbol file: main.sym

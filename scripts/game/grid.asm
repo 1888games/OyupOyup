@@ -38,6 +38,9 @@ GRID: {
 	ColumnLookup:	.fill TotalSquaresOnGrid, PlayerOneStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
 					.fill TotalSquaresOnGrid, PlayerTwoStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
 
+	RelativeColumn:	.fill TotalSquaresOnScreen, [0,1,2,3,4,5]
+
+
 	RowStart:	.fill 12, (i * Columns)
 	BottomRightIDs:	.byte 71, 143
 
@@ -96,22 +99,22 @@ GRID: {
 
 		Loop2:
 
-			sty ZP.TempY
+			// sty ZP.TempY
 
-			jsr RANDOM.Get
-			and #%01111111
-			tax
+			// jsr RANDOM.Get
+			// and #%01111111
+			// tax
 
-			jsr RANDOM.Get
-			and #%00000111	
+			// jsr RANDOM.Get
+			// and #%00000111	
 
-			sta PlayerOne, x
+			// sta PlayerOne, x
 
-			ldy ZP.TempY
+			// ldy ZP.TempY
 
-			iny
-			cpy #80
-			bcc Loop2
+			// iny
+			// cpy #80
+			// bcc Loop2
 
 		lda #RED
 		sta PlayerOne
@@ -567,8 +570,8 @@ GRID: {
 					cmp #1
 					bcs NoPop
 
-					jsr PopBean
-					jmp Draw
+				//	jsr PopBean
+					//jmp Draw
 
 				NoPop:
 

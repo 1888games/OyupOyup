@@ -74,6 +74,9 @@ IRQ: {
    		ldy #2
 		jsr INPUT.ReadJoystick
 
+		ldy #1
+		jsr INPUT.ReadJoystick
+
 		lda #1
 		sta MAIN.PerformFrameCodeFlag
 		

@@ -1,7 +1,8 @@
 PLAYER: {
 
-	.label AutoDropTime = 20
-	.label FlashTime = 12
+	.label AutoDropTime = 18
+	.label FlashTime = 10
+	.label ControlCooldown = 4
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
@@ -26,11 +27,15 @@ PLAYER: {
 	StartOffsets:		.byte 253, 255, 253, 255
 
 	BackgroundColours: 	.byte 0, 0, 0, 0
+	BackgroundCharIDs: 	.byte 0, 0, 0, 0
 
 	CurrentAutoDropTime:	.byte AutoDropTime
 
 	TableOffset:		.byte 0, 2
 	FlashBeans:			.byte 1, 3
+
+	ControlPorts:		.byte 1, 0
+	ControlTimer:		.byte 0, 0
 
 
 
@@ -42,7 +47,159 @@ PLAYER: {
 		sta Status + 1
 
 		rts
+	}	
+
+
+
+
+	HandleControls: {
+
+		lda ControlTimer, x
+		beq Ready
+
+		dec ControlTimer, x
+		jmp Finish
+
+		Ready:
+
+			lda ControlPorts, x
+			tay
+
+		CheckLeft:
+
+			lda INPUT.JOY_LEFT_NOW, y
+			beq CheckRight
+
+		HandleLeft:
+
+			lda TableOffset, x
+			tax
+
+			CheckNotFarLeft:
+
+				lda GridPosition, x
+				tay
+
+				lda GRID.RelativeColumn, y
+				beq CheckDown
+
+				dey
+				lda GRID.PlayerOne, y
+				bne CheckDown
+
+				inx
+				lda GridPosition, x
+				tay
+
+				lda GRID.RelativeColumn, y
+				beq CheckDown
+
+				dey
+				lda GRID.PlayerOne, y
+				bne CheckDown
+
+			MoveLeft:	
+
+				stx ZP.TempX
+
+				ldx ZP.X
+
+			
+				jsr DeleteBeans
+
+				ldx ZP.TempX
+
+				dec GridPosition, x
+				dec GridPosition - 1, x
+				jmp DidMove
+
+		CheckDown:
+		 jmp CheckDown2
+
+
+		CheckRight:
+
+
+			lda INPUT.JOY_RIGHT_NOW, y
+			beq CheckDown
+
+		HandleRight:
+
+			lda TableOffset, x
+			tax
+
+			CheckNotFarRight:
+
+				lda GridPosition, x
+				tay
+
+				lda GRID.RelativeColumn, y
+				cmp #5
+				beq CheckDown
+
+				iny
+				lda GRID.PlayerOne, y
+				bne CheckDown
+
+				inx
+				lda GridPosition, x
+				tay
+
+				lda GRID.RelativeColumn, y
+				cmp #5
+				beq CheckDown
+
+				iny
+				lda GRID.PlayerOne, y
+				bne CheckDown
+
+			MoveRight:	
+
+				stx ZP.TempX
+
+				ldx ZP.X
+			
+				jsr DeleteBeans
+
+				ldx ZP.TempX
+
+				inc GridPosition, x
+				inc GridPosition - 1, x
+				jmp DidMove
+
+
+		CheckDown2:
+
+		jmp Finish
+		
+
+
+		DidMove:
+
+			ldx ZP.X
+			lda #ControlCooldown
+			sta ControlTimer, x
+
+			lda TableOffset, x
+			tay
+			sty ZP.Y
+
+			jsr DrawBean
+
+			ldy ZP.Y
+			iny
+
+			jsr DrawBean
+			
+
+		Finish:
+
+
+		rts
+
 	}
+
+
 
 
 	FrameUpdate: {
@@ -57,6 +214,10 @@ PLAYER: {
 
 				lda Status, x
 				bne EndLoop
+
+				jsr HandleControls
+
+				ldx ZP.X
 
 			CheckDrop:
 
@@ -79,10 +240,14 @@ PLAYER: {
 
 				jsr DropBeans
 
+				lda Status, x
+				bne EndLoop
+
+				
+
 			CheckFlash:
 
-				ldx ZP.X
-
+				
 				lda FlashTimer, x
 				beq ReadyToFlash
 
@@ -234,6 +399,8 @@ PLAYER: {
 
 	DeleteBeans: {
 
+
+
 		lda TableOffset, x
 		tay
 		iny
@@ -282,6 +449,15 @@ PLAYER: {
 			lda GRID.BackgroundCharIDs, x
 			sta ZP.CharID
 
+			lda GRID.BackgroundCharIDs + 1, x
+			sta BackgroundCharIDs + 1
+
+			lda GRID.BackgroundCharIDs + 2, x
+			sta BackgroundCharIDs + 2
+
+
+			lda GRID.BackgroundCharIDs + 3, x
+			sta BackgroundCharIDs + 3
 
 		GetColours:
 
@@ -291,10 +467,10 @@ PLAYER: {
 			lda GRID.BackgroundColours + 1, x
 			sta BackgroundColours + 1
 
-			lda GRID.BackgroundColours + 1, x
+			lda GRID.BackgroundColours + 2, x
 			sta BackgroundColours + 2
 
-			lda GRID.BackgroundColours+ 1, x
+			lda GRID.BackgroundColours+ 3, x
 			sta BackgroundColours + 3
 
 
@@ -322,6 +498,7 @@ PLAYER: {
 			ldy ZP.Row
 			lda BackgroundColours
 			sta ZP.BeanColour
+
 			jsr DrawCharacter
 				
 		TopRight:
@@ -330,6 +507,9 @@ PLAYER: {
 			inc ZP.CharID	
 			lda BackgroundColours + 1
 			sta ZP.BeanColour	
+			lda BackgroundCharIDs + 1
+			sta ZP.CharID
+
 			jsr DrawCharacter
 
 		BottomRight:
@@ -338,6 +518,8 @@ PLAYER: {
 			inc ZP.CharID
 			lda BackgroundColours + 2
 			sta ZP.BeanColour	
+			lda BackgroundCharIDs + 2
+			sta ZP.CharID
 			jsr DrawCharacter
 	
 
@@ -346,7 +528,9 @@ PLAYER: {
 			dex
 			inc ZP.CharID	
 			lda BackgroundColours + 3
-			sta ZP.BeanColour		
+			sta ZP.BeanColour	
+			lda BackgroundCharIDs + 3
+			sta ZP.CharID	
 			jsr DrawCharacter
 
 
@@ -380,10 +564,14 @@ PLAYER: {
 				lda #255
 				sta Offset, y
 
-				lda GridPosition, y
-				clc
-				adc #GRID.Columns
-				sta GridPosition, y
+				
+				jsr CheckCollision
+
+				ldx ZP.X
+
+				lda Status, x
+				bne Finish
+
 
 			Draw:
 
@@ -397,12 +585,95 @@ PLAYER: {
 				bcc Loop
 
 
+		Finish:
+
+		ldx ZP.X
+
 
 		rts
 
 
 
 
+	}
+
+
+	CheckCollision: {
+
+		lda GridPosition, y
+		clc
+		adc #GRID.Columns
+				
+		pha
+		tax
+		lda GRID.PlayerOne, x
+		beq Finish
+
+		pla
+
+		lda GridPosition, y
+		sta ZP.GridPosition
+		tax
+		lda Beans, y
+		sta GRID.PlayerOne, x
+
+		lda #GRID.BeanLandedType
+		sta GRID.PreviousType, x
+
+		cpy #0
+		beq AddToY
+
+		cpy #2
+		beq AddToY
+
+		DecreaseY:
+
+			dey
+			jmp PausePlayer
+			
+
+		AddToY:
+
+			iny
+
+		PausePlayer:
+
+
+			lda GridPosition, y
+			cmp ZP.GridPosition
+			bne Okay
+
+			sec
+			sbc #6
+
+			Okay:
+
+			tax
+			lda Beans, y
+			sta GRID.PlayerOne, x
+
+			lda #GRID.BeanLandedType
+			sta GRID.PreviousType, x
+		
+			ldx ZP.X
+			lda #1
+			sta Status, x
+			sta PANEL.Mode, x
+
+
+			rts
+
+		Finish:
+
+		pla
+		sta GridPosition, y
+
+		ldx ZP.X
+
+
+
+
+		rts
 	}
 
 

@@ -59,6 +59,7 @@ PANEL: {
 
 		lda #1
 		sta Mode
+	//	sta Mode + 1
 
 
 		rts	
