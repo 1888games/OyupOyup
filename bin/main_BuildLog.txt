@@ -19,9 +19,9 @@ Default-segment:
   $0a3e-$0af6 -Input
   $0af7-$14ec Grid Data
   $14ed-$16df -Random
-  $16e0-$18ad Queue
-  $18ae-$1f2a Queue Data
-  $1f2b-$1fc4 Main
+  $16e0-$18c8 Queue
+  $18c9-$1f45 Queue Data
+  $1f46-$1fdf Main
   $3000-$3b92 sid
   $c400-$c8ff Sprites
   $c900-$c9ff Game Colours

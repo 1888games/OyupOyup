@@ -824,6 +824,8 @@ PLAYER: {
 
 	CheckCollision: {
 
+
+
 		lda GridPosition, y
 		tax
 		lda GRID.RowLookup, x
@@ -901,13 +903,14 @@ PLAYER: {
 
 			lda #GRID.BeanLandedType
 			sta GRID.PreviousType, x
-		
-			ldx ZP.X
+
+			ldy ZP.X
+
 			lda #1
-			sta Status, x
-			sta PANEL.Mode, x
+			sta Status, y
 
-
+			jsr ROCKS.TransferToQueue
+				
 			rts
 
 		Finish:

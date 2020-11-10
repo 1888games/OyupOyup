@@ -189,6 +189,22 @@ ROCKS: {
 
 		sty ZP.TempY
 
+		lda Count, y
+		bne AreRocks
+
+		lda #1
+		sta PANEL.Mode, y
+		sta PLAYER.Status, y
+
+		lda #0
+		sta Mode
+		rts
+
+		AreRocks:
+
+		lda #1
+		sta Mode, y
+
 		lda QueueOffset, y
 		sta ZP.Offset
 		tax
@@ -205,9 +221,10 @@ ROCKS: {
 
 			PartialLoop:
 
-				lda QueueOrder, y
-				clc
-				adc ZP.Offset
+				jsr RANDOM.Get
+				and #%00000111
+				cmp #6
+				bcs PartialLoop
 				tax
 
 				inc Queue, x
