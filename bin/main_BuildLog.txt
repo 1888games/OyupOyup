@@ -12,17 +12,17 @@ Default-segment:
   $0800-$0800 Upstart
   $0801-$080c Basic
   $080d-$080c End Of Basic
-  $080d-$08a9 -Macros
+  $080d-$08f9 -Macros
   $080e-$080d Basic End
-  $08aa-$0926 IRQ
-  $0927-$0a40 Draw
-  $0a41-$0af9 -Input
-  $0afa-$14ef Grid Data
-  $14f0-$16e2 -Random
-  $16e3-$18cb Queue
-  $18cc-$20a9 Queue Data
-  $20aa-$2165 Main
-  $3000-$3b92 sid
+  $08fa-$0976 IRQ
+  $0977-$0a90 Draw
+  $0a91-$0b49 -Input
+  $0b4a-$153f Grid Data
+  $1540-$1732 -Random
+  $1733-$191b Queue
+  $191c-$20f9 Queue Data
+  $20fa-$21b5 Main
+  $3000-$3b99 sid
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data

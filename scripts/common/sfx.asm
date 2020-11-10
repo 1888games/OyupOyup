@@ -19,6 +19,10 @@
 }
 
 music_on: .byte 1
+nextTrack:	.byte 0
+currentVolume:	.byte 15
+fadingOut:		.byte 0
+fadingIn:		.byte 0
 
 set_sfx_routine:
 {	
@@ -48,6 +52,69 @@ sfx_play:
 }
 
 
+SidFrameUpdate: {
+
+	jsr sid.play
+
+	lda fadingIn
+	beq CheckFadeOut
+
+	FadeIn:
+
+		inc currentVolume
+		lda currentVolume
+		cmp #15
+		bcc ChangeVolume
+
+		lda #0
+		sta fadingIn
+		jmp ChangeVolume
+
+	CheckFadeOut:
+
+		lda fadingOut
+		beq Finish
+
+	FadeOut:
+
+		dec currentVolume
+		lda currentVolume
+		bne ChangeVolume
+
+		lda #1
+		sta fadingIn
+
+		lda #0
+		sta fadingOut
+
+		lda nextTrack
+		jsr sid.init
+
+	ChangeVolume:
+		lda currentVolume
+		jsr sid.init +9
+
+	Finish:
+
+
+
+	rts
+}
+
+ChangeTracks: {
+
+	sta nextTrack
+
+	lda #1
+	sta fadingOut
+
+	lda #0
+	sta fadingIn
+
+	rts
+
+
+}
 
 //when sid is not playing, we can use any of the channels to play effects
 play_no_music:

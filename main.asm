@@ -59,9 +59,8 @@ MAIN: {
 
 	StartGame: {
 
-
-		lda #1
-		jsr sid.init
+		lda #0
+		jsr ChangeTracks
 
 		jsr SetupGameColours
 		jsr SetupVIC
