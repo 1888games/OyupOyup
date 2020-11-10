@@ -58,7 +58,7 @@ PANEL: {
 		jsr DrawInitialBeans
 
 		lda #1
-		sta Mode
+	//	sta Mode
 	//	sta Mode + 1
 
 

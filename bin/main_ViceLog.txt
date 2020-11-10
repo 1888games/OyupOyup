@@ -50,14 +50,14 @@ Error - CRT header invalid.
 CART: 'bin/main.prg' is not a valid CRT file.
 AUTOSTART: Loading PRG file `bin/main.prg' with direct RAM injection.
 AUTOSTART: Resetting the machine to autostart '*'
-VIC-II: VSP Bug: safe channels are: 1245. Emulation of memory corruption is disabled.
+VIC-II: VSP Bug: safe channels are: 03456. Emulation of memory corruption is disabled.
 AUTOSTART: `bin/main.prg' recognized as program/p00 file.
 Main CPU: starting at ($FFFC).
 Main CPU: RESET.
 Sound: Opened device `dx', speed 44100Hz, fragment size fms, buffer size 200ms
 reSID: MOS6581, filter on, sampling rate 44100Hz - resampling, pass to 19845Hz
 Unit 8: RESET.
-AUTOSTART: Injecting program data at $0800 (size $f040)
+AUTOSTART: Injecting program data at $0800 (size $f000)
 AUTOSTART: Ready
 AUTOSTART: Starting program.
 AUTOSTART: Restoring FileSystemDevice8 to 1.
@@ -65,11 +65,12 @@ AUTOSTART: Restoring FSDevice8ConvertP00 to 1.
 AUTOSTART: Done.
 Initiating render thread 0 shutdown
 Joining render thread 0 ...
+Ignoring new render job as render thread 0 is shutting down
 Joined render thread 0.
 Ignoring new render job as render thread 0 has shut down
 VICE thread initiating shutdown
 VICE thread is exiting
 VICE thread has been joined.
 Writing configuration file `C:\Users\Nick\AppData\Roaming\vice\vice.ini'.
-VIC-II: VSP Bug: safe channels are: 3467. Emulation of memory corruption is disabled.
+VIC-II: VSP Bug: safe channels are: 123567. Emulation of memory corruption is disabled.
 Sound: Closing device `dx'

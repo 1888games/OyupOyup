@@ -23,6 +23,8 @@ ZP: {
 	AtTarget:			.byte $00
 	GridPosition:		.byte $00
 	Okay:				.byte $00
+	Offset:				.byte $00
+	
 
 
 }

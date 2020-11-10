@@ -1,4 +1,4 @@
-.var sid = LoadSid("assets/Quickfire.sid")
+.var sid = LoadSid("assets/ppidea.sid")
 
 MAIN: {
 
@@ -51,6 +51,7 @@ MAIN: {
 
 
 
+
 	
 
 	StartGame: {
@@ -65,6 +66,7 @@ MAIN: {
 		jsr GRID.Clear
 		jsr PANEL.Reset
 		jsr PLAYER.Reset
+		jsr ROCKS.Reset
 
 		jmp Loop
 
@@ -160,6 +162,7 @@ MAIN: {
 		jsr EXPLOSIONS.FrameUpdate
 		jsr PANEL.FrameUpdate
 		jsr PLAYER.FrameUpdate
+		jsr ROCKS.FrameUpdate
 
 		
 		rts

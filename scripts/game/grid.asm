@@ -97,27 +97,34 @@ GRID: {
 
 			ldy #0
 
-		Loop2:
+		// Loop2:
 
-			// sty ZP.TempY
+		// 	sty ZP.TempY
 
-			// jsr RANDOM.Get
-			// and #%01111111
-			// tax
+		// 	jsr RANDOM.Get
+		// 	and #%01111111
+		// 	tax
 
-			// jsr RANDOM.Get
-			// and #%00000111	
+		// 	jsr RANDOM.Get
+		// 	and #%00000001
+		// 	sta PlayerOne, x
 
-			// sta PlayerOne, x
+		// 	jsr RANDOM.Get
+		// 	and #%00000011	
+		// 	clc
+		// 	adc PlayerOne, x
+		// 	tay
+		// 	lda PANEL.Colours, y
+		// 	sta PlayerOne, x
 
-			// ldy ZP.TempY
+		// 	ldy ZP.TempY
 
-			// iny
-			// cpy #80
-			// bcc Loop2
+		// 	iny
+		// 	cpy #40
+		// 	bcc Loop2
 
-		lda #RED
-		sta PlayerOne
+		// lda #CYAN
+		// sta PlayerOne
 
 
 		lda #1
@@ -566,12 +573,13 @@ GRID: {
 
 				SolidBelow:
 
+
 					jsr RANDOM.Get
 					cmp #1
 					bcs NoPop
 
-				//	jsr PopBean
-					//jmp Draw
+				////	jsr PopBean
+				//	jmp Draw
 
 				NoPop:
 
@@ -598,6 +606,10 @@ GRID: {
 					jmp Draw
 
 				NotAnimating:
+
+					lda CurrentRow
+					cmp #LastRowID
+					beq CheckUp
 
 					lda PlayerOne, x
 					cmp ZP.BeanColour
@@ -712,6 +724,15 @@ GRID: {
 
 
 	DrawBean: {
+
+		lda ZP.BeanColour
+		cmp #CYAN
+		bne NotRock
+
+		lda #16
+		sta CurrentType, x
+
+		NotRock:
 
 		lda CurrentType, x
 		cmp PreviousType, x

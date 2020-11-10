@@ -6,6 +6,7 @@ PLAYER: {
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
+	.label DoubleClickTime = 3
 
 
 	Beans: 			.byte 0, 0, 0, 0
@@ -19,6 +20,10 @@ PLAYER: {
 	Flashing:			.byte 0, 0
 	Rotation:			.byte 0, 0, 0, 0
 	ClearUp:			.byte 1, 0, 1, 0
+	AddForX:			.byte 1, 255, 255, 1
+	AddForY:			.byte 6, 6,	 250, 250
+	
+
 
 	RotationAdd:		.byte 
 
@@ -36,6 +41,8 @@ PLAYER: {
 
 	ControlPorts:		.byte 1, 0
 	ControlTimer:		.byte 0, 0
+
+	DoubleClickTimer:	.byte 0
 
 
 
@@ -58,7 +65,7 @@ PLAYER: {
 		beq Ready
 
 		dec ControlTimer, x
-		jmp Finish
+		jmp CheckFire
 
 		Ready:
 
@@ -135,11 +142,11 @@ PLAYER: {
 
 				lda GRID.RelativeColumn, y
 				cmp #5
-				beq CheckDown
+				beq CheckDown2
 
 				iny
 				lda GRID.PlayerOne, y
-				bne CheckDown
+				bne CheckDown2
 
 				inx
 				lda GridPosition, x
@@ -147,11 +154,11 @@ PLAYER: {
 
 				lda GRID.RelativeColumn, y
 				cmp #5
-				beq CheckDown
+				beq CheckDown2
 
 				iny
 				lda GRID.PlayerOne, y
-				bne CheckDown
+				bne CheckDown2
 
 			MoveRight:	
 
@@ -170,13 +177,44 @@ PLAYER: {
 
 		CheckDown2:
 
-		jmp Finish
-		
+			ldx ZP.X
+			lda ControlPorts, x
+			tay
+			lda INPUT.JOY_DOWN_NOW, y
+			beq CheckFire
 
-
-		DidMove:
+		HandleDown:
 
 			ldx ZP.X
+
+			lda #0
+			sta DropTimer, x
+			jmp Finish
+
+		CheckFire:
+
+			ldx ZP.X
+			lda ControlPorts, x
+			tay
+			lda INPUT.FIRE_UP_THIS_FRAME, y
+			beq Finish
+
+			ldx ZP.X
+			jsr DeleteBeans
+
+			lda #DoubleClickTime
+			sta DoubleClickTimer
+
+			ldx ZP.X
+			jsr Rotate
+
+
+			
+		DidMove:
+
+
+			ldx ZP.X
+
 			lda #ControlCooldown
 			sta ControlTimer, x
 
@@ -199,6 +237,192 @@ PLAYER: {
 
 	}
 
+
+
+	Rotate: {
+
+		// x = 0 or 1 
+		lda TableOffset, x
+		tax
+
+		lda Rotation, x
+		beq RotateRight
+
+		cmp #1
+		beq RotateDown
+
+		cmp #2
+		bne RotateUp
+
+		jmp RotateLeft
+
+		RotateUp:
+
+
+			lda GridPosition, x
+			tay
+
+			CheckNotTop:
+
+				lda GRID.RowLookup, y
+				cmp #1
+				bcs NotTop
+
+				jmp Finish
+
+			NotTop:
+
+				lda GridPosition, x
+				sec
+				sbc #5
+				tay
+
+				lda GRID.PlayerOne, y
+				beq NotOccupiedUp
+
+				jmp Finish
+
+			NotOccupiedUp:
+
+				tya
+				sta GridPosition, x
+
+				lda #0
+				sta DoubleClickTimer
+
+				lda #0
+				sta Rotation, x
+				jmp Finish
+
+		RotateRight:
+
+			lda GridPosition, x
+			tay
+
+			CheckNotFarRight:
+
+				lda GRID.RelativeColumn, y
+				cmp #5
+				bcc NotFarRight
+
+				jmp Finish
+
+			NotFarRight:
+
+				lda GridPosition, x
+				clc
+				adc #7
+				tay
+
+				lda GRID.PlayerOne, y
+				beq NotOccupiedRight
+
+				jmp Finish
+
+			NotOccupiedRight:
+
+				tya
+				sta GridPosition, x
+
+
+				lda #0
+				sta DoubleClickTimer
+
+				inc Rotation, x
+				jmp Finish
+
+
+		RotateDown:
+
+
+			lda GridPosition, x
+			tay
+
+			CheckNotBottom:
+
+				lda GRID.RowLookup, y
+				cmp #23
+				bcc NotBottom
+
+				jmp Finish
+
+			NotBottom:
+
+				lda GridPosition, x
+				clc
+				adc #5
+				tay
+
+				lda GRID.PlayerOne, y
+				beq NotOccupiedDown
+
+				jmp Finish
+
+			NotOccupiedDown:
+
+				tya
+				sta GridPosition, x
+				inc Rotation, x
+
+				lda #0
+				sta DoubleClickTimer
+
+				jmp Finish
+
+
+		RotateLeft:
+
+
+			lda GridPosition, x
+			tay
+
+			CheckNotFarLeft:
+
+				lda GRID.RelativeColumn, y
+				bne NotFarLeft
+
+				jmp Finish
+
+			NotFarLeft:
+
+				lda GridPosition, x
+				sec
+				sbc #7
+				tay
+
+				lda GRID.PlayerOne, y
+				beq NotOccupiedLeft
+
+				jmp Finish
+
+			NotOccupiedLeft:
+
+				tya
+				sta GridPosition, x
+				inc Rotation, x
+
+
+				lda #0
+				sta DoubleClickTimer
+
+				jmp Finish
+
+
+
+
+		//x = 0 or 2
+
+
+
+
+
+
+		Finish:
+
+
+
+		rts
+	}
 
 
 
@@ -516,9 +740,9 @@ PLAYER: {
 
 			iny
 			inc ZP.CharID
-			lda BackgroundColours + 2
+			lda BackgroundColours + 3
 			sta ZP.BeanColour	
-			lda BackgroundCharIDs + 2
+			lda BackgroundCharIDs + 3
 			sta ZP.CharID
 			jsr DrawCharacter
 	
@@ -527,9 +751,9 @@ PLAYER: {
 
 			dex
 			inc ZP.CharID	
-			lda BackgroundColours + 3
+			lda BackgroundColours + 2
 			sta ZP.BeanColour	
-			lda BackgroundCharIDs + 3
+			lda BackgroundCharIDs + 2
 			sta ZP.CharID	
 			jsr DrawCharacter
 
@@ -601,30 +825,48 @@ PLAYER: {
 	CheckCollision: {
 
 		lda GridPosition, y
-		clc
-		adc #GRID.Columns
-				
-		pha
 		tax
-		lda GRID.PlayerOne, x
-		beq Finish
+		lda GRID.RowLookup, x
+		cmp #23
+		beq Collision
 
-		pla
+		NoCollisionFloor:	
 
-		lda GridPosition, y
-		sta ZP.GridPosition
-		tax
-		lda Beans, y
-		sta GRID.PlayerOne, x
+			lda GridPosition, y
+			clc
+			adc #GRID.Columns
+					
+			pha
+			tax
+			lda GRID.PlayerOne, x
+			beq Finish
 
-		lda #GRID.BeanLandedType
-		sta GRID.PreviousType, x
+			pla
 
-		cpy #0
-		beq AddToY
+		Collision:
 
-		cpy #2
-		beq AddToY
+			sty ZP.Y
+
+			jsr DeleteBean
+
+			ldy ZP.Y
+
+			lda GridPosition, y
+			sta ZP.GridPosition
+			tax
+			lda Beans, y
+			sta GRID.PlayerOne, x
+
+			lda #GRID.BeanLandedType
+			sta GRID.PreviousType, x
+
+			sfx(SFX_LAND)
+
+			cpy #0
+			beq AddToY
+
+			cpy #2
+			beq AddToY
 
 		DecreaseY:
 
@@ -638,6 +880,11 @@ PLAYER: {
 
 		PausePlayer:
 
+			sty ZP.Y
+
+			jsr DeleteBean
+
+			ldy ZP.Y
 
 			lda GridPosition, y
 			cmp ZP.GridPosition
@@ -720,6 +967,10 @@ PLAYER: {
 
 		lda StartOffsets + 1, y
 		sta Offset + 1, y
+
+		lda #0
+		sta Rotation, y
+		sta Rotation + 1, y
 
 		jsr DrawBean
 
