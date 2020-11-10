@@ -9,6 +9,24 @@ IRQ: {
 
 	.label MainIRQLine = 220
 
+	TowerSkyLines:	.byte 
+
+	Mode:	.byte 0
+
+
+	//.label Colours = 5
+	//TowerColours:	.byte PURPLE, LIGHT_BLUE, CYAN, LIGHT_RED, BROWN
+	//TowerLines:		.byte 30, 70, 105, 160, 218
+
+	.label Colours = 2
+	TowerColours:	.byte BLACK, BROWN
+	TowerLines:		.byte 30, 218
+
+
+	TowerStatus:	.byte 0
+
+
+
 	DisableCIAInterrupts: {
 
 		// prevent CIA interrupts now the kernal is banked out
@@ -60,13 +78,11 @@ IRQ: {
 
 
 
-	MainIRQ: {
 
-		:StoreState()
+	PerformEveryFrame: {
 
-		jsr SidFrameUpdate
+		//jsr SidFrameUpdate
 	
-
 		SetDebugBorder(2)
 		
 		inc ZP.FrameCounter
@@ -79,6 +95,19 @@ IRQ: {
 
 		lda #1
 		sta MAIN.PerformFrameCodeFlag
+
+
+		rts
+	}
+
+
+	MainIRQ: {
+
+		:StoreState()
+			
+		SetDebugBorder(2)
+
+		jsr PerformEveryFrame
 		
 		lda MAIN.GameActive
 		beq Paused
@@ -98,11 +127,83 @@ IRQ: {
 
 		Finish:
 
+		lda Mode
+		cmp #GAME_MODE_TOWER
+		bne NotTower
+
+
+		SwitchToTowerMode:
+
+			lda #0
+			sta TowerStatus
+
+			lda TowerLines
+			tay
+
+			lda #<TowerIRQ
+			ldx #>TowerIRQ
+
+			jsr SetNextInterrupt
+
+
+		NotTower:
+
 		asl INTERRUPT_STATUS
 
 		SetDebugBorder(11)
 
 		:RestoreState()
+
+		rti
+
+	}
+
+
+	TowerIRQ: {
+
+		:StoreState()
+
+		GetRasterOffScreen:
+
+			ldx #8
+
+			Loop:
+
+				dex
+				bne Loop
+
+
+		SetBackgroundColour:
+
+			ldx TowerStatus
+			lda TowerColours, x
+			sta VIC.BACKGROUND_COLOUR
+
+		NextColourBand:
+
+			inc TowerStatus
+			ldx TowerStatus
+
+			cpx #Colours
+			bcc SetupNextIRQLine
+
+		DoneAllBands:
+
+			jsr PerformEveryFrame
+
+			ldx #0
+			stx TowerStatus
+
+		SetupNextIRQLine:
+
+	
+
+			lda TowerLines, x
+			sta VIC.RASTER_LINE
+			
+			asl INTERRUPT_STATUS
+
+			:RestoreState()
 
 		rti
 

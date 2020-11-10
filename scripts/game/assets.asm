@@ -5,17 +5,26 @@
  // * = $8000 "Game Map"
  //MAP: .import binary "../assets/blank - Map (20x13).bin"
 
+ * = $8000 "Assets"
+
  * = * "Game Colours"
 CHAR_COLORS: .import binary "../../assets/puyo - CharAttribs.bin"
 
 
  * = * "Game Map"
-GAME_MAP: .import binary "../../assets/puyo - Map (40x26).bin"
+GAME_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [0,0].bin"
 
+
+
+ * = * "Tower Map"
+TOWER_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [1,0].bin"
+
+		
 		
 * = $f000 "Charset"
 CHAR_SET:
 		.import binary "../../assets/puyo - Chars.bin"   //roll 12!
+
 
 
 .pc = sid.location "sid"

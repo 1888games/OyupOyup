@@ -239,4 +239,48 @@ DRAW: {
 		rts
 	}
 
+
+	TowerScreen: {
+
+		ldx #0
+		
+		Loop:
+
+			lda TOWER_MAP + 0, x
+			sta SCREEN_RAM + 0, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 0, x
+
+			lda TOWER_MAP  + 250, x
+			sta SCREEN_RAM + 250, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 250, x
+
+			lda TOWER_MAP  + 500, x
+			sta SCREEN_RAM + 500, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 500, x
+
+			lda TOWER_MAP + 750, x
+			sta SCREEN_RAM + 750, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 750, x
+
+			inx
+			bne Loop
+
+
+		rts
+	}
+
+
+
 }

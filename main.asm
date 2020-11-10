@@ -29,6 +29,7 @@ MAIN: {
 	#import "/scripts/game/panel.asm"
 	#import "/scripts/game/player.asm"
 	#import "/scripts/game/title.asm"
+	#import "/scripts/game/campaign.asm"
 
 	* = * "Main"
 
@@ -46,6 +47,7 @@ MAIN: {
 		jsr IRQ.Setup
 			
 
+		jmp CAMPAIGN.Show
 		jmp TITLE.Show
 
 		jmp StartGame

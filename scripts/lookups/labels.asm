@@ -12,6 +12,7 @@ MemoryAddresses:
 .label GAME_MODE_PLAY = 0
 .label GAME_MODE_PAUSE = 1
 .label GAME_MODE_TITLE = 2
+.label GAME_MODE_TOWER = 3
 
 .label ZERO = 0
 .label ONE = 1
