@@ -14,15 +14,20 @@ Default-segment:
   $080d-$080c End Of Basic
   $080d-$08a9 -Macros
   $080e-$080d Basic End
-  $08aa-$0923 IRQ
-  $0924-$0a3d Draw
-  $0a3e-$0af6 -Input
-  $0af7-$14ec Grid Data
-  $14ed-$16df -Random
-  $16e0-$18c8 Queue
-  $18c9-$1f45 Queue Data
-  $1f46-$1fdf Main
+  $08aa-$0926 IRQ
+  $0927-$0a40 Draw
+  $0a41-$0af9 -Input
+  $0afa-$14ef Grid Data
+  $14f0-$16e2 -Random
+  $16e3-$18cb Queue
+  $18cc-$20a9 Queue Data
+  $20aa-$2165 Main
   $3000-$3b92 sid
+  $4000-$5f3f Bitmap Data
+  $6000-$63e7 Bitmap Screen RAM
+  $6400-$63ff Bitmap Color Data
+  $6400-$67e7 Bitmap Color RAM
+  $6800-$68bf ---Sprites Title
   $c400-$c8ff Sprites
   $c900-$c9ff Game Colours
   $ca00-$ce0f Game Map

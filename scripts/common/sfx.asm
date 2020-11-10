@@ -21,7 +21,7 @@
 music_on: .byte 1
 
 set_sfx_routine:
-{
+{	
 			lda music_on
 			bne !on+
 			
@@ -46,6 +46,7 @@ sfx_play:
 	sfx_routine:
 			jmp play_with_music
 }
+
 
 
 //when sid is not playing, we can use any of the channels to play effects

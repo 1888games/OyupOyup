@@ -1,6 +1,6 @@
 * = * "-Macros"
 
-ShowDebug: .byte 1
+ShowDebug: .byte 0
 
 .macro StoreState() {
 

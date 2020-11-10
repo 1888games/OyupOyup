@@ -28,6 +28,7 @@ MAIN: {
 	#import "/scripts/game/rocks.asm"
 	#import "/scripts/game/panel.asm"
 	#import "/scripts/game/player.asm"
+	#import "/scripts/game/title.asm"
 
 	* = * "Main"
 
@@ -43,7 +44,9 @@ MAIN: {
 		jsr BankOutKernalandBasic
 		jsr set_sfx_routine
 		jsr IRQ.Setup
-		
+			
+
+		jmp TITLE.Show
 
 		jmp StartGame
 
@@ -56,6 +59,9 @@ MAIN: {
 
 	StartGame: {
 
+
+		lda #1
+		jsr sid.init
 
 		jsr SetupGameColours
 		jsr SetupVIC
@@ -115,6 +121,22 @@ MAIN: {
 
 		lda #WHITE
 		sta VIC.SPRITE_MULTICOLOR_2
+
+		lda #0
+		sta VIC.SPRITE_0_Y
+		sta VIC.SPRITE_1_Y
+		sta VIC.SPRITE_2_Y
+		sta VIC.SPRITE_3_Y
+		sta VIC.SPRITE_4_Y
+		sta VIC.SPRITE_5_Y
+		sta VIC.SPRITE_6_Y
+		sta VIC.SPRITE_7_Y
+
+
+
+
+
+
 
 
 		rts

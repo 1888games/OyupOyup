@@ -6,6 +6,7 @@ MemoryAddresses:
 .label SPRITE_POINTERS = SCREEN_RAM + $3f8
 .label COLOR_RAM = $d800
 
+.label TITLE_POINTERS = $6000 + $3f8
 
 
 .label GAME_MODE_PLAY = 0
