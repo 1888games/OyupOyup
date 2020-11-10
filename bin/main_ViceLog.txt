@@ -63,3 +63,39 @@ AUTOSTART: Starting program.
 AUTOSTART: Restoring FileSystemDevice8 to 1.
 AUTOSTART: Restoring FSDevice8ConvertP00 to 1.
 AUTOSTART: Done.
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Sound buffer overflow (cycle based)
+Sound: Warning - Buffer overflow warning repeated 25 times, will now be ignored
+Initiating render thread 0 shutdown
+Joining render thread 0 ...
+Ignoring new render job as render thread 0 is shutting down
+Joined render thread 0.
+VICE thread initiating shutdown
+VICE thread is exiting
+VICE thread has been joined.
+Writing configuration file `C:\Users\Nick\AppData\Roaming\vice\vice.ini'.
+VIC-II: VSP Bug: safe channels are: 1257. Emulation of memory corruption is disabled.
+Sound: Closing device `dx'
