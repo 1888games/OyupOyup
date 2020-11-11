@@ -189,6 +189,9 @@ PLAYER: {
 
 			lda #0
 			sta DropTimer, x
+
+			sfx(SFX_MOVE)
+
 			jmp Finish
 
 		CheckFire:
@@ -211,6 +214,8 @@ PLAYER: {
 
 			
 		DidMove:
+
+			sfx(SFX_MOVE)
 
 
 			ldx ZP.X
@@ -292,6 +297,8 @@ PLAYER: {
 
 				lda #0
 				sta Rotation, x
+
+				sfx(SFX_ROTATE)
 				jmp Finish
 
 		RotateRight:
@@ -329,6 +336,9 @@ PLAYER: {
 				sta DoubleClickTimer
 
 				inc Rotation, x
+
+				sfx(SFX_ROTATE)
+
 				jmp Finish
 
 
@@ -367,6 +377,8 @@ PLAYER: {
 				lda #0
 				sta DoubleClickTimer
 
+				sfx(SFX_ROTATE)
+
 				jmp Finish
 
 
@@ -404,6 +416,8 @@ PLAYER: {
 
 				lda #0
 				sta DoubleClickTimer
+
+				sfx(SFX_ROTATE)
 
 				jmp Finish
 

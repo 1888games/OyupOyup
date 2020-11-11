@@ -578,7 +578,7 @@ GRID: {
 					cmp #1
 					bcs NoPop
 
-				////	jsr PopBean
+				//	jsr PopBean
 				//	jmp Draw
 
 				NoPop:
@@ -600,6 +600,16 @@ GRID: {
 					ldx ZP.X
 					lda #BeanLandedType
 					sta ZP.BeanType
+
+					lda ZP.BeanColour
+					cmp #CYAN
+					beq IsRock
+
+					sfx(SFX_EXPLODE)
+					jmp Draw
+
+
+					IsRock:
 
 					sfx(SFX_LAND)
 

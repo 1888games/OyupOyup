@@ -164,26 +164,37 @@ StopChannel0: {
 
 .label SFX_EXPLODE = 0
 .label SFX_LAND = 1
+.label SFX_BLOOP = 2
+.label SFX_MOVE = 3
+.label SFX_ROTATE = 4
 
 
 channels:	.byte 2, 0, 1, 1, 0, 0, 0, 0, 0, 0
 
 sfx_land:
-.import binary "../../Assets/sfx/low_bang_up.sfx"
+.import binary "../../Assets/sfx/very_low_jump.sfx"
 
 sfx_bloop:
 .import binary "../../Assets/sfx/click_bloop.sfx"
 
 
 whoosh:
-.import binary "../../Assets/sfx/whoosh.sfx"
+.import binary "../../Assets/sfx/toggle.sfx"
+
+
+blip:
+.import binary "../../Assets/sfx/short_low_blip.sfx"
+
+
+hiss:
+.import binary "../../Assets/sfx/noise_medium.sfx"
 
 
 wavetable_l:
-.byte  <whoosh, <sfx_land
+.byte  <whoosh, <sfx_land, <sfx_bloop, <blip, <hiss
 
 wavetable_h:
-.byte  >whoosh, >sfx_land
+.byte  >whoosh, >sfx_land, >sfx_bloop, >blip, >hiss
 
 
 
