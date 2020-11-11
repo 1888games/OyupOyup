@@ -149,7 +149,7 @@ TITLE: {
 		WaitForRasterLine:
 
 			lda VIC.RASTER_LINE
-			cmp #220
+			cmp #245
 			bne WaitForRasterLine
 
 
@@ -158,7 +158,7 @@ TITLE: {
 		beq Finish
 
 		jsr SwitchScreenBack
-		jmp MAIN.StartGame
+		jmp MENU.Show
 
 		Finish:
 

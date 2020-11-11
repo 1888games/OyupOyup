@@ -282,5 +282,48 @@ DRAW: {
 	}
 
 
+	MenuScreen: {
 
+		ldx #0
+		
+		Loop:
+
+			lda MENU_MAP + 0, x
+			sta SCREEN_RAM + 0, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 0, x
+
+			lda MENU_MAP  + 250, x
+			sta SCREEN_RAM + 250, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 250, x
+
+			lda MENU_MAP  + 500, x
+			sta SCREEN_RAM + 500, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 500, x
+
+			lda MENU_MAP + 750, x
+			sta SCREEN_RAM + 750, x
+
+			tay
+			lda CHAR_COLORS, y
+			sta COLOR_RAM + 750, x
+
+			inx
+			bne Loop
+
+
+		rts
+
+	}
+
+
+	
 }

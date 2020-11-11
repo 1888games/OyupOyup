@@ -1,0 +1,274 @@
+MENU: {
+
+
+
+	.label LogoStartPointer = 39
+	.label MaxYOffset = 13
+
+	Colours:		.byte LIGHT_BLUE, LIGHT_RED, LIGHT_GREEN, YELLOW, PURPLE
+	Pointers:		.byte 39, 40, 41, 42, 43
+	XPos:			.byte 124, 149, 174, 199, 224
+	YPos:			.byte 74, 74, 74, 74, 74
+	XPos_MSB:		.byte 0, 0, 0, 0, 0
+	FrameTimer:		.fill 5, 0
+	FrameTime:		.byte 1, 1, 2, 1, 1
+
+	* = * "SpriteData"
+	YOffset:		.byte 2, 12, 5, 7, 0
+	Direction:		.byte -1, 1, 1, -1, 1
+
+
+	SelectedOption:	.byte 0
+	OptionColours:	.byte RED + 8, PURPLE + 8, GREEN +8, YELLOW + 8
+
+
+
+	Show: {
+
+
+		lda #1
+		//jsr ChangeTracks
+		
+		jsr MAIN.SetupVIC
+
+
+		lda #BLACK
+		sta VIC.BACKGROUND_COLOUR
+
+		lda #CYAN
+		sta VIC.BORDER_COLOUR
+
+		lda #WHITE
+		sta VIC.EXTENDED_BG_COLOR_1
+		lda #GRAY
+		sta VIC.EXTENDED_BG_COLOR_2
+
+		jsr DRAW.MenuScreen
+		jsr MenuColours
+		jsr SetupSprites
+
+		
+		jmp MenuLoop
+
+	}
+
+
+
+	MenuLoop: {
+
+
+		WaitForRasterLine:
+
+			lda VIC.RASTER_LINE
+			cmp #245
+			bne WaitForRasterLine
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+		jmp MAIN.StartGame
+
+		Finish:
+
+		jsr SpriteUpdate
+
+		jmp MenuLoop
+
+	}
+
+
+	MenuColours: {
+
+
+		ldx #40
+
+		Loop:	
+
+			lda OptionColours + 0
+			sta COLOR_RAM + 336, x
+			sta COLOR_RAM + 376, x
+
+			lda OptionColours + 1
+			sta COLOR_RAM + 456, x
+			sta COLOR_RAM + 496, x
+
+			lda OptionColours + 2
+			sta COLOR_RAM + 576, x
+			sta COLOR_RAM + 616, x
+
+			lda OptionColours + 3
+			sta COLOR_RAM + 696, x
+			sta COLOR_RAM + 736, x
+
+			inx
+			cpx #48
+			bcc Loop
+
+
+		rts
+	}
+
+
+
+	SetupSprites: {	
+
+		lda #%11111111
+		sta VIC.SPRITE_ENABLE
+		sta VIC.SPRITE_MULTICOLOR
+
+
+		lda #DARK_GRAY
+		sta VIC.SPRITE_MULTICOLOR_1
+
+		lda #WHITE
+		sta VIC.SPRITE_MULTICOLOR_2
+
+
+		lda #0
+		sta VIC.SPRITE_5_Y
+		sta VIC.SPRITE_6_Y
+		sta VIC.SPRITE_7_Y
+
+
+
+		ldx #0
+
+		Loop:	
+
+			txa
+			asl
+			tay
+
+			lda Pointers, x
+			sta SPRITE_POINTERS, x
+			
+			lda Colours, x
+			sta VIC.SPRITE_COLOR_0, x
+
+			lda XPos, x
+			sta VIC.SPRITE_0_X, y
+
+			lda YPos, x
+			sta VIC.SPRITE_0_Y, y
+
+			lda FrameTime, x
+			sta FrameTimer, x
+
+			lda XPos_MSB, x
+			bne MSB
+
+
+			NoMSB:
+
+				lda VIC.SPRITE_MSB
+				and DRAW.MSB_Off, x
+				sta VIC.SPRITE_MSB
+				jmp EndLoop
+
+			MSB:
+
+				lda VIC.SPRITE_MSB
+				ora DRAW.MSB_On, x
+				sta VIC.SPRITE_MSB
+
+			EndLoop:
+
+				inx
+				cpx #5
+				bcc Loop
+
+
+
+		rts
+	}
+
+
+	SpriteUpdate: {
+
+		ldx #0
+
+		Loop:	
+
+
+			lda FrameTimer, x
+			beq Ready
+
+			dec FrameTimer, x
+			jmp EndLoop
+
+			Ready:
+
+			
+
+				lda FrameTime, x
+				sta FrameTimer, x
+
+				txa
+				asl
+				tay
+
+				lda YPos, x
+				clc
+				adc YOffset, x
+				sta VIC.SPRITE_0_Y, y
+
+				lda YOffset, x
+				clc
+				adc Direction, x
+				sta YOffset, x
+
+				cmp #0
+				beq MakeOne
+
+				cmp #MaxYOffset
+				beq Make255
+
+				jmp EndLoop
+
+			Make255:
+
+				lda #255
+				sta Direction, x
+				jmp EndLoop
+
+
+			MakeOne:
+
+				lda #1
+				sta Direction, x
+
+			EndLoop:
+
+				inx
+				cpx #5
+				bcc Loop
+
+
+
+
+		rts
+	}
+
+
+	GameTitle: {
+
+
+
+
+
+
+
+
+		rts
+	}
+
+
+
+
+
+
+
+
+
+}

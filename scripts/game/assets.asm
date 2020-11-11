@@ -19,6 +19,10 @@ GAME_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [0,0].bin"
  * = * "Tower Map"
 TOWER_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [1,0].bin"
 
+
+ * = * "Menu Map"
+MENU_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [2,0].bin"
+
 		
 		
 * = $f000 "Charset"

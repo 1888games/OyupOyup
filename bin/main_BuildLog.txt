@@ -14,14 +14,15 @@ Default-segment:
   $080d-$080c End Of Basic
   $080d-$0913 -Macros
   $080e-$080d Basic End
-  $0914-$09ef IRQ
-  $09f0-$0b43 Draw
-  $0b44-$0bfc -Input
-  $0bfd-$160a Grid Data
-  $160b-$17fd -Random
-  $17fe-$19e6 Queue
-  $19e7-$2248 Queue Data
-  $2249-$2304 Main
+  $0914-$09ec IRQ
+  $09ed-$0b7a Draw
+  $0b7b-$0c33 -Input
+  $0c34-$1641 Grid Data
+  $1642-$1834 -Random
+  $1835-$1a1d Queue
+  $1a1e-$22a2 Queue Data
+  $22a3-$23c2 SpriteData
+  $23c3-$247e Main
   $3000-$3b99 sid
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
@@ -32,7 +33,8 @@ Default-segment:
   $8000-$80ff Game Colours
   $8100-$84e7 Game Map
   $84e8-$88cf Tower Map
-  $c400-$c8ff Sprites
+  $88d0-$8cb7 Menu Map
+  $c400-$cebf Sprites
   $f000-$f7ff Charset
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

@@ -81,7 +81,7 @@ IRQ: {
 
 	PerformEveryFrame: {
 
-		jsr SidFrameUpdate
+		//jsr SidFrameUpdate
 	
 		SetDebugBorder(2)
 		
