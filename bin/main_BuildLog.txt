@@ -14,15 +14,15 @@ Default-segment:
   $080d-$080c End Of Basic
   $080d-$0913 -Macros
   $080e-$080d Basic End
-  $0914-$09ec IRQ
-  $09ed-$0b7a Draw
-  $0b7b-$0c33 -Input
-  $0c34-$1641 Grid Data
-  $1642-$1834 -Random
-  $1835-$1a1d Queue
-  $1a1e-$22a2 Queue Data
-  $22a3-$23c2 SpriteData
-  $23c3-$247e Main
+  $0914-$09ef IRQ
+  $09f0-$0b7d Draw
+  $0b7e-$0c36 -Input
+  $0c37-$1644 Grid Data
+  $1645-$1837 -Random
+  $1838-$1a20 Queue
+  $1a21-$22a5 Queue Data
+  $22a6-$2525 SpriteData
+  $2526-$25e1 Main
   $3000-$3b99 sid
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM

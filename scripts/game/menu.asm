@@ -4,6 +4,7 @@ MENU: {
 
 	.label LogoStartPointer = 39
 	.label MaxYOffset = 13
+	.label ControlCooldown = 3
 
 	Colours:		.byte LIGHT_BLUE, LIGHT_RED, LIGHT_GREEN, YELLOW, PURPLE
 	Pointers:		.byte 39, 40, 41, 42, 43
@@ -18,8 +19,16 @@ MENU: {
 	Direction:		.byte -1, 1, 1, -1, 1
 
 
+	PreviousOption:	.byte 0
 	SelectedOption:	.byte 0
 	OptionColours:	.byte RED + 8, PURPLE + 8, GREEN +8, YELLOW + 8
+	ControlTimer: .byte 0
+
+	SelectionRows:	.byte 9, 12, 15, 18
+
+	SelectionColumns:	.byte 13, 25
+	OptionCharType:	.byte 0, 0
+
 
 
 
@@ -27,7 +36,7 @@ MENU: {
 
 
 		lda #1
-		//jsr ChangeTracks
+		jsr ChangeTracks
 		
 		jsr MAIN.SetupVIC
 
@@ -46,6 +55,8 @@ MENU: {
 		jsr DRAW.MenuScreen
 		jsr MenuColours
 		jsr SetupSprites
+
+		jsr DrawSelection
 
 		
 		jmp MenuLoop
@@ -72,11 +83,276 @@ MENU: {
 		Finish:
 
 		jsr SpriteUpdate
+		jsr ControlUpdate
 
 		jmp MenuLoop
 
 	}
 
+
+
+	ControlUpdate: {
+
+		lda ControlTimer
+		beq Ready
+
+		dec ControlTimer
+		jmp Finish
+
+		Ready:
+
+		ldy #1
+		lda SelectedOption
+		sta PreviousOption
+
+		CheckDown:
+
+			lda SelectedOption
+
+			lda INPUT.JOY_DOWN_NOW, y
+			beq CheckUp
+
+			lda INPUT.JOY_DOWN_LAST, y
+			bne Finish
+
+			PressingDown:
+
+			lda #ControlCooldown
+			sta ControlTimer
+
+			jsr DeleteSelection
+			inc SelectedOption
+
+			lda SelectedOption
+			cmp #4
+			bcc Okay
+
+			lda #0
+			sta SelectedOption
+
+			Okay:
+
+			jsr DrawSelection
+
+			sfx(SFX_MOVE)
+
+			jmp Finish
+
+
+
+		CheckUp:
+
+			ldy #1
+			lda INPUT.JOY_UP_NOW, y
+			beq Finish
+
+			lda INPUT.JOY_UP_LAST, y
+			bne Finish
+
+			PressingUp:
+
+			lda #ControlCooldown
+			sta ControlTimer
+
+			jsr DeleteSelection
+			dec SelectedOption
+
+			lda SelectedOption
+			cmp #255
+			bne Okay2
+
+			lda #3
+			sta SelectedOption
+
+			Okay2:
+
+			jsr DrawSelection
+
+			sfx(SFX_BLOOP)
+
+
+
+
+		Finish:
+
+
+
+		rts
+	}
+
+
+	DeleteSelection: {
+
+		ldx PreviousOption
+		lda SelectionRows, x
+		sta ZP.Row
+
+		LeftBean:
+
+			lda SelectionColumns
+			tax
+
+			lda #0
+			ldy ZP.Row
+
+			jsr DRAW.PlotCharacter
+
+			inx
+
+			jsr DRAW.PlotCharacter
+
+			iny
+
+			jsr DRAW.PlotCharacter
+
+			dex
+
+			jsr DRAW.PlotCharacter
+
+		RightBean:	
+
+			dec ZP.Row
+
+
+			lda SelectionColumns + 1
+			tax
+
+			lda #0
+			ldy ZP.Row
+
+			jsr DRAW.PlotCharacter
+
+			inx
+
+			jsr DRAW.PlotCharacter
+
+			iny
+
+			jsr DRAW.PlotCharacter
+
+			dex
+
+			jsr DRAW.PlotCharacter
+
+
+
+
+		rts
+	}
+
+
+
+	DrawSelection: {
+
+		ldx SelectedOption
+		lda SelectionRows, x
+		sta ZP.Row
+
+		lda OptionColours, x
+		sta ZP.BeanColour
+
+
+		LeftBean:
+
+			ldy OptionCharType
+			lda BEAN.Chars, y
+			clc
+			adc #3
+			sta ZP.CharID
+
+			ldx SelectionColumns
+
+			lda ZP.CharID
+			ldy ZP.Row
+
+			jsr DRAW.PlotCharacter
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+			inx
+
+			dec ZP.CharID
+			lda ZP.CharID
+
+			jsr DRAW.PlotCharacter
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+
+			dec ZP.CharID
+			lda ZP.CharID
+
+			iny
+
+			jsr DRAW.PlotCharacter
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+
+			dec ZP.CharID
+			lda ZP.CharID
+
+			dex
+
+			jsr DRAW.PlotCharacter
+
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+		RightBean:	
+
+			dec ZP.Row
+		
+
+			ldy OptionCharType + 1
+			lda BEAN.Chars, y
+			clc
+			adc #3
+			sta ZP.CharID
+
+			ldx SelectionColumns + 1
+
+			lda ZP.CharID
+			ldy ZP.Row
+
+			jsr DRAW.PlotCharacter
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+			inx
+
+			dec ZP.CharID
+			lda ZP.CharID
+
+			jsr DRAW.PlotCharacter
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+
+			dec ZP.CharID
+			lda ZP.CharID
+
+			iny
+
+			jsr DRAW.PlotCharacter
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+
+			dec ZP.CharID
+			lda ZP.CharID
+
+			dex
+
+			jsr DRAW.PlotCharacter
+
+			lda ZP.BeanColour
+			jsr DRAW.ColorCharacter
+
+
+
+		rts
+	}
 
 	MenuColours: {
 

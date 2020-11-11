@@ -151,7 +151,7 @@ MAIN: {
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR
 
-		lda #RED
+		lda #DARK_GRAY
 		sta VIC.BORDER_COLOUR
 
 		lda #WHITE
