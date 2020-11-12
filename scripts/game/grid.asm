@@ -11,7 +11,7 @@ GRID: {
 	.label PlayerTwoStartColumn = 26
 	.label LastRowID = 11
 	.label LastColumnID = 5
-	.label CheckTime = 10
+	.label CheckTime = 6
 	.label SquashedBean = 233
 
 	.label BeanFallingType = 22
@@ -62,6 +62,7 @@ GRID: {
 	CheckProgress:		.byte 0, 0
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
+	Active:				.byte 1, 0
 
 	QueueLength:		.byte 0
 	QueueColour:		.byte 0
@@ -70,6 +71,8 @@ GRID: {
 	Matched:			.fill 32, 0
 	NumberPopped:		.byte 0
 	Combo:				.byte 0, 0
+
+	
 
 
 
@@ -105,6 +108,8 @@ GRID: {
 		Finish:
 
 			ldy #0
+
+			rts
 
 		Loop2:
 
@@ -161,6 +166,8 @@ GRID: {
 		lda #0
 		sta CheckTimer
 		sta CheckTimer + 1
+		
+
 
 		lda #1
 		sta NumberMoving
@@ -182,7 +189,7 @@ GRID: {
 
 	StartCheck: {
 
-		lda #GRID_MODE_CHECK
+		lda #GRID_MODE_WAIT_CHECK
 		sta Mode, x
 
 		lda BottomRightIDs, x
@@ -221,12 +228,17 @@ GRID: {
 		lda #BeanPoppedType
 		sta CurrentType, x
 
+		cpy #1
+		bne NoExplosion
+
 		lda RowLookup, x
 		sta ZP.Row
 
 		lda ColumnLookup, x
 		sta ZP.Column
 
+		lda PlayerOne, x
+		sta ZP.BeanColour
 
 		jsr RANDOM.Get
 		and #%00000001
@@ -234,9 +246,17 @@ GRID: {
 		adc #1
 		tax
 
+
 		ldy ZP.BeanColour
 
 		jsr EXPLOSIONS.StartExplosion
+
+
+		NoExplosion:
+
+		ldx CurrentSide
+		lda #1
+		sta NumberMoving, x
 
 
 		rts
@@ -262,20 +282,9 @@ GRID: {
 	CheckGrid: {
 
 
+	
 
-		CheckIfTimerZeroYet:
-
-			lda CheckTimer, x
-			beq ReadyToCheck
-
-		DecreaseTimer:
-
-			dec CheckTimer, x
-			jmp Finish
-
-		ReadyToCheck:	
-
-			jsr Scan
+		jsr Scan
 
 
 		Finish:
@@ -291,7 +300,7 @@ GRID: {
 		sta MatchCount
 		sta NumberPopped
 
-	
+		ldx CurrentSide
 			
 		lda PlayerLookup, x
 		sta ZP.EndID
@@ -337,17 +346,30 @@ GRID: {
 
 				lda CurrentType, x
 				sta ZP.BeanType
-				beq Empty
+				bne NotEmpty
+
+				jmp Empty
+
+				NotEmpty:
 
 				cmp #16
 				beq Empty
+
+				bcc Increase
+
+				Error:
+
+					.break
+					nop
+
+				Increase:
 
 				ldy MatchCount
 				txa
 				sta Matched, y
 
 				inc MatchCount
-				//lda MatchCount
+				
 
 			CheckRight:
 
@@ -433,8 +455,6 @@ GRID: {
 					sta Queue, y
 					inc QueueLength
 
-					jmp EndCellLoop
-
 			Empty:
 
 			EndCellLoop:
@@ -458,6 +478,9 @@ GRID: {
 
 			NextCell:
 
+				lda #0
+				sta MatchCount
+
 				ldx ZP.X
 				dex
 				cpx ZP.EndID
@@ -467,24 +490,56 @@ GRID: {
 
 
 		CompleteScan:
-
 		
 			ldx CurrentSide
 
 			lda NumberPopped
 			beq NextBeans
 
-			//WaitForDrop:
+			WaitForDrop:
+
+					inc Combo, x		
+
+					lda NumberPopped
+					sec
+					sbc #2
+					bmi NoGarbage
+
+					jsr ROCKS.CalculateChainRocks
+
+					NoGarbage:
+
+					lda Combo, x
+					sec
+					sbc #2
+					bmi NoGarbage2
+
+					jsr ROCKS.CalculateComboRocks
+
+					NoGarbage2: 
 
 					lda #PLAYER.PLAYER_STATUS_WAIT
 					sta PLAYER.Status, x
 
-					lda #GRID_MODE_NORMAL
-					sta Mode, x
+					jsr StartCheck
+
+					lda #CheckTime
+					asl
+					asl
+					asl
+					sta CheckTimer, x
 
 					jmp Finish
 
 			NextBeans:
+
+				ldy CurrentSide
+				jsr ROCKS.TransferToQueue
+
+				ldx CurrentSide
+
+				lda #0
+				sta Combo, x
 
 				lda #GRID_MODE_PAUSE
 				sta Mode, x
@@ -521,9 +576,20 @@ GRID: {
 
 		NoSfx:
 
+		CalculateGarbage:
 
-		ldy MatchCount
-		dey
+			ldx CurrentSide
+			lda MatchCount
+			sec
+			sbc #4
+			bmi NoGarbage
+
+			jsr ROCKS.CalculateBaseRocks
+
+		NoGarbage:
+
+			ldy MatchCount
+			dey
 
 		
 		Loop:
@@ -545,6 +611,8 @@ GRID: {
 
 		NoPop:
 
+
+
 		lda #0
 		sta MatchCount
 
@@ -556,13 +624,33 @@ GRID: {
 
 		ldx CurrentSide
 
-		lda Mode, x
-		cmp #GRID_MODE_CHECK
-		bne NotChecking
+		lda Active, x
+		beq Finish
 
-		jsr CheckGrid
-		jmp Finish
+		lda Mode, x
+		cmp #GRID_MODE_WAIT_CHECK
+		bne NotWaiting
+
+		lda CheckTimer, x
+		beq ReadyToCheck
+
+		dec CheckTimer, x
+		jmp NormalMode
+
+		ReadyToCheck:
+
+			lda #GRID_MODE_CHECK
+			sta Mode, x
 			
+		NotWaiting:
+
+			cmp #GRID_MODE_CHECK
+			bne NotChecking
+
+		Checking:
+
+				jsr CheckGrid
+				jmp Finish
 
 		NotChecking:
 
@@ -600,6 +688,13 @@ GRID: {
 				sta InitialDrawDone
 
 				ldx CurrentSide
+
+				lda Mode, x
+				cmp #GRID_MODE_WAIT_CHECK
+				beq StillMoving
+
+				cmp #GRID_MODE_CHECK
+				beq StillMoving
 
 				lda NumberMoving, x
 				bne StillMoving
@@ -816,16 +911,6 @@ GRID: {
 
 				SolidBelow:
 
-
-					jsr RANDOM.Get
-					cmp #1
-					bcs NoPop
-
-				//	jsr PopBean
-				//	jmp Draw
-
-				NoPop:
-
 					ldy ZP.PreviousType
 					bmi NotAnimating
 
@@ -847,7 +932,6 @@ GRID: {
 					ldx CurrentSide	
 					inc NumberLanded, x
 
-
 					lda ZP.BeanColour
 					cmp #CYAN
 					beq IsRock
@@ -867,6 +951,7 @@ GRID: {
 					lda CurrentRow
 					cmp #LastRowID
 					beq CheckUp
+
 
 					lda PlayerOne, x
 					cmp ZP.BeanColour
@@ -903,13 +988,6 @@ GRID: {
 					lda #255
 					sta PreviousType, x
 
-
-
-					ldy CurrentSide
-					lda #CheckTime
-					sta CheckTimer, y
-
-					
 
 					jsr ClearSquare
 					jmp ResetForNextBean

@@ -2,7 +2,7 @@ PLAYER: {
 
 	.label AutoDropTime = 18
 	.label FlashTime = 10
-	.label ControlCooldown = 4
+	.label ControlCooldown = 3
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1

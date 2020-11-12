@@ -1,7 +1,7 @@
 EXPLOSIONS: {
 
 
-	.label FrameTime = 3
+	.label FrameTime = 4
 	.label FirstSprite = 2
 	.label MaxSprites = 8 - FirstSprite
 
@@ -135,6 +135,7 @@ EXPLOSIONS: {
 				asl
 				tax
 
+				dec VIC.SPRITE_0_Y, x
 				dec VIC.SPRITE_0_Y, x
 
 				ldx ZP.TempX

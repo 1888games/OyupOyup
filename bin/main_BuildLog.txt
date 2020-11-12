@@ -17,12 +17,12 @@ Default-segment:
   $0936-$0a11 IRQ
   $0a12-$0b9f Draw
   $0ba0-$0c58 -Input
-  $0c59-$1859 Grid Data
-  $185a-$1a4c -Random
-  $1a4d-$1c26 Queue
-  $1c27-$24cc Queue Data
-  $24cd-$274c SpriteData
-  $274d-$2810 Main
+  $0c59-$18bd Grid Data
+  $18be-$1ab5 -Random
+  $1ab6-$1cf0 Queue
+  $1cf1-$2596 Queue Data
+  $2597-$2816 SpriteData
+  $2817-$28da Main
   $3000-$3b99 sid
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM

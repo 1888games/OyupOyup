@@ -32,7 +32,7 @@ MemoryAddresses:
 .label GRID_MODE_PAUSE = 0
 .label GRID_MODE_NORMAL = 1
 .label GRID_MODE_CHECK = 2
-.label GRID_MODE_DELAY = 3
+.label GRID_MODE_WAIT_CHECK = 3
 
 .label LEFT_SIDE = 0
 .label RIGHT_SIDE = 1

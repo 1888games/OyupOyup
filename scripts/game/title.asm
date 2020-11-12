@@ -149,9 +149,10 @@ TITLE: {
 		WaitForRasterLine:
 
 			lda VIC.RASTER_LINE
-			cmp #245
+			cmp #160
 			bne WaitForRasterLine
 
+		
 
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y

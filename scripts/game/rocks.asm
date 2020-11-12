@@ -27,6 +27,7 @@ ROCKS: {
 	DropColumns:	.byte 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5
 	QueueOrder:		.byte 2, 3, 1, 4, 0, 5
 	QueueOffset:	.byte 0, 6
+	Opponent:		.byte 1, 0
 
 
 	.label FullCharID = 106
@@ -37,6 +38,12 @@ ROCKS: {
 
 	Queue:		.byte 0, 0, 0, 0, 0, 0
 				.byte 0, 0, 0, 0, 0, 0
+
+
+	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-13
+	ChainLookup:	.byte 3, 10, 27, 68, 90		// 2 - 6
+	ComboLookup:	.byte 5, 14, 32, 69, 90		// 2 - 6
+
 
 
 	Reset: {
@@ -58,6 +65,86 @@ ROCKS: {
 
 		 lda #0
 		 sta Mode
+
+		rts
+	}
+
+
+	CalculateBaseRocks: {
+
+		cmp #9
+		bcc Okay
+
+		lda #8
+
+		Okay:
+
+
+	    tay
+
+	    lda Opponent, x
+		tax	
+
+		lda Count, x
+		clc
+		adc BaseLookup, y
+		sta Count, x
+
+		lda Opponent, x
+		tax
+
+
+		rts
+	}
+
+
+	CalculateChainRocks: {
+
+		cmp #6
+		bcc Okay
+
+		lda #5	
+
+		Okay:
+
+		tay
+
+		lda Opponent, x
+		tax	
+
+
+		lda Count, x
+		clc
+		adc ChainLookup, y
+		sta Count, x
+
+		lda Opponent, x
+		tax	
+
+		rts
+	}
+
+	CalculateComboRocks: {
+
+		cmp #6
+		bcc Okay
+
+		lda #5	
+
+		Okay:
+
+		tay
+
+		lda Opponent, x
+		tax	
+
+		lda Count, x
+		clc
+		adc ComboLookup, y
+		sta Count, x
+
+		lda Opponent, x
+		tax	
 
 		rts
 	}
