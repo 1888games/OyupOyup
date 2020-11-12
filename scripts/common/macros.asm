@@ -1,4 +1,4 @@
-* = * "-Macros"
+* = $080e "-Macros"
 
 ShowDebug: .byte 0
 

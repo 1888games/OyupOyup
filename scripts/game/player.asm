@@ -6,6 +6,8 @@ PLAYER: {
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
+	.label PLAYER_STATUS_PLACED = 2
+
 	.label DoubleClickTime = 3
 
 
@@ -451,8 +453,21 @@ PLAYER: {
 			CheckActive:
 
 				lda Status, x
+				cmp #PLAYER_STATUS_WAIT
+				beq EndLoop
+
+				lda #1
+				sta GRID.NumberMoving, x
+
+				lda Status, x
+				cmp #PLAYER_STATUS_NORMAL
 				bne EndLoop
 
+			Moving:
+
+				lda #1
+				sta GRID.NumberMoving, x
+				
 				jsr HandleControls
 
 				ldx ZP.X
@@ -920,10 +935,16 @@ PLAYER: {
 
 			ldy ZP.X
 
-			lda #1
+			lda #2
 			sta Status, y
+			sta GRID.NumberLanded, y
 
-			jsr ROCKS.TransferToQueue
+			//lda #0
+			//sta GRID.NumberMoving, y
+
+
+
+			//jsr ROCKS.TransferToQueue
 				
 			rts
 
@@ -947,6 +968,7 @@ PLAYER: {
 
 		lda #0
 		sta Status, y
+		sty ZP.StartID
 
 		lda #FlashTime
 		sta FlashTimer, y
@@ -994,7 +1016,16 @@ PLAYER: {
 		ldy ZP.TempY
 		iny
 
-		jsr DrawBean
+		jsr DrawBean	
+
+
+		ldy ZP.StartID
+
+		lda #PLAYER.PLAYER_STATUS_NORMAL
+		sta PLAYER.Status, y
+
+		lda #GRID_MODE_NORMAL
+		sta GRID.Mode, y
 
 
 		rts

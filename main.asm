@@ -72,7 +72,7 @@ MAIN: {
 
 		jsr DRAW.GameScreen
 		 
-		jsr GRID.Clear
+		jsr GRID.Reset
 		jsr PANEL.Reset
 		jsr PLAYER.Reset
 		jsr ROCKS.Reset
@@ -183,11 +183,19 @@ MAIN: {
 
 		dec PerformFrameCodeFlag
 
+		jsr sfx_cooldown
+
+		lda MAIN.GameActive
+		beq Paused
+
+		jsr PLAYER.FrameUpdate
 		jsr GRID.FrameUpdate
 		jsr EXPLOSIONS.FrameUpdate
 		jsr PANEL.FrameUpdate
-		jsr PLAYER.FrameUpdate
+	
 		jsr ROCKS.FrameUpdate
+
+		Paused:
 
 		
 		rts

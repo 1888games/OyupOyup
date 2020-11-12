@@ -14,6 +14,7 @@ MemoryAddresses:
 .label GAME_MODE_TITLE = 2
 .label GAME_MODE_TOWER = 3
 
+
 .label ZERO = 0
 .label ONE = 1
 
@@ -31,6 +32,7 @@ MemoryAddresses:
 .label GRID_MODE_PAUSE = 0
 .label GRID_MODE_NORMAL = 1
 .label GRID_MODE_CHECK = 2
+.label GRID_MODE_DELAY = 3
 
 .label LEFT_SIDE = 0
 .label RIGHT_SIDE = 1

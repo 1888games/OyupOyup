@@ -71,7 +71,7 @@ MENU: {
 		WaitForRasterLine:
 
 			lda VIC.RASTER_LINE
-			cmp #245
+			cmp #255
 			bne WaitForRasterLine
 
 		ldy #1

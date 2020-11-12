@@ -24,6 +24,9 @@ ZP: {
 	GridPosition:		.byte $00
 	Okay:				.byte $00
 	Offset:				.byte $00
+	NumberMoving:		.byte $00
+	AtLeastOneLanded:	.byte $00
+	PreviousBeanColour:	.byte $00
 	
 
 

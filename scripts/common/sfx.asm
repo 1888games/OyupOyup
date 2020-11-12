@@ -3,9 +3,31 @@
 		:StoreState()
 
 		ldx #sfx_id
-		jsr sfx_play
+		jsr PlaySfx
 
 		:RestoreState()
+}
+
+PlaySfx: {
+
+	lda cooldown
+	beq Okay
+
+	cpx lastSfX
+	beq Skip
+
+	Okay:
+
+	stx lastSfX
+	lda #10
+	sta cooldown
+	jsr sfx_play
+
+	Skip:
+
+	rts
+
+
 }
 
 .macro sfxFromX() {
@@ -23,6 +45,22 @@ nextTrack:	.byte 0
 currentVolume:	.byte 15
 fadingOut:		.byte 0
 fadingIn:		.byte 0
+lastSfX:		.byte 0
+cooldown:		.byte 0
+
+
+sfx_cooldown: {
+
+	lda cooldown
+	beq Okay
+
+	dec cooldown
+
+	Okay:	
+
+
+	rts
+}
 
 set_sfx_routine:
 {	

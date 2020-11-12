@@ -41,23 +41,23 @@ ROCKS: {
 
 	Reset: {
 
-		lda #15
+		lda #0
 		sta Count + 0
 		sta Count + 1
 		sta PreviousCount + 0
 		sta PreviousCount + 1
 
-		ldy #0
+		// ldy #0
 
-		jsr TransferToQueue
+		// jsr TransferToQueue
 
-		ldx #0
-		jsr Draw
-		ldx #1
-		jsr Draw
+		// ldx #0
+		// jsr Draw
+		// ldx #1
+		// jsr Draw
 
-		lda #1
-		sta Mode
+		 lda #0
+		 sta Mode
 
 		rts
 	}

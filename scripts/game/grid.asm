@@ -11,7 +11,7 @@ GRID: {
 	.label PlayerTwoStartColumn = 26
 	.label LastRowID = 11
 	.label LastColumnID = 5
-	.label CheckTime = 30
+	.label CheckTime = 10
 	.label SquashedBean = 233
 
 	.label BeanFallingType = 22
@@ -25,6 +25,8 @@ GRID: {
 
 	PlayerOne:	.fill Rows * Columns, GREEN
 	PlayerTwo:	.fill Rows * Columns, BLACK
+
+	Checked:	.fill TotalSquaresOnScreen, 0
 
 	CurrentType:	.fill TotalSquaresOnScreen, 255
 	PreviousType:	.fill TotalSquaresOnScreen, 255
@@ -55,14 +57,21 @@ GRID: {
 	InitialDrawDone:	.byte 0
 
 
-	CheckTimer:			.byte 255, 255
-	Mode:				.byte 0, 0
+	CheckTimer:			.byte 0, 0
+	Mode:				.byte 1, 1
 	CheckProgress:		.byte 0, 0
+	NumberMoving:		.byte 1, 1
+	NumberLanded:		.byte 0, 0
 
-	QueueLength:		.byte 0, 0
-	QueueColour:		.byte 0, 0
-	QueueLeft: 			.fill 32, 0
-	QueueRight:			.fill 32, 0
+	QueueLength:		.byte 0
+	QueueColour:		.byte 0
+	Queue:				.fill 32, 0
+	MatchCount:			.byte 0
+	Matched:			.fill 32, 0
+	NumberPopped:		.byte 0
+	Combo:				.byte 0, 0
+
+
 
 
 	Clear: {
@@ -97,40 +106,36 @@ GRID: {
 
 			ldy #0
 
-		// Loop2:
+		Loop2:
 
-		// 	sty ZP.TempY
+			sty ZP.TempY
 
-		// 	jsr RANDOM.Get
-		// 	and #%01111111
-		// 	tax
+			jsr RANDOM.Get
+			and #%00111111
+			tax
 
-		// 	jsr RANDOM.Get
-		// 	and #%00000001
-		// 	sta PlayerOne, x
+			jsr RANDOM.Get
+			and #%00000001
+			sta PlayerOne, x
 
-		// 	jsr RANDOM.Get
-		// 	and #%00000011	
-		// 	clc
-		// 	adc PlayerOne, x
-		// 	tay
-		// 	lda PANEL.Colours, y
-		// 	sta PlayerOne, x
+			jsr RANDOM.Get
+			and #%00000011	
+			clc
+			adc PlayerOne, x
+			tay
+			lda PANEL.Colours, y
+			sta PlayerOne, x
 
-		// 	ldy ZP.TempY
+			ldy ZP.TempY
 
-		// 	iny
-		// 	cpy #40
-		// 	bcc Loop2
+			iny
+			cpy #40
+			bcc Loop2
 
-		// lda #CYAN
-		// sta PlayerOne
+		lda #CYAN
+		sta PlayerOne
 
 
-		lda #1
-		sta MAIN.GameActive
-
-		
 		rts
 
 
@@ -153,103 +158,60 @@ GRID: {
 		sta ZP.BeanType
 		sta InitialDrawDone
 
-		lda #255
+		lda #0
 		sta CheckTimer
 		sta CheckTimer + 1
 
+		lda #1
+		sta NumberMoving
+		sta NumberMoving + 1
+		sta Mode
+		sta Mode + 1
 
-		rts
-	}
-
-
-
-
-	CheckGrid: {
-
-		rts
-
-		CheckIfAlreadyInCheckMode:
-
-			ldx CurrentSide
-			lda Mode, x
-			cmp #GRID_MODE_CHECK
-			beq Checking
-
-		CheckIfNotAboutToCheck:
-
-			lda CheckTimer, x
-			bmi Finish
-
-		CheckIfTimerZeroYet:
-
-			beq ReadyToCheck
-
-		DecreaseTimer:
-
-			dec CheckTimer, x
-			jmp Finish
-
-		ReadyToCheck:
-
-			lda #GRID_MODE_CHECK
-			sta Mode, x
-
-			lda BottomRightIDs, x
-			sta CheckProgress, x
-
-			jsr NextSlot
-
-
-		Checking:
-
-			jsr DoScan
-
-
-		Finish:
-
-		rts
-	}
-
-
-
-	NextSlot: {
-
-
-		lda CheckProgress, x
-		bne SlotIsOccupied
-
-		MoveToNextSlot:
-
-			dec CheckProgress, x
-			bne NextSlot
-
-			jsr CheckComplete
-			jmp Finish
-
-		SlotIsOccupied:
-
-			ldy CurrentSide
-			beq Left
-
-		Right:
-
-			sta QueueRight, x
-			jmp Done
-
-		Left:
-
-			sta QueueLeft, x
-
-		Done:
 
 		lda #1
-		sta QueueLength
+		sta MAIN.GameActive
 
-		Finish:
+		
 
 
 		rts
 	}
+
+
+
+	StartCheck: {
+
+		lda #GRID_MODE_CHECK
+		sta Mode, x
+
+		lda BottomRightIDs, x
+		sta CheckProgress, x
+		tay
+		sec
+		sbc #72
+		sta ZP.EndID
+
+		lda #CheckTime
+		sta CheckTimer, x
+
+		lda #0
+
+		Loop:
+
+			sta Checked, y
+
+			dey
+			cpy ZP.EndID
+			bne Loop
+
+
+	
+
+		rts
+	}
+
+
 
 
 
@@ -257,10 +219,8 @@ GRID: {
 
 
 		lda #BeanPoppedType
-		sta ZP.BeanType
+		sta CurrentType, x
 
-
-		ldx ZP.X
 		lda RowLookup, x
 		sta ZP.Row
 
@@ -282,67 +242,7 @@ GRID: {
 		rts
 	}
 
-	ProcessSlot: {
-
-		ldy CurrentSide
-		lda QueueLength, y
-		tax
-		dex
-
-		cpy #0
-		beq Left
-
-		Right:
-
-			lda QueueRight, x
-			jmp GetSlotInfo
-
-		Left:
-
-			lda QueueLeft, x
-
-		GetSlotInfo:	
-
-			sta ZP.SlotID
-			tax
-			lda RowLookup, x
-			sta ZP.Row
-
-			lda ColumnLookup, x
-			sta ZP.Column
-
-
-
-		rts
-	}
-
-	DoScan: {
-
-		lda QueueLength, x
-		bne ProcessNextInQueue
-
-		QueueEmpty:
-
-			dec CheckProgress, x
-			beq CheckCompleted
-
-			jsr NextSlot
-
-		ProcessNextInQueue:
-
-			jsr ProcessSlot
-
-		jmp Finish
-
-		CheckCompleted:
-
-			jsr CheckComplete
-
-		Finish:
-
-
-		rts
-	}
+	
 
 
 	CheckComplete: {
@@ -359,19 +259,323 @@ GRID: {
 
 
 
+	CheckGrid: {
+
+
+
+		CheckIfTimerZeroYet:
+
+			lda CheckTimer, x
+			beq ReadyToCheck
+
+		DecreaseTimer:
+
+			dec CheckTimer, x
+			jmp Finish
+
+		ReadyToCheck:	
+
+			jsr Scan
+
+
+		Finish:
+
+		rts
+	}
+
+
+	Scan: {
+
+		lda #0
+		sta QueueLength
+		sta MatchCount
+		sta NumberPopped
+
+	
+			
+		lda PlayerLookup, x
+		sta ZP.EndID
+
+		lda CheckProgress, x
+		tax
+			
+		CellLoop:
+
+			stx ZP.X
+			stx ZP.SlotID
+
+			CheckWhichCellToLookAt:
+
+				ldy QueueLength
+				beq UseNextCell
+
+			UseQueue:
+
+				dey
+				sty QueueLength
+				lda Queue, y
+				tax
+				sta ZP.SlotID
+
+			UseNextCell:
+
+				lda Checked, x
+				beq CheckIfCellEmpty
+
+			AlreadyChecked:
+
+				jmp EndCellLoop
+
+			CheckIfCellEmpty:
+
+				lda PlayerOne, x
+				bne CheckIfRockOrSingle
+
+				jmp Empty
+
+			CheckIfRockOrSingle:
+
+				lda CurrentType, x
+				sta ZP.BeanType
+				beq Empty
+
+				cmp #16
+				beq Empty
+
+				ldy MatchCount
+				txa
+				sta Matched, y
+
+				inc MatchCount
+				//lda MatchCount
+
+			CheckRight:
+
+					lda ZP.BeanType
+					and #RIGHT
+					beq CheckLeft
+
+				MatchToRight:
+
+					ldx ZP.SlotID
+					inx
+					lda Checked, x
+					bne CheckLeft
+
+				AddToQueueRight:
+
+					ldy QueueLength
+					txa
+					sta Queue, y
+					inc QueueLength
+
+			CheckLeft:
+
+					lda ZP.BeanType
+					and #LEFT
+					beq CheckDown
+
+				MatchToLeft:
+
+					ldx ZP.SlotID
+					dex
+					lda Checked, x
+					bne CheckDown
+
+				AddToQueueLeft:
+
+					ldy QueueLength
+					txa
+					sta Queue, y
+					inc QueueLength
+
+			CheckDown:
+
+					lda ZP.BeanType
+					and #DOWN
+					beq CheckUp
+
+				MatchToDown:
+
+					lda ZP.SlotID
+					clc
+					adc #6
+					tax
+					lda Checked, x
+					bne CheckUp
+
+				AddToQueueDown:
+
+					ldy QueueLength
+					txa
+					sta Queue, y
+					inc QueueLength
+
+			CheckUp:
+
+					lda ZP.BeanType
+					and #UP
+					beq EndCellLoop
+
+				MatchToUp:
+
+					lda ZP.SlotID
+					sec
+					sbc #6
+					tax
+					lda Checked, x
+					bne EndCellLoop
+
+				AddToQueueUp:
+
+					ldy QueueLength
+					txa
+					sta Queue, y
+					inc QueueLength
+
+					jmp EndCellLoop
+
+			Empty:
+
+			EndCellLoop:
+
+				ldx ZP.SlotID
+				lda #1	
+				sta Checked, x
+
+			CheckItemsInQueue:
+
+				lda QueueLength
+				bne ItemsInQueue
+
+				jsr CheckHowManyMatched
+
+				jmp NextCell
+
+			ItemsInQueue:
+
+				jmp CellLoop
+
+			NextCell:
+
+				ldx ZP.X
+				dex
+				cpx ZP.EndID
+				beq CompleteScan
+
+				jmp CellLoop
+
+
+		CompleteScan:
+
+		
+			ldx CurrentSide
+
+			lda NumberPopped
+			beq NextBeans
+
+			//WaitForDrop:
+
+					lda #PLAYER.PLAYER_STATUS_WAIT
+					sta PLAYER.Status, x
+
+					lda #GRID_MODE_NORMAL
+					sta Mode, x
+
+					jmp Finish
+
+			NextBeans:
+
+				lda #GRID_MODE_PAUSE
+				sta Mode, x
+
+				lda #1
+				sta PANEL.Mode, x
+
+				lda #0
+				sta PANEL.Mode + 1
+
+		Finish:
+
+
+
+		rts
+	}
+
+
+	CheckHowManyMatched: {
+
+
+		lda MatchCount
+		cmp #4
+		bcc NoPop
+
+		inc NumberPopped
+
+		lda NumberPopped
+		cmp #2
+		bcs NoSfx
+
+		sfx(SFX_BLOOP)
+
+
+		NoSfx:
+
+
+		ldy MatchCount
+		dey
+
+		
+		Loop:
+			sty ZP.TempY
+
+			lda Matched, y
+			tax
+			stx ZP.TempX
+
+			jsr PopBean
+
+			ldx ZP.TempX
+			jsr DrawBean
+
+			ldy ZP.TempY
+			dey
+			bpl Loop
+
+
+		NoPop:
+
+		lda #0
+		sta MatchCount
+
+
+		rts
+	}
+
 	UpdateSide: {
 
+		ldx CurrentSide
+
+		lda Mode, x
+		cmp #GRID_MODE_CHECK
+		bne NotChecking
+
 		jsr CheckGrid
+		jmp Finish
+			
 
-		ldy CurrentSide
+		NotChecking:
 
-		lda Mode, y
-		bne Finish
 
-		ldy #3
+			cmp #GRID_MODE_PAUSE
+			beq Finish
 
-		lda StartRow
-		sta CurrentRow
+		NormalMode:
+
+			ldy #2
+
+			lda StartRow
+			sta CurrentRow
 
 		Loop:
 
@@ -384,11 +588,34 @@ GRID: {
 			stx CurrentRow
 			bpl EndLoop
 
-			lda #LastRowID
-			sta CurrentRow
 
-			lda #1
-			sta InitialDrawDone
+			StartAgain:
+
+				ldy ZP.Y
+
+				lda #LastRowID
+				sta CurrentRow
+
+				lda #1
+				sta InitialDrawDone
+
+				ldx CurrentSide
+
+				lda NumberMoving, x
+				bne StillMoving
+
+				Check:
+
+				lda #1
+				sta PLAYER.Status, x
+
+				jsr StartCheck
+
+			StillMoving:
+
+				lda #0
+				sta NumberMoving, x
+				sta NumberLanded, x
 
 			EndLoop:
 
@@ -440,6 +667,9 @@ GRID: {
 
 	UpdateAnimation: {
 
+		ldx CurrentSide
+		inc NumberMoving, x
+
 		dey
 		sty ZP.BeanType
 
@@ -449,6 +679,7 @@ GRID: {
 		cpy #BeanFallingType
 		beq Remove
 
+		
 		rts
 
 		Remove:
@@ -471,6 +702,18 @@ GRID: {
 			ldx ZP.X
 			lda #0
 			sta ZP.BeanType
+
+			ldy CurrentSide
+			lda PLAYER.Status, y
+			cmp #PLAYER.PLAYER_STATUS_PLACED
+			bne Okay
+
+			lda #PLAYER.PLAYER_STATUS_WAIT
+			sta PLAYER.Status, y
+
+
+		Okay:
+
 
 
 		rts
@@ -601,6 +844,10 @@ GRID: {
 					lda #BeanLandedType
 					sta ZP.BeanType
 
+					ldx CurrentSide	
+					inc NumberLanded, x
+
+
 					lda ZP.BeanColour
 					cmp #CYAN
 					beq IsRock
@@ -646,6 +893,9 @@ GRID: {
 
 					jsr DrawBean
 
+					ldx CurrentSide
+					inc NumberMoving, x
+
 					ldx ZP.X
 					lda #0
 					sta PlayerOne, x
@@ -653,9 +903,13 @@ GRID: {
 					lda #255
 					sta PreviousType, x
 
+
+
 					ldy CurrentSide
 					lda #CheckTime
 					sta CheckTimer, y
+
+					
 
 					jsr ClearSquare
 					jmp ResetForNextBean
@@ -727,7 +981,7 @@ GRID: {
 
 		Finish:
 
-
+		
 
 		rts
 	}
