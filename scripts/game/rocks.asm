@@ -6,6 +6,7 @@ ROCKS: {
 	.label ComboTime = 50
 	.label Stage1Time = 20
 	.label Stage2Time = 40
+	.label FrameTime = 6
 
 
 	.label ComboStartPointer = 44
@@ -38,6 +39,8 @@ ROCKS: {
 	Frame:			.byte 0, 0
 	Stage:			.byte 0, 0
 	StageTimer:		.byte 0, 0
+	FrameTimer:		.byte 0, 0
+	FrameDirection:	.byte 1, 1
 
 	StageTimes:		.byte 20, 40
 
@@ -112,6 +115,12 @@ ROCKS: {
 
 		lda StageTimes
 		sta StageTimer, x
+
+		lda #FrameTime
+		sta FrameTimer, x
+
+		lda #1
+		sta FrameDirection, x
 
 		lda Colours, x
 		sta VIC.SPRITE_COLOR_2, x
@@ -405,6 +414,50 @@ ROCKS: {
 	}
 
 	UpdateSprite: {
+
+
+		UpdateFrame:
+
+			lda FrameTimer, x
+			beq ReadyToChange
+
+			dec FrameTimer, x
+			jmp Position
+
+			ReadyToChange:
+
+				lda #FrameTime
+				sta FrameTimer, x
+
+				lda Frame, x
+				clc
+				adc FrameDirection, x
+				sta Frame, x
+				cmp #BlobEndPointer
+				beq SwitchTo255
+
+				cmp #BlobStartPointer
+				beq SwitchToOne
+
+				jmp Position
+
+				SwitchTo255:
+
+				lda #255
+				sta FrameDirection, x
+				jmp Position
+
+				SwitchToOne:
+
+				lda #1
+				sta FrameDirection, x
+
+
+
+		Position:
+
+		lda Frame, x
+		sta SPRITE_POINTERS + 2, x
 
 		txa
 		asl

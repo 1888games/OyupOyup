@@ -19,10 +19,10 @@ Default-segment:
   $0b9d-$0c55 -Input
   $0c56-$18ba Grid Data
   $18bb-$1a57 -Random
-  $1a58-$1f99 Queue
-  $1f9a-$283f Queue Data
-  $2840-$2abf SpriteData
-  $2ac0-$2b80 Main
+  $1a58-$1fdf Queue
+  $1fe0-$2885 Queue Data
+  $2886-$2b05 SpriteData
+  $2b06-$2bc6 Main
   $3000-$3b99 sid
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
