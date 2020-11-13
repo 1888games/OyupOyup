@@ -1,9 +1,12 @@
 ROCKS: {
 
 
+	.label FullCharID = 106
+	.label SingleCharID = 105
+	.label ComboTime = 60
 
-	Slots:	.fill 24, 0
-
+	.label ComboStartPointer = 44
+	.label ComboEndPointer  = 52
 
 
 	Count:			.byte 0, 0
@@ -13,36 +16,58 @@ ROCKS: {
 	ColumnsDrawn:	.byte 0
 	Mode:			.byte 0, 0
 
-	BackgroundCharIDs:	.byte 34, 35, 38, 39
-
-	ColumnAdd:	.byte 2, 26
-
-	Order:		.byte 6, 7, 5, 8, 4, 9, 3, 10, 2, 11, 1, 0
-	BackgroundCharOrder:	.byte 34, 35, 39, 38, 34, 35, 39, 38, 34, 35, 39, 38
-	BackgroundColourOrder:	.byte PURPLE, YELLOW, CYAN, GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE, YELLOW, CYAN, GREEN
-
-	CurrentColumn:	.byte 0
-
-
-	DropColumns:	.byte 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5
-	QueueOrder:		.byte 2, 3, 1, 4, 0, 5
-	QueueOffset:	.byte 0, 6
-	Opponent:		.byte 1, 0
-
-
-	.label FullCharID = 106
-	.label SingleCharID = 105
-
-
 	* = * "Queue"
 
 	Queue:		.byte 0, 0, 0, 0, 0, 0
 				.byte 0, 0, 0, 0, 0, 0
 
 
-	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-13
+	XPos_MSB:		.byte 0, 0
+	XPos_LSB:		.byte 0, 0
+	YPos:			.byte 0, 0
+	Speed:			.byte 0, 0
+	Frame:			.byte 0, 0
+
+	TargetXPos_MSB:	.byte 0, 0
+	TargetXPos_LSB:	.byte 0, 0
+	TargetYPos:		.byte 0, 0
+
+	ComboTimer:		.byte 0, 0
+	ComboFrame:		.byte 0, 0
+	
+
+	Order:					.byte 6, 7, 5, 8, 4, 9, 3, 10, 2, 11, 1, 0
+	BackgroundCharOrder:	.byte 34, 35, 39, 38, 34, 35, 39, 38, 34, 35, 39, 38
+	BackgroundColourOrder:	.byte PURPLE, YELLOW, CYAN, GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE, YELLOW, CYAN, GREEN
+	BackgroundCharIDs:		.byte 34, 35, 38, 39
+
+	DropColumns:	.byte 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5
+	QueueOrder:		.byte 2, 3, 1, 4, 0, 5
+
+	ColumnAdd:		.byte 2, 26
+	QueueOffset:	.byte 0, 6
+	Opponent:		.byte 1, 0
+	Colours:		.byte RED, BLUE
+	Colours2:		.byte LIGHT_RED, LIGHT_BLUE
+
+	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
 	ChainLookup:	.byte 3, 10, 27, 68, 90		// 2 - 6
 	ComboLookup:	.byte 5, 14, 32, 69, 90		// 2 - 6
+
+
+	BaseScore:		.byte 5, 18, 28, 40, 54, 70, 88, 108, 130
+	ChainScore:		.byte 24, 48, 96, 192, 255
+	ComboScore:		.byte 36, 72, 144, 255, 255
+
+
+
+
+	
+
+
+
+
+
 
 
 
@@ -68,6 +93,128 @@ ROCKS: {
 
 		rts
 	}
+
+
+	
+
+	UpdateCombo: {
+
+		ldx #0
+
+		Loop:
+
+			stx ZP.X
+
+			lda ComboFrame, x
+			beq EndLoop
+
+			lda ComboTimer, x
+			beq Finished
+
+			and #%00000001
+			beq Dark
+
+			Light:
+
+				lda Colours2, x
+				sta VIC.SPRITE_COLOR_0, x
+				jmp Done
+
+			Dark:
+
+				lda Colours, x
+				sta VIC.SPRITE_COLOR_0, x
+
+			Done:
+
+				dec ComboTimer, x
+
+				txa
+				asl
+				tax
+
+				dec VIC.SPRITE_0_Y, x
+
+				jmp EndLoop
+
+			Finished:
+
+				lda #0
+				sta ComboFrame, x
+
+				txa
+				asl
+				tax
+
+				lda #0
+				sta VIC.SPRITE_0_Y, x
+
+			EndLoop:	
+
+				ldx ZP.X
+
+				inx
+				cpx #2
+				bcc Loop
+
+
+
+
+		rts
+	}
+
+	StartCombo: {
+
+
+
+		lda ComboFrame, x
+		sta SPRITE_POINTERS, x
+
+		lda #ComboTime
+		sta ComboTimer, x
+
+		lda Colours, x
+		sta VIC.SPRITE_COLOR_0, x
+
+		txa
+		asl
+		tax
+
+		ldy ZP.Row
+		lda EXPLOSIONS.YPos, y
+		sta VIC.SPRITE_0_Y, x
+
+		ldy ZP.Column
+		lda EXPLOSIONS.XPosLSB, y
+		sta VIC.SPRITE_0_X, x
+
+		ldx GRID.CurrentSide
+
+		lda EXPLOSIONS.XPosMSB, y
+		beq NoMSB
+
+		MSB:
+
+			lda VIC.SPRITE_MSB
+			ora DRAW.MSB_On, x
+			sta VIC.SPRITE_MSB
+			jmp Finish
+
+		NoMSB:
+
+			lda VIC.SPRITE_MSB
+			and DRAW.MSB_Off, x
+			sta VIC.SPRITE_MSB
+
+		Finish:
+
+
+
+		rts
+	}
+
+
+
 
 
 	CalculateBaseRocks: {
@@ -126,33 +273,64 @@ ROCKS: {
 
 	CalculateComboRocks: {
 
-		cmp #6
-		bcc Okay
 
-		lda #5	
+		pha
 
-		Okay:
+		CalculatePointer:
 
-		tay
+			clc
+			adc #ComboStartPointer
+			cmp #ComboEndPointer
 
-		lda Opponent, x
-		tax	
+		CheckInRange:
 
-		lda Count, x
-		clc
-		adc ComboLookup, y
-		sta Count, x
+			bcs PointerOutOfRange
+			jmp PointerInRange
 
-		lda Opponent, x
-		tax	
+		PointerOutOfRange:
+
+			lda #ComboEndPointer
+
+		PointerInRange:
+
+			sta ComboFrame, x
+
+		CalculateTableLookup:
+
+			pla
+			cmp #6
+			bcc Okay
+
+			lda #5	
+
+			Okay:
+
+			tay
+
+		GetGarbage:
+
+			lda Opponent, x
+			tax	
+
+			lda Count, x
+			clc
+			adc ComboLookup, y
+			sta Count, x
+
+			lda Opponent, x
+			tax
+
+		jsr StartCombo
+
 
 		rts
 	}
 
 	FrameUpdate: {
 
-		ldx #0
+		jsr UpdateCombo
 
+		ldx #0
 
 		Loop:	
 
@@ -272,6 +450,9 @@ ROCKS: {
 	}
 
 
+
+
+
 	TransferToQueue: {
 
 		sty ZP.TempY
@@ -358,17 +539,18 @@ ROCKS: {
 
 			sty ZP.TempY
 
+			GetRandom:
+
 			jsr RANDOM.Get
-			and #%00001111
-			tay
-			lda DropColumns, y
+			and #%00000111
+			cmp #6
+			bcs GetRandom
 			clc
 			adc GRID.PlayerLookup, x
 			tay
 
 			lda GRID.PlayerOne, y
 			bne Loop
-
 
 
 		rts

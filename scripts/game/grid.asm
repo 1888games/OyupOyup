@@ -511,12 +511,14 @@ GRID: {
 
 					lda Combo, x
 					sec
-					sbc #2
+					sbc #1
 					bmi NoGarbage2
 
 					jsr ROCKS.CalculateComboRocks
 
 					NoGarbage2: 
+
+					ldx CurrentSide
 
 					lda #PLAYER.PLAYER_STATUS_WAIT
 					sta PLAYER.Status, x

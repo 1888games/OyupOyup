@@ -192,8 +192,8 @@ MAIN: {
 		jsr GRID.FrameUpdate
 		jsr EXPLOSIONS.FrameUpdate
 		jsr PANEL.FrameUpdate
-	
 		jsr ROCKS.FrameUpdate
+	
 
 		Paused:
 

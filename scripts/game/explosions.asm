@@ -2,7 +2,7 @@ EXPLOSIONS: {
 
 
 	.label FrameTime = 4
-	.label FirstSprite = 2
+	.label FirstSprite = 4
 	.label MaxSprites = 8 - FirstSprite
 
 	XPosLSB:	.fill 29, 26 + (i * 8)
