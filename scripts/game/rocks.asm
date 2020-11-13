@@ -14,8 +14,8 @@ ROCKS: {
 	.label BlobStartPointer = 16
 	.label BlobEndPointer = 19
 
-	.label Stage2Speed = 10
-	.label Stage2Speed_Y = 8
+	.label Stage2Speed = 8
+	.label Stage2Speed_Y = 6
 
 
 	Count:			.byte 0, 0
@@ -957,7 +957,7 @@ ROCKS: {
 		sta Mode, y
 		
 		lda #1
-		sta PANEL.Mode
+		sta PANEL.Mode, y
 		//nop
 
 

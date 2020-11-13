@@ -62,7 +62,7 @@ GRID: {
 	CheckProgress:		.byte 0, 0
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
-	Active:				.byte 1, 0
+	Active:				.byte 1, 1
 
 	QueueLength:		.byte 0
 	QueueColour:		.byte 0
@@ -537,6 +537,10 @@ GRID: {
 
 			NextBeans:
 
+				ldy CurrentSide
+
+				jsr ROCKS.TransferToQueue
+
 				ldx CurrentSide
 
 				lda #0
@@ -544,12 +548,8 @@ GRID: {
 
 				lda #GRID_MODE_PAUSE
 				sta Mode, x
+	
 
-				lda #1
-				sta PANEL.Mode, x
-
-				lda #0
-				sta PANEL.Mode + 1
 
 		Finish:
 

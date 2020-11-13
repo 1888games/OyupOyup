@@ -24,6 +24,7 @@ PLAYER: {
 	ClearUp:			.byte 1, 0, 1, 0
 	AddForX:			.byte 1, 255, 255, 1
 	AddForY:			.byte 6, 6,	 250, 250
+	CPU:				.byte 0, 1
 	
 
 
@@ -61,7 +62,73 @@ PLAYER: {
 
 
 
+	AI: {
+
+		ldy #0
+
+		jsr RANDOM.Get
+		cmp #4
+		bcc Left
+
+		cmp #252
+		bcs Right
+
+		cmp #251
+		bcs Rotate
+
+		cmp #210
+		bcs Down
+
+
+
+		jmp Finish
+
+
+		Rotate:
+
+			lda #1
+			sta INPUT.FIRE_UP_THIS_FRAME, y
+			jmp Finish
+
+		Down:
+
+			lda #1
+			sta INPUT.JOY_DOWN_NOW, y
+			jmp Finish
+
+		Left:
+
+			lda #1
+			sta INPUT.JOY_LEFT_NOW, y
+			jmp Finish
+
+
+		Right:
+
+			lda #1
+			sta INPUT.JOY_RIGHT_NOW, y
+
+
+
+
+		Finish:
+
+
+
+
+
+
+		rts
+	}
+
 	HandleControls: {
+
+		lda CPU, x
+		beq NotCPU
+
+		jsr AI
+
+		NotCPU:
 
 		lda ControlTimer, x
 		beq Ready
@@ -265,7 +332,6 @@ PLAYER: {
 
 		RotateUp:
 
-
 			lda GridPosition, x
 			tay
 
@@ -467,6 +533,8 @@ PLAYER: {
 
 				lda #1
 				sta GRID.NumberMoving, x
+
+
 				
 				jsr HandleControls
 
@@ -666,14 +734,7 @@ PLAYER: {
 
 			sty ZP.Y
 
-			ldx #0
-
-			lda Offset, y
-			beq NoChange
-
-			ldx #2
-
-			NoChange:
+			
 				
 			jsr DeleteBean
 
@@ -696,6 +757,15 @@ PLAYER: {
 
 		// y = 0-3
 
+
+		ldx #0
+
+		lda Offset, y
+		beq NoChange
+
+		ldx #2
+
+		NoChange:
 
 		GetChars:
 
@@ -939,13 +1009,6 @@ PLAYER: {
 			sta Status, y
 			sta GRID.NumberLanded, y
 
-			//lda #0
-			//sta GRID.NumberMoving, y
-
-
-
-			//jsr ROCKS.TransferToQueue
-				
 			rts
 
 		Finish:
