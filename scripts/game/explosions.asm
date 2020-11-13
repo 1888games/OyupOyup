@@ -161,9 +161,6 @@ EXPLOSIONS: {
 					sta VIC.SPRITE_0_Y, x
 
 
-
-
-
 			EndLoop:
 
 				ldx ZP.TempX

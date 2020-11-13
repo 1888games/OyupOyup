@@ -27,6 +27,7 @@ ZP: {
 	NumberMoving:		.byte $00
 	AtLeastOneLanded:	.byte $00
 	PreviousBeanColour:	.byte $00
+	Amount:				.byte $00
 	
 
 

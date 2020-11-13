@@ -531,12 +531,11 @@ GRID: {
 					asl
 					sta CheckTimer, x
 
+					jsr ROCKS.StartTransfer
+
 					jmp Finish
 
 			NextBeans:
-
-				ldy CurrentSide
-				jsr ROCKS.TransferToQueue
 
 				ldx CurrentSide
 

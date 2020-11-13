@@ -3,10 +3,15 @@ ROCKS: {
 
 	.label FullCharID = 106
 	.label SingleCharID = 105
-	.label ComboTime = 60
+	.label ComboTime = 50
+	.label Stage1Time = 20
+	.label Stage2Time = 40
+
 
 	.label ComboStartPointer = 44
 	.label ComboEndPointer  = 52
+	.label BlobStartPointer = 16
+	.label BlobEndPointer = 19
 
 
 	Count:			.byte 0, 0
@@ -27,6 +32,10 @@ ROCKS: {
 	YPos:			.byte 0, 0
 	Speed:			.byte 0, 0
 	Frame:			.byte 0, 0
+	Stage:			.byte 0, 0
+	StageTimer:		.byte 0, 0
+
+	StageTimes:		.byte 20, 40
 
 	TargetXPos_MSB:	.byte 0, 0
 	TargetXPos_LSB:	.byte 0, 0
@@ -34,6 +43,11 @@ ROCKS: {
 
 	ComboTimer:		.byte 0, 0
 	ComboFrame:		.byte 0, 0
+
+	MasterTargetXPos_MSB:	.byte 0, 0
+	MasterTargetXPos_LSB:	.byte 0, 0
+	<asterTargetYPos:		.byte 0, 0
+
 	
 
 	Order:					.byte 6, 7, 5, 8, 4, 9, 3, 10, 2, 11, 1, 0
@@ -62,15 +76,6 @@ ROCKS: {
 
 
 
-	
-
-
-
-
-
-
-
-
 	Reset: {
 
 		lda #0
@@ -95,7 +100,223 @@ ROCKS: {
 	}
 
 
-	
+
+	StartTransfer: {
+
+		lda #BlobStartPointer
+		sta SPRITE_POINTERS + 2, x
+		sta Frame, x
+
+		lda StageTimes
+		sta StageTimer, x
+
+		lda Colours, x
+		sta VIC.SPRITE_COLOR_2, x
+
+		txa
+		asl
+		tax
+
+		ldy ZP.Row
+		iny
+		lda EXPLOSIONS.YPos, y
+		sta VIC.SPRITE_2_Y, x
+
+		ldy ZP.Column
+		lda EXPLOSIONS.XPosLSB, y
+		sta VIC.SPRITE_2_X, x
+
+		ldx GRID.CurrentSide
+
+		lda EXPLOSIONS.XPosMSB, y
+		beq NoMSB
+
+		MSB:
+
+			lda VIC.SPRITE_MSB
+			ora DRAW.MSB_On, x
+			sta VIC.SPRITE_MSB
+			jmp Finish
+
+		NoMSB:
+
+			lda VIC.SPRITE_MSB
+			and DRAW.MSB_Off, x
+			sta VIC.SPRITE_MSB
+
+		Finish:
+
+
+
+
+
+		rts
+	}
+
+
+
+	TransferToQueue: {
+
+
+		sty ZP.TempY
+
+		lda Count, y
+		bne AreRocks
+
+		lda #1
+		sta PANEL.Mode, y
+		sta PLAYER.Status, y
+
+		lda #0
+		sta Mode
+		rts
+
+		AreRocks:
+
+		lda #1
+		sta Mode, y
+
+		lda QueueOffset, y
+		sta ZP.Offset
+		tax
+
+		Loop:
+
+			lda Count, y
+			sec
+			sbc #6
+			bpl FullRow
+
+			lda Count, y
+			tay
+
+			PartialLoop:
+
+				jsr RANDOM.Get
+				and #%00000111
+				cmp #6
+				bcs PartialLoop
+				tax
+
+				inc Queue, x
+
+				dey
+				bne PartialLoop
+
+				jmp Finish
+
+
+			FullRow:
+
+				sta Count, y
+
+				ldx ZP.Offset
+
+				inc Queue + 0, x
+				inc Queue + 1, x
+				inc Queue + 2, x
+				inc Queue + 3, x
+				inc Queue + 4, x
+				inc Queue + 5, x
+
+				jmp Loop
+
+
+		Finish:
+
+			ldx ZP.TempY
+			lda #0
+			sta Count, x
+
+		rts
+	}
+
+
+		
+	UpdateOrb: {
+
+
+		ldx #0
+
+		Loop:
+
+			stx ZP.X
+
+			lda Frame, x
+			beq EndLoop
+
+			lda StageTimer, x
+			beq Finished
+
+			Done:
+
+				dec StageTimer, x
+
+				txa
+				asl
+				tax
+
+				ldy Stage
+				beq StageOne
+
+
+				StageTwo:
+
+
+				StageOne:
+
+					ldy ZP.X
+					lda StageTimer,y
+					lsr
+					lsr
+					lsr
+					sta ZP.Amount
+					inc ZP.Amount
+						
+					lda VIC.SPRITE_2_Y, x
+					sec
+					sbc ZP.Amount
+					sta VIC.SPRITE_2_Y, x
+
+					cpy #0
+					beq Left
+
+					Right:
+
+						inc VIC.SPRITE_2_X, x
+						jmp EndLoop
+
+					Left:
+
+						dec VIC.SPRITE_2_X, x
+
+
+				jmp EndLoop
+
+			Finished:
+
+				lda #0
+				sta Frame, x
+
+				txa
+				asl
+				tax
+
+				lda #0
+				sta VIC.SPRITE_2_Y, x
+
+			EndLoop:	
+
+				ldx ZP.X
+
+				inx
+				cpx #2
+				bcc Loop
+
+
+
+		rts
+	}
 
 	UpdateCombo: {
 
@@ -111,7 +332,7 @@ ROCKS: {
 			lda ComboTimer, x
 			beq Finished
 
-			and #%00000001
+			and #%00000011
 			beq Dark
 
 			Light:
@@ -127,13 +348,25 @@ ROCKS: {
 
 			Done:
 
+			
+				lda ComboTimer, x
+				lsr
+				lsr
+				lsr
+				lsr
+				sta ZP.Amount
+				inc ZP.Amount
+
 				dec ComboTimer, x
 
 				txa
 				asl
 				tax
 
-				dec VIC.SPRITE_0_Y, x
+				lda VIC.SPRITE_0_Y, x
+				sec
+				sbc ZP.Amount
+				sta VIC.SPRITE_0_Y, x
 
 				jmp EndLoop
 
@@ -163,6 +396,9 @@ ROCKS: {
 		rts
 	}
 
+
+
+
 	StartCombo: {
 
 
@@ -181,6 +417,7 @@ ROCKS: {
 		tax
 
 		ldy ZP.Row
+		dey
 		lda EXPLOSIONS.YPos, y
 		sta VIC.SPRITE_0_Y, x
 
@@ -329,6 +566,7 @@ ROCKS: {
 	FrameUpdate: {
 
 		jsr UpdateCombo
+		jsr UpdateOrb
 
 		ldx #0
 
@@ -451,82 +689,6 @@ ROCKS: {
 
 
 
-
-
-	TransferToQueue: {
-
-		sty ZP.TempY
-
-		lda Count, y
-		bne AreRocks
-
-		lda #1
-		sta PANEL.Mode, y
-		sta PLAYER.Status, y
-
-		lda #0
-		sta Mode
-		rts
-
-		AreRocks:
-
-		lda #1
-		sta Mode, y
-
-		lda QueueOffset, y
-		sta ZP.Offset
-		tax
-
-		Loop:
-
-			lda Count, y
-			sec
-			sbc #6
-			bpl FullRow
-
-			lda Count, y
-			tay
-
-			PartialLoop:
-
-				jsr RANDOM.Get
-				and #%00000111
-				cmp #6
-				bcs PartialLoop
-				tax
-
-				inc Queue, x
-
-				dey
-				bne PartialLoop
-
-				jmp Finish
-
-
-			FullRow:
-
-				sta Count, y
-
-				ldx ZP.Offset
-
-				inc Queue + 0, x
-				inc Queue + 1, x
-				inc Queue + 2, x
-				inc Queue + 3, x
-				inc Queue + 4, x
-				inc Queue + 5, x
-
-				jmp Loop
-
-
-		Finish:
-
-			ldx ZP.TempY
-			lda #0
-			sta Count, x
-
-		rts
-	}
 
 	DropRocks: {
 
