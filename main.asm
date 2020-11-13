@@ -50,7 +50,7 @@ MAIN: {
 
 	//	jmp MENU.Show
 		//jmp CAMPAIGN.Show
-		jmp TITLE.Show
+		//jmp TITLE.Show
 
 		jmp StartGame
 
@@ -193,7 +193,7 @@ MAIN: {
 		jsr EXPLOSIONS.FrameUpdate
 		jsr PANEL.FrameUpdate
 		jsr ROCKS.FrameUpdate
-	
+
 
 		Paused:
 

@@ -13,8 +13,12 @@ ROCKS: {
 	.label BlobStartPointer = 16
 	.label BlobEndPointer = 19
 
+	.label Stage2Speed = 10
+	.label Stage2Speed_Y = 8
+
 
 	Count:			.byte 0, 0
+	PendingCount:	.byte 0, 0
 	PreviousCount:	.byte 0, 0
 	FullCount:		.byte 0
 	SingleCount:	.byte 0
@@ -44,10 +48,8 @@ ROCKS: {
 	ComboTimer:		.byte 0, 0
 	ComboFrame:		.byte 0, 0
 
-	MasterTargetXPos_MSB:	.byte 0, 0
-	MasterTargetXPos_LSB:	.byte 0, 0
-	<asterTargetYPos:		.byte 0, 0
-
+		
+	SpriteLookup:	.byte 0, 2, 4, 6, 8, 10, 12, 14
 	
 
 	Order:					.byte 6, 7, 5, 8, 4, 9, 3, 10, 2, 11, 1, 0
@@ -63,6 +65,7 @@ ROCKS: {
 	Opponent:		.byte 1, 0
 	Colours:		.byte RED, BLUE
 	Colours2:		.byte LIGHT_RED, LIGHT_BLUE
+	TargetColumns:	.byte 7, 32
 
 	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
 	ChainLookup:	.byte 3, 10, 27, 68, 90		// 2 - 6
@@ -113,41 +116,61 @@ ROCKS: {
 		lda Colours, x
 		sta VIC.SPRITE_COLOR_2, x
 
-		txa
-		asl
-		tax
+		lda Count, x
+		beq HeadForOpponent
 
-		ldy ZP.Row
-		iny
-		lda EXPLOSIONS.YPos, y
-		sta VIC.SPRITE_2_Y, x
+		HeadForOwn:
 
-		ldy ZP.Column
-		lda EXPLOSIONS.XPosLSB, y
-		sta VIC.SPRITE_2_X, x
+			ldy #0
+			lda EXPLOSIONS.YPos, y
+			sta TargetYPos, x
 
-		ldx GRID.CurrentSide
+			lda TargetColumns, x
+			tay
+			lda EXPLOSIONS.XPosLSB, y
+			sta TargetXPos_LSB, x
 
-		lda EXPLOSIONS.XPosMSB, y
-		beq NoMSB
+			lda EXPLOSIONS.XPosMSB, y
+			sta TargetXPos_MSB, x
+			jmp GetInitialPosition
 
-		MSB:
+		HeadForOpponent:
 
-			lda VIC.SPRITE_MSB
-			ora DRAW.MSB_On, x
-			sta VIC.SPRITE_MSB
-			jmp Finish
+			ldy #0
+			lda EXPLOSIONS.YPos, y
+			sta TargetYPos, x
 
-		NoMSB:
+			lda Opponent, x
+			tax
 
-			lda VIC.SPRITE_MSB
-			and DRAW.MSB_Off, x
-			sta VIC.SPRITE_MSB
+			lda TargetColumns, x
+			tay
 
-		Finish:
+			lda Opponent, x
+			tax
+
+			lda EXPLOSIONS.XPosLSB, y
+			sta TargetXPos_LSB, x
+
+			lda EXPLOSIONS.XPosMSB, y
+			sta TargetXPos_MSB, x
+
+		GetInitialPosition:
 
 
+			ldy ZP.Row
+			iny
+			lda EXPLOSIONS.YPos, y
+			sta YPos, x
 
+			ldy ZP.Column
+			lda EXPLOSIONS.XPosLSB, y
+			sta XPos_LSB, x
+
+		CalcMSB:
+
+			lda EXPLOSIONS.XPosMSB, y
+			sta XPos_MSB, x
 
 
 		rts
@@ -232,7 +255,206 @@ ROCKS: {
 	}
 
 
+	
+	Delete: {
+
+		lda #0
+		sta Frame, x
+
+		lda #0
+		sta VIC.SPRITE_2_Y, x
+
+		rts
+
+	}
+
+	HeadForTop: {
+
+		MoveX:
+
+			lda TargetXPos_MSB, x
+			cmp XPos_MSB, x
+			beq CheckLSB
+
+			bcc GoLeft
+			jmp GoRight
+
+		CheckLSB:
+
+			lda TargetXPos_LSB, x
+			cmp XPos_LSB, x
+			bcc GoLeft
+			beq MoveY
+
+
+		GoRight:
+
+			lda XPos_LSB, x
+			clc
+			adc #Stage2Speed
+			sta XPos_LSB, x
+
+			lda XPos_MSB, x
+			adc #0
+			sta XPos_MSB, x
+
+			cmp TargetXPos_MSB, x
+			bne MoveY
+
+			lda XPos_LSB, x
+			cmp TargetXPos_LSB, x
+			bcc MoveY
+
+			lda TargetXPos_LSB, x
+			sta XPos_LSB, x
+
+			lda YPos, x
+			cmp TargetYPos, x
+			beq Arrived
+
+			jmp MoveY
+
+
+		GoLeft:
+
+			lda XPos_LSB, x
+			sec
+			sbc #Stage2Speed
+			sta XPos_LSB, x
+
+			lda XPos_MSB, x
+			sbc #0
+			sta XPos_MSB, x
+
+			cmp TargetXPos_MSB, x
+			bne MoveY
+
+			lda TargetXPos_LSB, x
+			cmp XPos_LSB, x
+			bcc MoveY
+
+			lda YPos, x
+			cmp TargetYPos, x
+			beq Arrived
+
+			lda TargetXPos_LSB, x
+			sta XPos_LSB, x
+
+
+		MoveY:
+
+			lda YPos, x
+			cmp TargetYPos, x
+			beq CheckArrived
+			bcc SetTarget
+
+			jmp MoveNow
+
+			SetTarget:
+
+				lda TargetYPos, x
+				sta YPos, x
+
+				jmp CheckArrived
+
+			MoveNow:
+
+				lda YPos, x
+				sec
+				sbc #Stage2Speed_Y
+				sta YPos, x
+
+			jmp NotArrived
+
+		CheckArrived:
+
+			lda TargetXPos_LSB, x
+			cmp XPos_LSB, x
+			bne NotArrived
+
+			lda TargetXPos_MSB, x
+			cmp XPos_MSB, x
+			bne NotArrived
+
+		Arrived:
+
 		
+			jsr Delete
+
+			lda Opponent, x
+			tax
+
+			lda Count, x
+			clc
+			adc PendingCount, x
+			sta Count, x
+
+			lda #0
+			sta PendingCount, x
+
+			lda Opponent, x
+			tax
+
+
+
+		NotArrived:
+
+
+
+		rts
+	}
+
+	UpdateSprite: {
+
+		txa
+		asl
+		tay
+
+		lda XPos_LSB, x
+		sta VIC.SPRITE_2_X, y
+
+		lda YPos, x
+		sta VIC.SPRITE_2_Y, y
+
+
+
+		lda XPos_MSB, x
+		beq NoMSB
+
+		MSB:
+
+
+			inx
+			inx
+
+			lda VIC.SPRITE_MSB
+			ora DRAW.MSB_On, x
+			sta VIC.SPRITE_MSB
+			jmp Finish
+
+		NoMSB:
+
+			inx
+			inx
+
+			lda VIC.SPRITE_MSB
+			and DRAW.MSB_Off, x
+			sta VIC.SPRITE_MSB
+
+
+
+		Finish:
+
+
+		dex
+		dex
+
+
+
+		rts
+	}
+
+
 	UpdateOrb: {
 
 
@@ -245,65 +467,71 @@ ROCKS: {
 			lda Frame, x
 			beq EndLoop
 
-			lda StageTimer, x
-			beq Finished
+			jsr UpdateSprite
 
-			Done:
+			lda Frame, x
+			beq EndLoop
+
+			lda Stage, x
+			beq StageOne
+
+			jsr HeadForTop
+			jmp EndLoop
+
+			StageOne:
+
+				lda StageTimer, x
+				beq Finished
 
 				dec StageTimer, x
 
-				txa
-				asl
-				tax
+				ldy ZP.X
+				lda StageTimer,y
+				lsr
+				lsr
+				lsr
+				sta ZP.Amount
+				inc ZP.Amount
+					
+				lda YPos, x
+				sec
+				sbc ZP.Amount
+				sta YPos, x
 
-				ldy Stage
-				beq StageOne
+				cpy #0
+				beq Left
 
+				Right:
 
-				StageTwo:
+					lda XPos_LSB, x
+					clc
+					adc #1
+					sta XPos_LSB, x
 
+					lda XPos_MSB
+					adc #0
+					sta XPos_MSB
 
-				StageOne:
+					jmp EndLoop
 
-					ldy ZP.X
-					lda StageTimer,y
-					lsr
-					lsr
-					lsr
-					sta ZP.Amount
-					inc ZP.Amount
-						
-					lda VIC.SPRITE_2_Y, x
+				Left:
+
+					lda XPos_LSB, x
 					sec
-					sbc ZP.Amount
-					sta VIC.SPRITE_2_Y, x
+					sbc #1
+					sta XPos_LSB, x
 
-					cpy #0
-					beq Left
-
-					Right:
-
-						inc VIC.SPRITE_2_X, x
-						jmp EndLoop
-
-					Left:
-
-						dec VIC.SPRITE_2_X, x
+					lda XPos_MSB, x
+					sbc #0
+					sta XPos_MSB, x
 
 
 				jmp EndLoop
 
 			Finished:
 
-				lda #0
-				sta Frame, x
-
-				txa
-				asl
-				tax
-
-				lda #0
-				sta VIC.SPRITE_2_Y, x
+				lda #1
+				sta Stage, x
 
 			EndLoop:	
 
@@ -469,10 +697,10 @@ ROCKS: {
 	    lda Opponent, x
 		tax	
 
-		lda Count, x
+		lda PendingCount, x
 		clc
 		adc BaseLookup, y
-		sta Count, x
+		sta PendingCount, x
 
 		lda Opponent, x
 		tax
@@ -497,10 +725,10 @@ ROCKS: {
 		tax	
 
 
-		lda Count, x
+		lda PendingCount, x
 		clc
 		adc ChainLookup, y
-		sta Count, x
+		sta PendingCount, x
 
 		lda Opponent, x
 		tax	
@@ -549,10 +777,10 @@ ROCKS: {
 			lda Opponent, x
 			tax	
 
-			lda Count, x
+			lda PendingCount, x
 			clc
 			adc ComboLookup, y
-			sta Count, x
+			sta PendingCount, x
 
 			lda Opponent, x
 			tax
