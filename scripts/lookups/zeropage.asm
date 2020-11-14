@@ -28,6 +28,10 @@ ZP: {
 	AtLeastOneLanded:	.byte $00
 	PreviousBeanColour:	.byte $00
 	Amount:				.byte $00
+	FrameRow:			.byte $00
+	CurrentSlot:		.byte $00
+	Player:				.byte $00
+	BeanID:				.byte $00
 	
 
 

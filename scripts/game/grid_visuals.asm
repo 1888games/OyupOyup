@@ -8,6 +8,7 @@ GRID_VISUALS: {
 					.fill GRID.TotalSquaresOnGrid, GRID.PlayerTwoStartColumn + (i * 2 - ((floor(i / GRID.Columns) * GRID.Columns) * 2))
 
 	.label BackgroundCharID = 202
+	.label LastAnimationFrame = 16
 
 	ClearSquare: {
 
@@ -181,17 +182,17 @@ GRID_VISUALS: {
 		dey
 		sty ZP.BeanType
 
-		cpy #16
+		cpy #LastAnimationFrame
 		beq Reset
 
 		cpy #GRID.BeanFallingType
-		beq Remove
+		beq Exploded
 
 		rts
 
-		Remove:
+		Exploded:
 
-			ldx ZP.X
+			ldx ZP.CurrentSlot
 			lda #0
 			sta GRID.PlayerOne, x
 
@@ -199,12 +200,12 @@ GRID_VISUALS: {
 			sta GRID.PreviousType, x
 
 			jsr ClearSquare
-			sfx(SFX_EXPLODE)
 
+			rts
 
 		Reset:	
 
-			ldx ZP.X
+			ldx ZP.CurrentSlot
 			lda #0
 			sta ZP.BeanType
 

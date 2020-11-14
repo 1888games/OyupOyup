@@ -190,27 +190,29 @@ ROCKS: {
 	TransferToQueue: {
 
 
-		sty ZP.TempY
+		ldy GRID.CurrentSide
 
 		lda Count, y
 		bne AreRocks
 
-		lda #1
-		sta PANEL.Mode, y
-		sta PLAYER.Status, y
+		NoRocks:
 
-		lda #0
-		sta Mode
-		rts
+			lda #1
+			sta PANEL.Mode, y
+			sta PLAYER.Status, y
+
+			lda #0
+			sta Mode
+			rts
 
 		AreRocks:
 
-		lda #1
-		sta Mode, y
+			lda #1
+			sta Mode, y
 
-		lda QueueOffset, y
-		sta ZP.Offset
-		tax
+			lda QueueOffset, y
+			sta ZP.Offset
+			tax
 
 		Loop:
 
@@ -256,7 +258,7 @@ ROCKS: {
 
 		Finish:
 
-			ldx ZP.TempY
+			ldx GRID.CurrentSide
 			lda #0
 			sta Count, x
 
@@ -278,6 +280,8 @@ ROCKS: {
 	}
 
 	HeadForTop: {
+
+		inc GRID.NumberMoving, x
 
 		MoveX:
 
@@ -403,6 +407,8 @@ ROCKS: {
 
 			lda Opponent, x
 			tax
+
+			dec GRID.NumberMoving, x
 
 
 
@@ -855,7 +861,6 @@ ROCKS: {
 
 			stx ZP.X
 
-
 			lda Mode, x
 			beq NoDrop
 
@@ -958,9 +963,7 @@ ROCKS: {
 		
 		lda #1
 		sta PANEL.Mode, y
-		//nop
-
-
+	
 
 		NotDone:
 

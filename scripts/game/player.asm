@@ -1007,7 +1007,7 @@ PLAYER: {
 
 			lda #2
 			sta Status, y
-			sta GRID.NumberLanded, y
+			sta GRID.NumberMoving, y
 
 			rts
 
@@ -1031,7 +1031,7 @@ PLAYER: {
 
 		lda #0
 		sta Status, y
-		sty ZP.StartID
+		sty ZP.Player
 
 		lda #FlashTime
 		sta FlashTimer, y
@@ -1082,7 +1082,7 @@ PLAYER: {
 		jsr DrawBean	
 
 
-		ldy ZP.StartID
+		ldy ZP.Player
 
 		lda #PLAYER.PLAYER_STATUS_NORMAL
 		sta PLAYER.Status, y

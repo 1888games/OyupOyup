@@ -2,6 +2,7 @@ GRID: {
 
 	.label Rows = 12
 	.label Columns = 6
+	.label RowsPerFrame = 3
 
 	.label TotalSquaresOnGrid = 72
 	.label TotalSquaresOnScreen = 144
@@ -11,6 +12,7 @@ GRID: {
 	.label LastColumnID = 5
 	.label CheckTime = 6
 	.label SquashedBean = 233
+	.label FirstAnimationFrame = 17
 
 	.label BeanFallingType = 22
 	.label BeanLandedType = BeanFallingType - 1
@@ -55,11 +57,13 @@ GRID: {
 	NumberLanded:		.byte 0, 0
 	Active:				.byte 1, 1
 
+
+	// Matching
+
 	Queue:				.fill 32, 0
 	Matched:			.fill 32, 0
 	QueueLength:		.byte 0
 	MatchCount:			.byte 0
-
 	NumberPopped:		.byte 0
 	Combo:				.byte 0, 0
 
@@ -274,6 +278,7 @@ GRID: {
 
 		jsr EXPLOSIONS.StartExplosion
 
+		sfx(SFX_EXPLODE)
 
 		NoExplosion:
 
@@ -295,6 +300,14 @@ GRID: {
 		sta NumberPopped
 
 		ldx CurrentSide
+		// bne NoStop
+
+		// lda NumberMoving, x
+		// .break
+		// nop
+
+
+		// NoStop:
 			
 		lda PlayerLookup, x
 		sta ZP.EndID
@@ -492,42 +505,45 @@ GRID: {
 
 			WaitForDrop:
 
-					inc Combo, x		
+				inc Combo, x		
 
-					lda NumberPopped
-					sec
-					sbc #2
-					bmi NoGarbage
+				lda NumberPopped
+				sec
+				sbc #2
+				bmi NoGarbage
 
-					jsr ROCKS.CalculateChainRocks
+				jsr ROCKS.CalculateChainRocks
 
-					NoGarbage:
+				NoGarbage:
 
-					lda Combo, x
-					sec
-					sbc #1
-					bmi NoGarbage2
+				lda Combo, x
+				sec
+				sbc #1
+				bmi NoGarbage2
 
-					jsr ROCKS.CalculateComboRocks
+				jsr ROCKS.CalculateComboRocks
 
-					NoGarbage2: 
+				NoGarbage2: 
 
-					ldx CurrentSide
+				ldx CurrentSide
 
-					lda #PLAYER.PLAYER_STATUS_WAIT
-					sta PLAYER.Status, x
+				lda #PLAYER.PLAYER_STATUS_WAIT
+				sta PLAYER.Status, x
 
-					jsr StartCheck
+				lda #GRID_MODE_NORMAL
+				sta Mode, x
 
-					lda #CheckTime
-					asl
-					asl
-					asl
-					sta CheckTimer, x
+				// jsr StartCheck
 
-					jsr ROCKS.StartTransfer
+				// lda #CheckTime
+				// asl
+				// asl
+				// asl
+				// sta CheckTimer, x
 
-					jmp Finish
+				jsr ROCKS.StartTransfer
+
+				jmp Finish
 
 			NextBeans:
 
@@ -539,12 +555,9 @@ GRID: {
 
 				lda #0
 				sta Combo, x
-
-				lda #0
 				sta Active, x
-	
 
-
+				
 		Finish:
 
 
@@ -653,6 +666,45 @@ GRID: {
 
 
 
+
+
+	EndOfCycle: {
+
+		lda #LastRowID
+		sta CurrentRow
+
+		lda #1
+		sta InitialDrawDone
+
+		ldx CurrentSide
+
+		lda Mode, x
+		cmp #GRID_MODE_WAIT_CHECK
+		beq StillMoving
+
+		cmp #GRID_MODE_CHECK
+		beq StillMoving
+
+		lda NumberMoving, x
+		bne StillMoving
+
+		Check:
+
+			lda #PLAYER.PLAYER_STATUS_WAIT
+			sta PLAYER.Status, x
+
+			jsr StartCheck
+
+		StillMoving:
+
+			lda #0
+			sta NumberMoving, x
+			sta NumberLanded, x
+
+
+		rts
+	}
+
 	UpdateSide: {
 
 		ldx CurrentSide
@@ -661,70 +713,39 @@ GRID: {
 
 		NormalMode:
 
-			ldy #2
-
 			lda StartRow
 			sta CurrentRow
 
+			ldy #RowsPerFrame
+			dey
+
 		Loop:
 
-			sty ZP.Y
+			sty ZP.FrameRow
+
+			lda #0
+			sta ZP.BeanType
 
 			jsr UpdateRow
 
-			ldx CurrentRow
-			dex
-			stx CurrentRow
-			bpl EndLoop
+			NextRow:
 
+				dec CurrentRow
+				ldx CurrentRow
+				bpl EndLoop
 
-			StartAgain:
+			StartAgain:	
 
-				ldy ZP.Y
-
-				lda #LastRowID
-				sta CurrentRow
-
-				lda #1
-				sta InitialDrawDone
-
-				ldx CurrentSide
-
-				lda Mode, x
-				cmp #GRID_MODE_WAIT_CHECK
-				beq StillMoving
-
-				cmp #GRID_MODE_CHECK
-				beq StillMoving
-
-				lda NumberMoving, x
-				bne StillMoving
-
-				Check:
-
-				lda #1
-				sta PLAYER.Status, x
-
-				jsr StartCheck
-
-			StillMoving:
-
-				lda #0
-				sta NumberMoving, x
-				sta NumberLanded, x
+				jsr EndOfCycle
 
 			EndLoop:
 
-				ldy ZP.Y
+				ldy ZP.FrameRow
 				dey
 				bpl Loop
 
-
 		Finish:
 	
-
-
-
 
 		rts
 	}
@@ -735,12 +756,7 @@ GRID: {
 
 
 
-
-
-	UpdateRow: {
-
-		lda #0
-		sta ZP.BeanType
+	GetStartAndEnd: {
 
 		GetFirstGridID:
 
@@ -762,29 +778,138 @@ GRID: {
 			adc #Columns
 			sta ZP.EndID
 
-
 		ldx ZP.StartID
 
-		Loop:
 
-			stx ZP.X
+		rts
+	}
+
+
+
+	CheckIfAnimating: {
+
+		DefaultSingleBean:
 
 			lda #0
 			sta CurrentType, x
 
+		IfMinusCantBe:
+
 			lda PreviousType, x
 			sta ZP.PreviousType
-			bmi CheckIfEmpty
+			bmi Finish
+
+		CheckPopAnimation:
 
 			cmp #LastPoppedFrame
-			bcc CheckIfEmpty
+			bcc Finish
 
-			AnimatePop:
+		AnimatePop:
 
-				tay
-				jsr GRID_VISUALS.UpdateAnimation
-				ldx ZP.X
+			tay
+			jsr GRID_VISUALS.UpdateAnimation
 
+			ldx ZP.CurrentSlot
+
+		Finish:
+
+
+		rts
+	}
+
+
+
+
+
+	CheckLeftBean: {
+
+		cpx ZP.StartID
+		beq Finish
+
+		NotFarLeft:
+
+			dex
+			lda PlayerOne, x
+			inx
+			cmp ZP.BeanColour
+			bne Finish
+
+			MatchToLeft:
+
+				lda ZP.BeanType
+				ora #LEFT
+				sta ZP.BeanType
+
+		Finish:
+
+
+		rts
+	}
+
+	CheckAboveBean: {
+
+		ldx ZP.CurrentSlot
+		lda CurrentRow
+		beq Finish
+
+		txa
+		sec
+		sbc #Columns
+		tax
+
+		lda PlayerOne, x
+		cmp ZP.BeanColour
+		bne Finish
+
+		MatchUp:
+
+			lda ZP.BeanType
+			ora #UP
+			sta ZP.BeanType
+
+		Finish:
+
+
+		rts
+	}
+
+	CheckRightBean: {
+
+		CheckFarRight:
+
+			ldx ZP.CurrentSlot
+			inx
+			cpx ZP.EndID
+			beq Finish
+
+		NotFarRight:
+
+			lda PlayerOne, x
+			dex
+			cmp ZP.BeanColour
+			bne Finish
+
+		MatchToRight:
+
+			lda ZP.BeanType
+			ora #RIGHT
+			sta ZP.BeanType
+
+		Finish:
+
+		rts
+	}
+
+	UpdateRow: {
+
+		jsr GetStartAndEnd
+
+		Loop:
+
+			stx ZP.CurrentSlot
+
+			jsr CheckIfAnimating
+			
 			CheckIfEmpty:
 
 				lda PlayerOne, x
@@ -793,30 +918,15 @@ GRID: {
 
 				jmp EndLoop
 
-			CheckLeft:
+			CheckInitialDraw:
 
 				lda InitialDrawDone
-				bne Continue
-
+				bne CheckLeft
 				jmp Draw
 
-				Continue:
+			CheckLeft:
 
-				cpx ZP.StartID
-				beq CheckDown
-
-				dex
-				lda PlayerOne, x
-				inx
-				cmp ZP.BeanColour
-				bne CheckDown
-
-				MatchToLeft:
-
-					lda ZP.BeanType
-					ora #LEFT
-					sta ZP.BeanType
-
+				jsr CheckLeftBean
 
 			CheckDown:
 
@@ -824,13 +934,17 @@ GRID: {
 				cmp #LastRowID
 				beq SolidBelow
 
-				txa
-				clc
-				adc #Columns
-				tax
+				NotBottomRow:
 
-				lda PlayerOne, x
-				beq EmptyBelow
+					txa
+					clc
+					adc #Columns
+					tax
+
+				CheckBeanBelow:
+
+					lda PlayerOne, x
+					beq MoveBeanDown
 
 				SolidBelow:
 
@@ -840,34 +954,41 @@ GRID: {
 					cpy #BeanFallingType
 					beq FinishedFalling
 
-					cpy #17
+					cpy #FirstAnimationFrame
 					bcc NotAnimating
+
+				Animating:
 
 					jsr GRID_VISUALS.UpdateAnimation
 					jmp Draw
 
 				FinishedFalling:
 
-					ldx ZP.X
+					ldx ZP.CurrentSlot
 					lda #BeanLandedType
 					sta ZP.BeanType
 
+				PreventCheckFiring:
+
 					ldx CurrentSide	
-					inc NumberLanded, x
+					inc NumberMoving, x
+
+				CheckSoundToPlay:
+
 
 					lda ZP.BeanColour
 					cmp #CYAN
 					beq IsRock
 
-					sfx(SFX_EXPLODE)
-					jmp Draw
+					IsBean:
 
+						sfx(SFX_EXPLODE)
+						jmp Draw
 
 					IsRock:
 
-					sfx(SFX_LAND)
-
-					jmp Draw
+						sfx(SFX_LAND)
+						jmp Draw
 
 				NotAnimating:
 
@@ -875,92 +996,56 @@ GRID: {
 					cmp #LastRowID
 					beq CheckUp
 
-
 					lda PlayerOne, x
 					cmp ZP.BeanColour
 					bne CheckUp
 
-				MatchAbove:
+				MatchBelow:
 
 					lda ZP.BeanType
 					ora #DOWN
 					sta ZP.BeanType
 					jmp CheckUp
 
-
-				EmptyBelow:
+				MoveBeanDown:
 
 					lda ZP.BeanColour
 					sta PlayerOne, x
 
 					lda #BeanFallingType
 					sta CurrentType, x
+					sta ZP.BeanType
 
 					lda #255
 					sta PreviousType, x
 
 					jsr GRID_VISUALS.DrawBean
 
+				PreventCheckFiring2:
+
 					ldx CurrentSide
 					inc NumberMoving, x
 
-					ldx ZP.X
+				DeleteOldGridSpace:
+
+					ldx ZP.CurrentSlot
 					lda #0
 					sta PlayerOne, x
 
 					lda #255
 					sta PreviousType, x
 
-
 					jsr GRID_VISUALS.ClearSquare
 					jmp ResetForNextBean
 
-
 			CheckUp:
 
-				ldx ZP.X
-
-				lda CurrentRow
-				beq CheckRight
-
-				txa
-				sec
-				sbc #Columns
-				tax
-
-				lda PlayerOne, x
-				cmp ZP.BeanColour
-				bne CheckRight
-
-				MatchUp:
-
-					lda ZP.BeanType
-					ora #UP
-					sta ZP.BeanType
-
-
-			CheckRight:
-
-				ldx ZP.X
-				inx
-				cpx ZP.EndID
-				beq Draw
-
-				lda PlayerOne, x
-				dex
-				cmp ZP.BeanColour
-				bne Draw
-
-				MatchToRight:
-
-					lda ZP.BeanType
-					ora #RIGHT
-					sta ZP.BeanType
-
-
+				jsr CheckAboveBean
+				jsr CheckRightBean
+			
 			Draw:
 
-				ldx ZP.X
+				ldx ZP.CurrentSlot
 				lda ZP.BeanType
 				sta CurrentType, x
 				jsr GRID_VISUALS.DrawBean
@@ -972,7 +1057,7 @@ GRID: {
 		
 			EndLoop:
 
-				ldx ZP.X
+				ldx ZP.CurrentSlot
 				inx
 				cpx ZP.EndID
 				beq Finish

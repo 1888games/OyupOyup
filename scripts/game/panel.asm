@@ -57,10 +57,9 @@ PANEL: {
 		jsr StartMove
 		jsr DrawInitialBeans
 
-		lda #1
-	//	sta Mode
-	//	sta Mode + 1
-
+		lda #0
+		sta Mode
+		sta Mode + 1
 
 		rts	
 
@@ -95,7 +94,7 @@ PANEL: {
 
 		Loop:
 
-			stx ZP.TempX
+			stx ZP.Player
 
 			lda Mode, x
 			beq EndLoop
@@ -103,7 +102,7 @@ PANEL: {
 			jsr MoveBeans
 
 
-			ldx ZP.TempX
+			ldx ZP.Player
 
 			EndLoop:
 
@@ -128,6 +127,7 @@ PANEL: {
 
 	MoveBeans: {
 
+		stx ZP.Player
 
 		lda #0
 		sta ZP.AtTarget
@@ -153,11 +153,11 @@ PANEL: {
 
 		Loop:
 
-			stx ZP.X
+			stx ZP.BeanID
 
 			jsr DeleteBean
 
-			ldx ZP.X
+			ldx ZP.BeanID
 
 			lda TargetRow, x
 			cmp CurrentRow, x
@@ -193,10 +193,9 @@ PANEL: {
 
 			EndLoop:
 				
-				
 				jsr DrawBean
 
-				ldx ZP.X
+				ldx ZP.BeanID
 				inx
 				cpx ZP.EndID
 				bcc Loop	
@@ -204,15 +203,11 @@ PANEL: {
 		lda ZP.AtTarget
 		bne Finish
 
-		ldy ZP.TempX
+		ldy ZP.Player
 
 		jsr PLAYER.SetupBeans
 
-		ldx ZP.TempX
-
-		lda #0
-		sta Mode, x
-
+		ldx ZP.Player
 		stx ZP.X
 
 		jsr PullFromQueue	
@@ -243,6 +238,12 @@ PANEL: {
 		inx
 
 		jsr DrawBean
+
+		ldx ZP.Player
+
+		lda #0
+		sta Mode, x
+
 
 
 
