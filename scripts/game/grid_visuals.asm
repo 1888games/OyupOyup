@@ -193,6 +193,7 @@ GRID_VISUALS: {
 		Exploded:
 
 			ldx ZP.CurrentSlot
+
 			lda #0
 			sta GRID.PlayerOne, x
 

@@ -641,6 +641,7 @@ ROCKS: {
 				lsr
 				lsr
 				lsr
+				lsr
 				sta ZP.Amount
 				inc ZP.Amount
 

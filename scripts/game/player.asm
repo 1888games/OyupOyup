@@ -1007,8 +1007,7 @@ PLAYER: {
 
 			lda #2
 			sta Status, y
-			sta GRID.NumberMoving, y
-
+			
 			rts
 
 		Finish:

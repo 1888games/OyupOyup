@@ -55,7 +55,7 @@ GRID: {
 	CheckProgress:		.byte 0, 0
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
-	Active:				.byte 1, 1
+	Active:				.byte 1, 0
 
 
 	// Matching
@@ -317,7 +317,6 @@ GRID: {
 			
 		CellLoop:
 
-			stx ZP.X
 			stx ZP.SlotID
 
 			CheckWhichCellToLookAt:
@@ -488,7 +487,7 @@ GRID: {
 				lda #0
 				sta MatchCount
 
-				ldx ZP.X
+				ldx ZP.SlotID
 				dex
 				cpx ZP.EndID
 				beq CompleteScan
@@ -518,7 +517,7 @@ GRID: {
 
 				lda Combo, x
 				sec
-				sbc #1
+				sbc #2
 				bmi NoGarbage2
 
 				jsr ROCKS.CalculateComboRocks
@@ -556,6 +555,7 @@ GRID: {
 				lda #0
 				sta Combo, x
 				sta Active, x
+
 
 				
 		Finish:
@@ -599,7 +599,6 @@ GRID: {
 			ldy MatchCount
 			dey
 
-		
 		Loop:
 			sty ZP.TempY
 
@@ -623,6 +622,7 @@ GRID: {
 
 		lda #0
 		sta MatchCount
+
 
 
 		rts
@@ -1052,10 +1052,10 @@ GRID: {
 
 			ResetForNextBean:
 
+			EndLoop:
+
 				lda #0
 				sta ZP.BeanType
-		
-			EndLoop:
 
 				ldx ZP.CurrentSlot
 				inx

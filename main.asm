@@ -52,8 +52,8 @@ MAIN: {
 	//	jmp MENU.Show
 		//jmp CAMPAIGN.Show
 		//jmp TITLE.Show
-
 		jmp StartGame
+
 
 	}
 
