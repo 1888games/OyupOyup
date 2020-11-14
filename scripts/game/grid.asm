@@ -1,10 +1,8 @@
 GRID: {
 
-
-
 	.label Rows = 12
 	.label Columns = 6
-	.label BackgroundCharID = 202
+
 	.label TotalSquaresOnGrid = 72
 	.label TotalSquaresOnScreen = 144
 	.label PlayerOneStartColumn = 2
@@ -17,10 +15,8 @@ GRID: {
 	.label BeanFallingType = 22
 	.label BeanLandedType = BeanFallingType - 1
 	.label BeanPoppedType = 25
-
 	.label LastPoppedFrame = 23
 
-	
 	* = * "Grid Data"
 
 	PlayerOne:	.fill Rows * Columns, GREEN
@@ -34,11 +30,6 @@ GRID: {
 	PlayerLookup:	.byte 0, Rows * Columns
 
 
-	RowLookup:	.fill TotalSquaresOnGrid, 1 + (floor(i / Columns) * 2)
-				.fill TotalSquaresOnGrid, 1 + (floor(i / Columns) * 2)
-
-	ColumnLookup:	.fill TotalSquaresOnGrid, PlayerOneStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
-					.fill TotalSquaresOnGrid, PlayerTwoStartColumn + (i * 2 - ((floor(i / Columns) * Columns) * 2))
 
 	RelativeColumn:	.fill TotalSquaresOnScreen, [0,1,2,3,4,5]
 
@@ -50,12 +41,12 @@ GRID: {
 	BackgroundColours:	.byte GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE
 
 
+
 	CurrentRow:			.byte LastRowID
 	StartRow:			.byte LastRowID
 
 	CurrentSide:		.byte 0
 	InitialDrawDone:	.byte 0
-
 
 	CheckTimer:			.byte 0, 0
 	Mode:				.byte 1, 1
@@ -64,20 +55,89 @@ GRID: {
 	NumberLanded:		.byte 0, 0
 	Active:				.byte 1, 1
 
-	QueueLength:		.byte 0
-	QueueColour:		.byte 0
 	Queue:				.fill 32, 0
-	MatchCount:			.byte 0
 	Matched:			.fill 32, 0
+	QueueLength:		.byte 0
+	MatchCount:			.byte 0
+
 	NumberPopped:		.byte 0
 	Combo:				.byte 0, 0
 
-	
+
+
+	Reset: {
+
+		jsr ClearGrid
+
+		lda #LastRowID
+		sta CurrentRow
+		sta StartRow
+
+		lda #0
+		sta CurrentSide
+		sta ZP.BeanType
+		sta InitialDrawDone
+		sta CheckTimer
+		sta CheckTimer + 1
+		sta QueueLength
+		sta NumberPopped
+		sta MatchCount
+		sta Combo
+		sta Combo + 1
+
+		
+		lda #1
+		sta NumberMoving
+		sta NumberMoving + 1
+		sta Mode
+		sta Mode + 1
+		sta MAIN.GameActive
 
 
 
+		rts
+	}
 
-	Clear: {
+
+
+	FrameUpdate: {
+
+		CheckIfGameActive:
+
+			lda MAIN.GameActive
+			beq Finish
+
+		UpdateLeftSide:
+
+			ldx CurrentSide
+			lda Active, x
+			beq UpdateRightSide
+
+			jsr UpdateSide
+
+		UpdateRightSide:
+
+			inc CurrentSide
+			ldx CurrentSide
+			lda Active, x
+			beq PrepareForNextFrame
+
+			jsr UpdateSide
+
+		PrepareForNextFrame:
+
+			dec CurrentSide
+			lda CurrentRow
+			sta StartRow
+
+		Finish:
+
+		rts
+	}
+
+
+
+	ClearGrid: {
 
 		ldx BottomRightIDs + 1
 
@@ -85,31 +145,37 @@ GRID: {
 
 			stx ZP.X
 
+			EmptyCell:
 
-			jsr RANDOM.Get
-			and #%00000111
+				lda #BLACK
+				sta PlayerOne, x
 
-			lda #BLACK
-			sta PlayerOne, x
+				jsr GRID_VISUALS.ClearSquare
 
-			jsr ClearSquare
+				lda #255
+				sta PreviousType, x
 
-			lda #255
-			sta PreviousType, x
+			EndLoop:
 
-			ldx ZP.X
+				ldx ZP.X
+				dex
+				cpx #255
+				beq Finish
 
-			dex
-			cpx #255
-			beq Finish
-			jmp Loop
+				jmp Loop
 
 
 		Finish:
+	
+		rts
 
-			ldy #0
+	}
 
-			rts
+
+
+	DummyBeans: {
+
+		ldy #0
 
 		Loop2:
 
@@ -142,48 +208,8 @@ GRID: {
 
 
 		rts
-
-
 	}
 
-
-
-
-
-	Reset: {
-
-		jsr Clear
-
-		lda #LastRowID
-		sta CurrentRow
-		sta StartRow
-
-		lda #0
-		sta CurrentSide
-		sta ZP.BeanType
-		sta InitialDrawDone
-
-		lda #0
-		sta CheckTimer
-		sta CheckTimer + 1
-		
-
-
-		lda #1
-		sta NumberMoving
-		sta NumberMoving + 1
-		sta Mode
-		sta Mode + 1
-
-
-		lda #1
-		sta MAIN.GameActive
-
-		
-
-
-		rts
-	}
 
 
 
@@ -213,8 +239,6 @@ GRID: {
 			bne Loop
 
 
-	
-
 		rts
 	}
 
@@ -231,10 +255,10 @@ GRID: {
 		cpy #1
 		bne NoExplosion
 
-		lda RowLookup, x
+		lda GRID_VISUALS.RowLookup, x
 		sta ZP.Row
 
-		lda ColumnLookup, x
+		lda GRID_VISUALS.ColumnLookup, x
 		sta ZP.Column
 
 		lda PlayerOne, x
@@ -245,7 +269,6 @@ GRID: {
 		clc
 		adc #1
 		tax
-
 
 		ldy ZP.BeanColour
 
@@ -258,39 +281,10 @@ GRID: {
 		lda #1
 		sta NumberMoving, x
 
-
 		rts
 	}
 
 	
-
-
-	CheckComplete: {
-
-		lda #255
-		sta CheckTimer, x
-
-		lda #GRID_MODE_NORMAL
-		sta Mode, x
-
-
-		rts
-	}
-
-
-
-	CheckGrid: {
-
-
-	
-
-		jsr Scan
-
-
-		Finish:
-
-		rts
-	}
 
 
 	Scan: {
@@ -546,8 +540,8 @@ GRID: {
 				lda #0
 				sta Combo, x
 
-				lda #GRID_MODE_PAUSE
-				sta Mode, x
+				lda #0
+				sta Active, x
 	
 
 
@@ -603,7 +597,7 @@ GRID: {
 			jsr PopBean
 
 			ldx ZP.TempX
-			jsr DrawBean
+			jsr GRID_VISUALS.DrawBean
 
 			ldy ZP.TempY
 			dey
@@ -621,43 +615,49 @@ GRID: {
 		rts
 	}
 
-	UpdateSide: {
 
-		ldx CurrentSide
 
-		lda Active, x
-		beq Finish
+
+	UpdateReadyToCheck: {
 
 		lda Mode, x
 		cmp #GRID_MODE_WAIT_CHECK
-		bne NotWaiting
+		bne Finish
 
-		lda CheckTimer, x
-		beq ReadyToCheck
+		WaitingForCheck:
 
-		dec CheckTimer, x
-		jmp NormalMode
+			lda CheckTimer, x
+			beq ReadyToCheck
+
+			dec CheckTimer, x
+			jmp Finish
 
 		ReadyToCheck:
 
 			lda #GRID_MODE_CHECK
 			sta Mode, x
-			
-		NotWaiting:
+
+
+		Finish:
 
 			cmp #GRID_MODE_CHECK
 			bne NotChecking
 
-		Checking:
-
-				jsr CheckGrid
-				jmp Finish
+			jmp Scan
 
 		NotChecking:
 
 
-			cmp #GRID_MODE_PAUSE
-			beq Finish
+		rts
+	}
+
+
+
+	UpdateSide: {
+
+		ldx CurrentSide
+
+		jsr UpdateReadyToCheck
 
 		NormalMode:
 
@@ -720,8 +720,6 @@ GRID: {
 				bpl Loop
 
 
-		
-
 		Finish:
 	
 
@@ -731,89 +729,13 @@ GRID: {
 		rts
 	}
 
-	FrameUpdate: {
-
-
-		lda MAIN.GameActive
-		beq Finish
-
-		jsr UpdateSide
-
-		inc CurrentSide
-		jsr UpdateSide
-
-		dec CurrentSide
-
-		lda CurrentRow
-		sta StartRow
-
-
-		Finish:
-
-		
-	//	dec $d020
-
-		rts
-	}
+	
 
 
 
 
 
 
-	UpdateAnimation: {
-
-		ldx CurrentSide
-		inc NumberMoving, x
-
-		dey
-		sty ZP.BeanType
-
-		cpy #16
-		beq Reset
-
-		cpy #BeanFallingType
-		beq Remove
-
-		
-		rts
-
-		Remove:
-
-			ldx ZP.X
-			lda #0
-			sta PlayerOne, x
-
-			lda #255
-			//sta CurrentType, x
-			sta PreviousType, x
-
-			jsr ClearSquare
-			sfx(SFX_EXPLODE)
-
-
-
-		Reset:	
-
-			ldx ZP.X
-			lda #0
-			sta ZP.BeanType
-
-			ldy CurrentSide
-			lda PLAYER.Status, y
-			cmp #PLAYER.PLAYER_STATUS_PLACED
-			bne Okay
-
-			lda #PLAYER.PLAYER_STATUS_WAIT
-			sta PLAYER.Status, y
-
-
-		Okay:
-
-
-
-		rts
-	}
 
 	UpdateRow: {
 
@@ -860,7 +782,7 @@ GRID: {
 			AnimatePop:
 
 				tay
-				jsr UpdateAnimation
+				jsr GRID_VISUALS.UpdateAnimation
 				ldx ZP.X
 
 			CheckIfEmpty:
@@ -921,7 +843,7 @@ GRID: {
 					cpy #17
 					bcc NotAnimating
 
-					jsr UpdateAnimation
+					jsr GRID_VISUALS.UpdateAnimation
 					jmp Draw
 
 				FinishedFalling:
@@ -977,7 +899,7 @@ GRID: {
 					lda #255
 					sta PreviousType, x
 
-					jsr DrawBean
+					jsr GRID_VISUALS.DrawBean
 
 					ldx CurrentSide
 					inc NumberMoving, x
@@ -990,7 +912,7 @@ GRID: {
 					sta PreviousType, x
 
 
-					jsr ClearSquare
+					jsr GRID_VISUALS.ClearSquare
 					jmp ResetForNextBean
 
 
@@ -1041,7 +963,7 @@ GRID: {
 				ldx ZP.X
 				lda ZP.BeanType
 				sta CurrentType, x
-				jsr DrawBean
+				jsr GRID_VISUALS.DrawBean
 
 			ResetForNextBean:
 
@@ -1066,169 +988,7 @@ GRID: {
 	}
 
 
-	DrawBean: {
-
-		lda ZP.BeanColour
-		cmp #CYAN
-		bne NotRock
-
-		lda #16
-		sta CurrentType, x
-
-		NotRock:
-
-		lda CurrentType, x
-		cmp PreviousType, x
-		beq Finish
-
-		lda RowLookup, x
-		sta ZP.Row
-
-		lda ColumnLookup, x
-		sta ZP.Column
-
-		TopLeft:
-
-				lda CurrentType, x
-				sta PreviousType, x
-				tay
-
-				lda BEAN.Chars, y
-				clc
-				adc #3
-				sta ZP.CharID
-
-			TimeToDraw:
-
-				ldx ZP.Column
-				ldy ZP.Row
-
-				jsr DRAW.PlotCharacter
-
-				lda ZP.BeanColour
-				clc
-				adc #8
-
-				jsr DRAW.ColorCharacter
-
-		TopRight:
-
-			ldy #1
-
-			dec ZP.CharID
-			lda ZP.CharID
-
-			sta (ZP.ScreenAddress), y
-
-			lda ZP.BeanColour
-			clc
-			adc #8
-			sta (ZP.ColourAddress), y
-
-
-		BottomRight:
-
-			ldy #41
-
-			dec ZP.CharID
-			lda ZP.CharID
-
-			sta (ZP.ScreenAddress), y
-
-			lda ZP.BeanColour
-			clc
-			adc #8
-			sta (ZP.ColourAddress), y
-
-
-		BottomLeft:
-
-			ldy #40
-
-			dec ZP.CharID
-			lda ZP.CharID
-
-			sta (ZP.ScreenAddress), y
-
-			lda ZP.BeanColour
-			clc
-			adc #8
-			sta (ZP.ColourAddress), y
-
-
-		Finish:
-
-
-
-		rts
-	}
-
-
-	ClearSquare: {
-
-		lda RowLookup, x
-		sta ZP.Row
-
-		lda ColumnLookup, x
-		sta ZP.Column
-
-		TopLeft:
-
-			lda #BackgroundCharID
-			sta ZP.CharID
-
-			ldx ZP.Column
-			ldy ZP.Row
-
-			jsr DRAW.PlotCharacter
-
-			lda #GREEN
-
-			jsr DRAW.ColorCharacter
-
-
-		TopRight:
-
-			ldy #1
-
-			inc ZP.CharID
-			lda ZP.CharID
-
-			sta (ZP.ScreenAddress), y
-
-			lda #PURPLE
-			sta (ZP.ColourAddress), y
-
-		BottomLeft:
-
-			ldy #40
-
-			inc ZP.CharID
-			lda ZP.CharID
-
-			sta (ZP.ScreenAddress), y
-
-			lda #YELLOW
-			sta (ZP.ColourAddress), y
-
-
-		BottomRight:
-
-
-			ldy #41
-
-			inc ZP.CharID
-			lda ZP.CharID
-
-			sta (ZP.ScreenAddress), y
-
-			lda #CYAN
-			sta (ZP.ColourAddress), y
-
-
-
-		rts
-	}
-
 	
+
+
 }

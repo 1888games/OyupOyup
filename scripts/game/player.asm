@@ -337,7 +337,7 @@ PLAYER: {
 
 			CheckNotTop:
 
-				lda GRID.RowLookup, y
+				lda GRID_VISUALS.RowLookup, y
 				cmp #1
 				bcs NotTop
 
@@ -418,7 +418,7 @@ PLAYER: {
 
 			CheckNotBottom:
 
-				lda GRID.RowLookup, y
+				lda GRID_VISUALS.RowLookup, y
 				cmp #23
 				bcc NotBottom
 
@@ -625,7 +625,7 @@ PLAYER: {
 			lda GridPosition, y
 			tax
 
-			lda GRID.RowLookup, x
+			lda GRID_VISUALS.RowLookup, x
 			sta ZP.Row
 
 			lda Offset, y
@@ -633,7 +633,7 @@ PLAYER: {
 			adc ZP.Row
 			sta ZP.Row
 
-			lda GRID.ColumnLookup, x
+			lda GRID_VISUALS.ColumnLookup, x
 			sta ZP.Column
 
 		GetColour:
@@ -804,7 +804,7 @@ PLAYER: {
 			lda GridPosition, y
 			tax
 
-			lda GRID.RowLookup, x
+			lda GRID_VISUALS.RowLookup, x
 			sta ZP.Row
 
 			lda Offset, y
@@ -812,7 +812,7 @@ PLAYER: {
 			adc ZP.Row
 			sta ZP.Row
 
-			lda GRID.ColumnLookup, x
+			lda GRID_VISUALS.ColumnLookup, x
 			sta ZP.Column
 
 		TopLeft:
@@ -927,7 +927,7 @@ PLAYER: {
 
 		lda GridPosition, y
 		tax
-		lda GRID.RowLookup, x
+		lda GRID_VISUALS.RowLookup, x
 		cmp #23
 		beq Collision
 
@@ -1089,6 +1089,9 @@ PLAYER: {
 
 		lda #GRID_MODE_NORMAL
 		sta GRID.Mode, y
+
+		lda #1
+		sta GRID.Active, y
 
 
 		rts
