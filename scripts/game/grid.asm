@@ -31,6 +31,8 @@ GRID: {
 
 	PlayerLookup:	.byte 0, Rows * Columns
 
+	RowsPerFrameUse:	.byte RowsPerFrame
+
 
 
 	RelativeColumn:	.fill TotalSquaresOnScreen, [0,1,2,3,4,5]
@@ -96,6 +98,9 @@ GRID: {
 		sta Mode
 		sta Mode + 1
 		sta MAIN.GameActive
+
+		lda #RowsPerFrame
+		sta RowsPerFrameUse
 
 
 
@@ -170,6 +175,8 @@ GRID: {
 
 
 		Finish:
+
+		jsr DummyBeans
 	
 		rts
 
@@ -665,6 +672,21 @@ GRID: {
 	}
 
 
+	EndOfRound: {
+
+		lda #0
+		sta Active
+		sta Active + 1
+
+		lda #GRID_MODE_PAUSE
+		sta Mode
+		sta Mode + 1
+
+		inc $d020
+
+
+		rts
+	}
 
 
 
@@ -690,10 +712,22 @@ GRID: {
 
 		Check:
 
-			lda #PLAYER.PLAYER_STATUS_WAIT
-			sta PLAYER.Status, x
+			lda Mode, x
+			cmp #GRID_MODE_FALL
+			bne NotGameOver
 
-			jsr StartCheck
+			EndRound:	
+
+
+				jsr EndOfRound
+				rts
+
+			NotGameOver:
+
+				lda #PLAYER.PLAYER_STATUS_WAIT
+				sta PLAYER.Status, x
+
+				jsr StartCheck
 
 		StillMoving:
 
@@ -716,7 +750,7 @@ GRID: {
 			lda StartRow
 			sta CurrentRow
 
-			ldy #RowsPerFrame
+			ldy RowsPerFrameUse
 			dey
 
 		Loop:
@@ -900,6 +934,69 @@ GRID: {
 		rts
 	}
 
+
+	FallDown: {
+
+		CheckIfBottomRow:
+
+			lda CurrentRow
+			cmp #LastRowID
+			beq DeleteOldGridSpace
+
+		NotBottomRow:
+
+			txa
+			clc
+			adc #Columns
+			tax
+
+		CheckBeanBelow:
+
+			lda PlayerOne, x
+			beq TransferDataBelow
+
+			ldx CurrentSide
+			inc NumberMoving, x
+
+			jmp Finish
+
+		TransferDataBelow:
+
+			lda ZP.BeanColour
+			sta PlayerOne, x
+
+			lda #BeanFallingType
+			sta CurrentType, x
+			sta ZP.BeanType
+
+			lda #255
+			sta PreviousType, x
+
+			jsr GRID_VISUALS.DrawBean
+
+		PreventCheckFiring:
+
+			ldx CurrentSide
+			inc NumberMoving, x
+
+		DeleteOldGridSpace:
+
+			ldx ZP.CurrentSlot
+			lda #0
+			sta PlayerOne, x
+
+			lda #255
+			sta PreviousType, x
+
+			jsr GRID_VISUALS.ClearSquare
+
+		Finish:
+		
+
+		rts
+
+	}
+
 	UpdateRow: {
 
 		jsr GetStartAndEnd
@@ -930,9 +1027,9 @@ GRID: {
 
 			CheckDown:
 
-				lda CurrentRow
-				cmp #LastRowID
-				beq SolidBelow
+					lda CurrentRow
+					cmp #LastRowID
+					beq BottomRow
 
 				NotBottomRow:
 
@@ -946,8 +1043,23 @@ GRID: {
 					lda PlayerOne, x
 					beq MoveBeanDown
 
-				SolidBelow:
+					jmp SolidBelow
 
+				BottomRow:
+
+					ldy CurrentSide
+					lda Mode, y
+					cmp #GRID_MODE_FALL
+					bne SolidBelow
+
+					tya
+					tax
+					inc NumberMoving, x
+
+					jmp DeleteOldGridSpace
+
+				SolidBelow:
+				
 					ldy ZP.PreviousType
 					bmi NotAnimating
 

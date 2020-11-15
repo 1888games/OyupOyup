@@ -152,7 +152,8 @@ TITLE: {
 			cmp #160
 			bne WaitForRasterLine
 
-		
+		lda #0
+		sta cooldown
 
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y

@@ -19,7 +19,7 @@ PlaySfx: {
 	Okay:
 
 	stx lastSfX
-	lda #10
+	lda #10 
 	sta cooldown
 	jsr sfx_play
 

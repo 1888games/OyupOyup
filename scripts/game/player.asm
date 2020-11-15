@@ -3,6 +3,7 @@ PLAYER: {
 	.label AutoDropTime = 18
 	.label FlashTime = 10
 	.label ControlCooldown = 3
+	.label FailsafeTime = 60
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
@@ -25,6 +26,8 @@ PLAYER: {
 	AddForX:			.byte 1, 255, 255, 1
 	AddForY:			.byte 6, 6,	 250, 250
 	CPU:				.byte 0, 1
+
+	FailsafeTimer:		.byte 0, 0
 	
 
 
@@ -522,6 +525,24 @@ PLAYER: {
 				cmp #PLAYER_STATUS_WAIT
 				beq EndLoop
 
+				cmp #PLAYER_STATUS_PLACED
+				bne NotPlaced
+
+				lda FailsafeTimer, x
+				beq ForceCheck
+
+				dec FailsafeTimer, x
+				jmp EndLoop
+
+
+				ForceCheck:
+
+					.break
+					nop
+
+
+				NotPlaced:
+
 				lda #1
 				sta GRID.NumberMoving, x
 
@@ -533,8 +554,6 @@ PLAYER: {
 
 				lda #1
 				sta GRID.NumberMoving, x
-
-
 				
 				jsr HandleControls
 
@@ -931,6 +950,7 @@ PLAYER: {
 		cmp #23
 		beq Collision
 
+
 		NoCollisionFloor:	
 
 			lda GridPosition, y
@@ -1005,8 +1025,11 @@ PLAYER: {
 
 			ldy ZP.X
 
-			lda #2
+			lda #PLAYER_STATUS_PLACED
 			sta Status, y
+
+			lda #FailsafeTime
+			sta FailsafeTimer, y
 			
 			rts
 
@@ -1019,6 +1042,33 @@ PLAYER: {
 
 
 
+
+		rts
+	}
+
+
+	LostRound: {
+
+
+		lda #GRID_MODE_PAUSE
+		sta GRID.Mode
+		sta GRID.Mode + 1
+
+		ldy ZP.Player
+		lda #GRID_MODE_FALL
+		sta GRID.Mode, y
+
+
+		lda #GRID.LastRowID
+		sta GRID.StartRow
+
+		
+		lda #PLAYER_STATUS_WAIT
+		sta Status
+		sta Status + 1
+		
+		lda #2
+		//sta GRID.RowsPerFrameUse
 
 		rts
 	}
@@ -1038,7 +1088,6 @@ PLAYER: {
 		lda #AutoDropTime
 		sta DropTimer, y
 
-
 		lda PANEL.Offsets, y
 		tax
 
@@ -1056,9 +1105,18 @@ PLAYER: {
 		lda PANEL.Queue + 1, x
 		sta Beans + 1, y
 
-
 		lda StartGridPositions, y
 		sta GridPosition, y
+		tax
+
+		lda GRID.PlayerOne, x
+		beq SpaceAvailable
+
+		jsr LostRound
+		jmp Finish
+
+		SpaceAvailable:
+
 
 		lda StartGridPositions + 1, y
 		sta GridPosition + 1, y
@@ -1089,8 +1147,12 @@ PLAYER: {
 		lda #GRID_MODE_NORMAL
 		sta GRID.Mode, y
 
+		Finish:
+
+
 		lda #1
 		sta GRID.Active, y
+
 
 
 		rts
