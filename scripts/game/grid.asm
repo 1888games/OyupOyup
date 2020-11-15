@@ -28,6 +28,7 @@ GRID: {
 
 	CurrentType:	.fill TotalSquaresOnScreen, 255
 	PreviousType:	.fill TotalSquaresOnScreen, 255
+	RocksAdjacent:	.fill TotalSquaresOnScreen, 255
 
 	PlayerLookup:	.byte 0, Rows * Columns
 
@@ -222,6 +223,10 @@ GRID: {
 		lda #CYAN
 		sta PlayerOne
 
+		sta PlayerOne + 1
+		sta PlayerOne + 2
+		sta PlayerOne + 3
+
 
 		rts
 	}
@@ -264,44 +269,152 @@ GRID: {
 
 	PopBean: {
 
+		stx ZP.BeanID
+
+		lda PlayerOne, x
+		beq AlreadyPopped
+		sta ZP.PreviousBeanColour
 
 		lda #BeanPoppedType
 		sta CurrentType, x
 
-		cpy #1
-		bne NoExplosion
+		CheckIfRock:
 
-		lda GRID_VISUALS.RowLookup, x
-		sta ZP.Row
+			lda ZP.PreviousBeanColour
+			cmp #CYAN
+			bne NotRock
 
-		lda GRID_VISUALS.ColumnLookup, x
-		sta ZP.Column
+		IsRock:
 
-		lda PlayerOne, x
-		sta ZP.BeanColour
+			lda #0
+			sta PlayerOne, x
 
-		jsr RANDOM.Get
-		and #%00000001
-		clc
-		adc #1
-		tax
+			jsr GRID_VISUALS.ClearSquare
 
-		ldy ZP.BeanColour
+			jmp NoExplosion
 
-		jsr EXPLOSIONS.StartExplosion
+		NotRock:
 
-		sfx(SFX_EXPLODE)
+			OnlyOneExplosionPerSet:
+
+			cpy #1
+			bne NoExplosion
+
+			lda GRID_VISUALS.RowLookup, x
+			sta ZP.Row
+
+			lda GRID_VISUALS.ColumnLookup, x
+			sta ZP.Column
+
+			lda PlayerOne, x
+			sta ZP.BeanColour
+
+			jsr RANDOM.Get
+			and #%00000001
+			clc
+			adc #1
+			tax
+
+			ldy ZP.BeanColour
+
+			jsr EXPLOSIONS.StartExplosion
+
+			sfx(SFX_EXPLODE)
 
 		NoExplosion:
 
-		ldx CurrentSide
-		lda #1
-		sta NumberMoving, x
+			lda ZP.PreviousBeanColour
+			cmp #CYAN
+			beq NoRockCheck
+
+			jsr CheckRocks
+
+		NoRockCheck:
+
+			ldx CurrentSide
+			lda #1
+			sta NumberMoving, x
+
+
+		AlreadyPopped:
 
 		rts
 	}
 
+		
+	CheckRocks: {
+
+		ldx ZP.TempX
+		lda RocksAdjacent, x
+		sta ZP.Adjacency
+		beq Finish
+
+		CheckDown:
+
+			and #DOWN
+			beq CheckUp
+
+			RockDown:
+
+				lda ZP.TempX
+				clc
+				adc #6
+				tax
+
+				jsr PopBean
+
+		CheckUp:
+
+			lda ZP.Adjacency
+			and #UP
+			beq CheckLeft
+
+			RockUp:
+
+				lda ZP.TempX
+				sec
+				sbc #6
+				tax
+
+				jsr PopBean
 	
+		CheckLeft:
+
+			lda ZP.Adjacency
+			and #LEFT
+			beq CheckRight
+
+			RockLeft:
+
+				ldx ZP.TempX
+				dex
+
+				jsr PopBean
+
+		CheckRight:
+
+			lda ZP.Adjacency
+			and #RIGHT
+			beq Finish
+
+	
+
+			RockRight:
+
+				ldx ZP.TempX
+				inx
+
+				jsr PopBean
+
+		Finish:
+
+
+
+
+
+
+		rts
+	}
 
 
 	Scan: {
@@ -831,6 +944,7 @@ GRID: {
 
 			lda #0
 			sta CurrentType, x
+			sta RocksAdjacent, x
 
 		IfMinusCantBe:
 
@@ -870,6 +984,20 @@ GRID: {
 			dex
 			lda PlayerOne, x
 			inx
+			
+			cmp #CYAN
+			bne NotRock
+
+			Rock:
+
+			lda RocksAdjacent, x
+			ora #LEFT
+			sta RocksAdjacent, x
+			jmp Finish
+
+			
+			NotRock:
+
 			cmp ZP.BeanColour
 			bne Finish
 
@@ -897,6 +1025,19 @@ GRID: {
 		tax
 
 		lda PlayerOne, x
+		cmp #CYAN
+		bne NotRock
+
+		Rock:
+
+		ldx ZP.CurrentSlot
+		lda RocksAdjacent, x
+		ora #UP
+		sta RocksAdjacent, x
+		jmp Finish
+		
+		NotRock:
+
 		cmp ZP.BeanColour
 		bne Finish
 
@@ -925,6 +1066,19 @@ GRID: {
 
 			lda PlayerOne, x
 			dex
+
+			cmp #CYAN
+			bne NotRock
+
+		Rock:
+
+			lda RocksAdjacent, x
+			ora #RIGHT
+			sta RocksAdjacent, x
+			jmp Finish
+		
+		NotRock:
+
 			cmp ZP.BeanColour
 			bne Finish
 
@@ -1092,7 +1246,6 @@ GRID: {
 
 				CheckSoundToPlay:
 
-
 					lda ZP.BeanColour
 					cmp #CYAN
 					beq IsRock
@@ -1103,6 +1256,11 @@ GRID: {
 						jmp Draw
 
 					IsRock:
+
+						ldx ZP.CurrentSlot
+						lda RocksAdjacent, x
+						ora #DOWN
+						sta RocksAdjacent, x
 
 						sfx(SFX_LAND)
 						jmp Draw

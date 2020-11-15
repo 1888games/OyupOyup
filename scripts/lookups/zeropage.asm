@@ -33,6 +33,7 @@ ZP: {
 	Player:				.byte $00
 	BeanID:				.byte $00
 	RowRefresh:			.byte $00
+	Adjacency:			.byte $00
 	
 	
 
