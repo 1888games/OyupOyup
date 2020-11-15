@@ -90,13 +90,17 @@ GRID_VISUALS: {
 
 		lda GRID.CurrentType, x
 		cmp GRID.PreviousType, x
-		beq Finish
+		bne NeedsUpdate
 
-		lda RowLookup, x
-		sta ZP.Row
+		jmp Finish
+		
+		NeedsUpdate:
 
-		lda ColumnLookup, x
-		sta ZP.Column
+			lda RowLookup, x
+			sta ZP.Row
+
+			lda ColumnLookup, x
+			sta ZP.Column
 
 		TopLeft:
 

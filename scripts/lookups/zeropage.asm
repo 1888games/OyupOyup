@@ -32,6 +32,7 @@ ZP: {
 	CurrentSlot:		.byte $00
 	Player:				.byte $00
 	BeanID:				.byte $00
+	RowRefresh:			.byte $00
 	
 
 

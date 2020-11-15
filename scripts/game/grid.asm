@@ -111,6 +111,13 @@ GRID: {
 
 	FrameUpdate: {
 
+		inc $d020
+
+		lda ZP.FrameCounter
+		and #%00001111
+		sta ZP.RowRefresh
+
+
 		CheckIfGameActive:
 
 			lda MAIN.GameActive
@@ -140,6 +147,8 @@ GRID: {
 			sta StartRow
 
 		Finish:
+
+		dec $d020
 
 		rts
 	}
