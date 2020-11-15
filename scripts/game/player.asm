@@ -8,6 +8,7 @@ PLAYER: {
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
 	.label PLAYER_STATUS_PLACED = 2
+	.label PLAYER_STATUS_END = 3
 
 	.label DoubleClickTime = 16
 
@@ -58,6 +59,138 @@ PLAYER: {
 
 		rts
 	}	
+
+
+	FrameUpdate: {
+
+		ldx #0
+
+		Loop:
+
+			stx ZP.Player
+
+				lda DoubleClickTimer, x
+				beq CheckActive
+
+				dec DoubleClickTimer, x
+
+			CheckActive:
+
+				lda Status, x
+				cmp #PLAYER_STATUS_WAIT
+				beq EndLoop
+
+				cmp #PLAYER_STATUS_PLACED
+				bne NotPlaced
+
+				lda FailsafeTimer, x
+				beq ForceCheck
+
+				dec FailsafeTimer, x
+				jmp EndLoop
+
+
+				ForceCheck:
+
+					.break
+					nop
+
+
+				NotPlaced:
+
+				lda #1
+				sta GRID.NumberMoving, x
+
+				lda Status, x
+				cmp #PLAYER_STATUS_NORMAL
+				bne EndLoop
+
+			Moving:
+
+				lda #1
+				sta GRID.NumberMoving, x
+				
+				jsr HandleControls
+
+				ldx ZP.Player
+
+			CheckDrop:
+
+				lda DropTimer, x
+				beq ReadyToDrop
+
+			NoDrop:
+
+				dec DropTimer, x
+				jmp CheckFlash
+
+			ReadyToDrop:	
+
+				lda #AutoDropTime
+				sta DropTimer, x
+
+				jsr DeleteBeans
+
+				ldx ZP.Player
+
+				jsr DropBeans
+
+				lda Status, x
+				bne EndLoop
+
+				
+
+			CheckFlash:
+
+				
+				lda FlashTimer, x
+				beq ReadyToFlash
+
+				dec FlashTimer, x
+				jmp EndLoop
+
+				ReadyToFlash:
+
+				lda #FlashTime
+				sta FlashTimer, x
+
+				lda Flashing, x
+				beq MakeOne
+
+				lda #0
+				sta Flashing, x
+				jmp Draw
+
+				MakeOne:
+
+				lda #1
+				sta Flashing, x
+
+			Draw:	
+
+				lda FlashBeans, x
+				tay
+
+				jsr DrawBean
+
+
+			EndLoop:
+
+			ldx ZP.Player
+			inx
+			cpx #2
+			beq Finish
+
+			jmp Loop
+
+
+		Finish:
+
+
+		rts
+	}	
+
+
 
 
 
@@ -678,136 +811,6 @@ PLAYER: {
 
 
 
-	FrameUpdate: {
-
-		ldx #0
-
-		Loop:
-
-			stx ZP.Player
-
-				lda DoubleClickTimer, x
-				beq CheckActive
-
-				dec DoubleClickTimer, x
-
-			CheckActive:
-
-				lda Status, x
-				cmp #PLAYER_STATUS_WAIT
-				beq EndLoop
-
-				cmp #PLAYER_STATUS_PLACED
-				bne NotPlaced
-
-				lda FailsafeTimer, x
-				beq ForceCheck
-
-				dec FailsafeTimer, x
-				jmp EndLoop
-
-
-				ForceCheck:
-
-					.break
-					nop
-
-
-				NotPlaced:
-
-				lda #1
-				sta GRID.NumberMoving, x
-
-				lda Status, x
-				cmp #PLAYER_STATUS_NORMAL
-				bne EndLoop
-
-			Moving:
-
-				lda #1
-				sta GRID.NumberMoving, x
-				
-				jsr HandleControls
-
-				ldx ZP.Player
-
-			CheckDrop:
-
-				lda DropTimer, x
-				beq ReadyToDrop
-
-			NoDrop:
-
-				dec DropTimer, x
-				jmp CheckFlash
-
-			ReadyToDrop:	
-
-				lda #AutoDropTime
-				sta DropTimer, x
-
-				jsr DeleteBeans
-
-				ldx ZP.Player
-
-				jsr DropBeans
-
-				lda Status, x
-				bne EndLoop
-
-				
-
-			CheckFlash:
-
-				
-				lda FlashTimer, x
-				beq ReadyToFlash
-
-				dec FlashTimer, x
-				jmp EndLoop
-
-				ReadyToFlash:
-
-				lda #FlashTime
-				sta FlashTimer, x
-
-				lda Flashing, x
-				beq MakeOne
-
-				lda #0
-				sta Flashing, x
-				jmp Draw
-
-				MakeOne:
-
-				lda #1
-				sta Flashing, x
-
-			Draw:	
-
-				lda FlashBeans, x
-				tay
-
-				jsr DrawBean
-
-
-			EndLoop:
-
-			ldx ZP.Player
-			inx
-			cpx #2
-			beq Finish
-
-			jmp Loop
-
-
-		Finish:
-
-
-		rts
-	}	
-
-
 	DrawBean: {
 
 
@@ -1238,9 +1241,17 @@ PLAYER: {
 		sta GRID.StartRow
 
 
-		lda #PLAYER_STATUS_WAIT
+		lda #PLAYER_STATUS_END
 		sta Status
 		sta Status + 1
+
+		lda #2
+		sta ROCKS.Mode
+		sta ROCKS.Mode + 1
+
+		lda #0
+		sta PANEL.Mode
+		sta PANEL.Mode + 1
 		
 		lda #2
 		//sta GRID.RowsPerFrameUse

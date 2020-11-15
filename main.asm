@@ -152,7 +152,7 @@ MAIN: {
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR
 
-		lda #DARK_GRAY
+		lda #LIGHT_BLUE
 		sta VIC.BORDER_COLOUR
 
 		lda #WHITE

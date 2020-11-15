@@ -189,6 +189,7 @@ ROCKS: {
 
 	TransferToQueue: {
 
+	
 
 		ldy GRID.CurrentSide
 
@@ -230,6 +231,8 @@ ROCKS: {
 				and #%00000111
 				cmp #6
 				bcs PartialLoop
+				clc
+				adc ZP.Offset
 				tax
 
 				inc Queue, x
@@ -860,16 +863,19 @@ ROCKS: {
 
 		Loop:	
 
-			stx ZP.X
+			stx ZP.Player
 
 			lda Mode, x
 			beq NoDrop
 
 			Drop:	
 
-				ldy ZP.X
+				cmp #2
+				beq EndLoop
+
+				ldy ZP.Player
 				jsr TryQueue
-				ldx ZP.X
+				ldx ZP.Player
 
 			NoDrop:
 
@@ -879,7 +885,7 @@ ROCKS: {
 
 				jsr Draw
 
-				ldx ZP.X
+				ldx ZP.Player
 
 				lda Count, x
 				sta PreviousCount, x
@@ -900,16 +906,23 @@ ROCKS: {
 		lda #0
 		sta ZP.Okay
 
-		sty ZP.TempY
+		cpy #0
+		beq Okay2
+
+		//.break
+		nop
+
+
+		Okay2:
 
 		lda QueueOffset, y
 		tax
 
 		Loop:
 
-			stx ZP.Y
+			stx ZP.Column
 
-			ldy ZP.TempY
+			ldy ZP.Player
 
 			lda Queue, x
 			beq EndLoop
@@ -932,6 +945,9 @@ ROCKS: {
 
 			lda #CYAN
 			sta GRID.PlayerOne, y
+
+			lda #255
+			sta GRID.PreviousType, y
 		
 			lda ZP.Okay
 			clc
@@ -940,7 +956,7 @@ ROCKS: {
 
 			EndLoop:
 
-				ldx ZP.Y
+				ldx ZP.Column
 
 				inx
 				cpx #6
@@ -954,19 +970,34 @@ ROCKS: {
 
 		Finish:
 
-		lda ZP.Okay
-		bne NotDone
+			lda ZP.Okay
+			bne NotDone
 
-		//.break
-		ldy ZP.TempY
-		lda #0
-		sta Mode, y
-		
-		lda #1
-		sta PANEL.Mode, y
-	
+		Done:
+
+			//.break
+			ldy ZP.Player
+			lda #0
+			sta Mode, y
+
+			lda PLAYER.Status, y
+			cmp #PLAYER.PLAYER_STATUS_END
+			beq NotDone
+			
+			lda #1
+			sta PANEL.Mode, y
 
 		NotDone:
+
+			ldy ZP.Player
+			lda #GRID_MODE_NORMAL
+			sta GRID.Mode, y
+
+			lda #1
+			sta GRID.Active, y
+
+
+
 
 
 		rts

@@ -57,7 +57,7 @@ GRID: {
 	CheckProgress:		.byte 0, 0
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
-	Active:				.byte 1, 0
+	Active:				.byte 1, 1
 
 
 	// Matching
@@ -111,8 +111,6 @@ GRID: {
 
 	FrameUpdate: {
 
-		inc $d020
-
 		lda ZP.FrameCounter
 		and #%00001111
 		sta ZP.RowRefresh
@@ -147,8 +145,6 @@ GRID: {
 			sta StartRow
 
 		Finish:
-
-		dec $d020
 
 		rts
 	}
