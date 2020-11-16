@@ -33,8 +33,8 @@ Default-segment:
   $84e8-$88cf Tower Map
   $88d0-$8cb7 Menu Map
   $9000-$9022 Unnamed
-  $9023-$9983 SpriteData
-  $9984-$9a4a Main
+  $9023-$9995 SpriteData
+  $9996-$9a65 Main
   $c400-$d0bf Sprites
   $f000-$f7ff Charset
 

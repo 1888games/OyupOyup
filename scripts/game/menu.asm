@@ -82,7 +82,7 @@ MENU: {
 		lda INPUT.FIRE_UP_THIS_FRAME, y
 		beq Finish
 
-		jmp MAIN.StartGame
+		jmp DecidePath
 
 		Finish:
 
@@ -93,6 +93,31 @@ MENU: {
 
 	}
 
+
+
+	DecidePath: {
+
+		lda SelectedOption
+		beq Scenario
+
+		cmp #3
+		beq Options
+
+		jmp MAIN.StartGame
+
+		Scenario:
+
+			jmp CAMPAIGN.Show
+
+
+		Options:
+
+			jmp MenuLoop
+
+
+
+
+	}
 
 
 	ControlUpdate: {

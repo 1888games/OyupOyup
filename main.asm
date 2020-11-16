@@ -53,9 +53,10 @@ MAIN: {
 		jsr IRQ.Setup
 			
 
-		//jmp MENU.Show
-		//jmp CAMPAIGN.Show
-		//jmp TITLE.Show
+		jmp TITLE.Show	
+		jmp MENU.Show
+		jmp CAMPAIGN.Show
+
 		jmp StartGame
 
 
