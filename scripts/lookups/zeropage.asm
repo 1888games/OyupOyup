@@ -34,7 +34,12 @@ ZP: {
 	BeanID:				.byte $00
 	RowRefresh:			.byte $00
 	Adjacency:			.byte $00
-	
+	DigitID:			.byte $00
+	TargetAddress:		.byte $00
+	TempBeans:			.byte $00
+	TextColumn:			.byte $00
+	TextRow:			.byte $00
+
 	
 
 

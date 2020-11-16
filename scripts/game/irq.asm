@@ -19,7 +19,7 @@ IRQ: {
 	//TowerLines:		.byte 30, 70, 105, 160, 218
 
 	.label Colours = 2
-	TowerColours:	.byte BLACK, BROWN
+	TowerColours:	.byte BLACK, BLACK
 	TowerLines:		.byte 30, 218
 
 
@@ -180,6 +180,16 @@ IRQ: {
 			sta VIC.BACKGROUND_COLOUR
 
 		NextColourBand:
+
+			lda TowerStatus
+			bne NotTop	
+
+			jsr CAMPAIGN.PlayerSprites
+			jsr CAMPAIGN.Clouds
+			jsr CAMPAIGN.FrameUpdate
+
+
+			NotTop:
 
 			inc TowerStatus
 			ldx TowerStatus

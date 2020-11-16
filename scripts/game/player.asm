@@ -389,8 +389,20 @@ PLAYER: {
 
 			ldx ZP.Player
 
+			lda DropTimer, x
+			beq Finish
+
 			lda #0
 			sta DropTimer, x
+
+			ldx ZP.Offset
+			lda Offset, x
+			bne NoScore
+
+			ldx ZP.Player
+			jsr SCORING.AddOne
+
+			NoScore:
 
 			sfx(SFX_MOVE)
 

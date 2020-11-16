@@ -469,6 +469,7 @@ GRID: {
 			CheckIfCellEmpty:
 
 				lda PlayerOne, x
+				sta ZP.BeanColour
 				bne CheckIfRockOrSingle
 
 				jmp Empty
@@ -642,7 +643,7 @@ GRID: {
 
 				lda Combo, x
 				sec
-				sbc #2
+				sbc #1
 				bmi NoGarbage2
 
 				jsr ROCKS.CalculateComboRocks
@@ -656,6 +657,8 @@ GRID: {
 
 				lda #GRID_MODE_NORMAL
 				sta Mode, x
+
+				jsr SCORING.CalculateMultiplier
 
 				// jsr StartCheck
 
@@ -681,6 +684,8 @@ GRID: {
 				sta Combo, x
 				sta Active, x
 
+				jsr SCORING.ResetMultipliers
+				jsr SCORING.DrawPlayer
 
 				
 		Finish:

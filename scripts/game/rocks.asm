@@ -71,13 +71,13 @@ ROCKS: {
 	TargetColumns:	.byte 7, 32
 
 	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
-	ChainLookup:	.byte 3, 10, 27, 68, 90		// 2 - 6
-	ComboLookup:	.byte 5, 14, 32, 69, 90		// 2 - 6
+	ChainLookup:	.byte 0, 3, 10, 27, 68, 90		// 1 - 6
+	ComboLookup:	.byte 0, 5, 14, 32, 69, 90		// 1 - 6
 
 
-	BaseScore:		.byte 5, 18, 28, 40, 54, 70, 88, 108, 130
+	BaseScore:		.byte 5, 18, 28, 40, 54, 70, 88, 108, 130   //4-12
 	ChainScore:		.byte 24, 48, 96, 192, 255
-	ComboScore:		.byte 36, 72, 144, 255, 255
+	ComboScore:		.byte 36, 72, 144, 216, 255
 
 
 
@@ -747,6 +747,7 @@ ROCKS: {
 
 	CalculateBaseRocks: {
 
+
 		cmp #9
 		bcc Okay
 
@@ -754,6 +755,7 @@ ROCKS: {
 
 		Okay:
 
+		jsr SCORING.BeansCleared
 
 	    tay
 
@@ -774,6 +776,8 @@ ROCKS: {
 
 
 	CalculateChainRocks: {
+
+		
 
 		cmp #6
 		bcc Okay
@@ -801,8 +805,9 @@ ROCKS: {
 
 	CalculateComboRocks: {
 
-
 		pha
+
+		sta SCORING.CurrentChain, x
 
 		CalculatePointer:
 

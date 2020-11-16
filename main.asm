@@ -30,8 +30,12 @@ MAIN: {
 	#import "/scripts/game/player.asm"
 	#import "/scripts/game/title.asm"
 	#import "/scripts/game/campaign.asm"
+
+	* = $9000
 	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
+	#import "/scripts/game/scoring.asm"
+	#import "/scripts/game/text.asm"
 
 	* = * "Main"
 
@@ -49,9 +53,9 @@ MAIN: {
 		jsr IRQ.Setup
 			
 
-	//	jmp MENU.Show
+		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
-		jmp TITLE.Show
+		//jmp TITLE.Show
 		jmp StartGame
 
 
@@ -77,6 +81,8 @@ MAIN: {
 		jsr PANEL.Reset
 		jsr PLAYER.Reset
 		jsr ROCKS.Reset
+		jsr SCORING.Reset
+
 
 		jmp Loop
 
@@ -193,6 +199,7 @@ MAIN: {
 		jsr EXPLOSIONS.FrameUpdate
 		jsr PANEL.FrameUpdate
 		jsr ROCKS.FrameUpdate
+		jsr SCORING.FrameUpdate
 
 
 		Paused:
