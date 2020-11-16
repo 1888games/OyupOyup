@@ -292,11 +292,11 @@ PANEL: {
 
 		lda ZP.CharID
 
-		cpy #3
+		cpy #5
 		bcc NoDraw
 
-		cpy #4
-		beq NoDraw
+		//cpy #4
+		//beq NoDraw
 
 		cpx #19
 		beq NoDraw

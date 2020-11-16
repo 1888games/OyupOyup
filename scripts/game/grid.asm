@@ -103,10 +103,53 @@ GRID: {
 		lda #RowsPerFrame
 		sta RowsPerFrameUse
 
+		jsr PlayerSprites
+
 
 
 		rts
 	}
+
+
+
+	PlayerSprites: {
+
+
+
+		lda CAMPAIGN.PlayerPointers
+		sta SPRITE_POINTERS + 4
+
+		lda CAMPAIGN.PlayerColours
+		sta VIC.SPRITE_COLOR_4
+
+		
+		lda CAMPAIGN.PlayerPointers + 1
+		sta SPRITE_POINTERS + 5
+
+		lda CAMPAIGN.PlayerColours + 1
+		sta VIC.SPRITE_COLOR_5
+
+
+		lda #50
+		sta VIC.SPRITE_4_Y
+		sta VIC.SPRITE_5_Y
+
+		lda #144
+		sta VIC.SPRITE_4_X
+
+		lda #198
+		sta VIC.SPRITE_5_X
+
+		lda VIC.SPRITE_MSB
+		and #%11001111
+		sta VIC.SPRITE_MSB
+
+		rts
+
+	
+	}
+
+
 
 
 
@@ -182,7 +225,7 @@ GRID: {
 
 		Finish:
 
-		jsr DummyBeans
+		//jsr DummyBeans
 	
 		rts
 

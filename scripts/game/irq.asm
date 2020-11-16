@@ -9,7 +9,6 @@ IRQ: {
 
 	.label MainIRQLine = 220
 
-	TowerSkyLines:	.byte 
 
 	Mode:	.byte 0
 
@@ -43,6 +42,9 @@ IRQ: {
 
 
 	Setup: {
+
+		lda #0
+		sta Mode
 
 		sei 	// disable interrupt flag
 		lda INTERRUPT_CONTROL
@@ -81,7 +83,9 @@ IRQ: {
 
 	PerformEveryFrame: {
 
-	//	jsr SidFrameUpdate
+		//inc $d020
+
+		jsr SidFrameUpdate
 	
 		SetDebugBorder(2)
 		
@@ -148,9 +152,10 @@ IRQ: {
 
 		NotTower:
 
+		SetDebugBorder(11)
+
 		asl INTERRUPT_STATUS
 
-		SetDebugBorder(11)
 
 		:RestoreState()
 
@@ -162,6 +167,20 @@ IRQ: {
 	TowerIRQ: {
 
 		:StoreState()
+
+
+		lda Mode
+		bne GetRasterOffScreen
+		
+		ldy MainIRQLine
+
+		lda #<MainIRQ
+		ldx #>MainIRQ
+
+		jsr SetNextInterrupt
+		jmp Finish
+
+		SwitchToTowerMode:
 
 		GetRasterOffScreen:
 
@@ -210,6 +229,8 @@ IRQ: {
 
 			lda TowerLines, x
 			sta VIC.RASTER_LINE
+
+		Finish:
 			
 			asl INTERRUPT_STATUS
 

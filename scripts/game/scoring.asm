@@ -33,7 +33,7 @@ SCORING: {
 
 	MultColumns:	.byte 21, 22
 	MultRows:		.byte 18, 21
-	TextColours:	.byte RED, CYAN
+	TextColours:	.byte RED+8, CYAN + 8
 	BeanColumns:	.byte 16, 17
 
 
@@ -86,6 +86,56 @@ SCORING: {
 
 			jsr DrawPlayerOne
 			rts
+	}
+
+	DrawExperience: {
+
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+	
+		ScoreLoop:
+
+			lda PlayerOne,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			asl
+			adc #CharacterSetStart
+			sta SCREEN_RAM + 86, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 126, y
+
+			ColourText:
+
+				lda #RED +8
+
+				sta COLOR_RAM +86, y
+				sta COLOR_RAM +126, y
+
+			dey
+			rts
+
+		}
+
+
+		rts
 	}
 
 	DrawPlayerOne: {

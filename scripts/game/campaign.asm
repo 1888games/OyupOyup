@@ -8,9 +8,11 @@ CAMPAIGN: {
 	.label CloudPointer = 66
 	.label CloudTime = 3
 	.label BeanTime = 5
+	.label NumberCharID = 206
 
 
 	CurrentLevel:	.byte 0
+	Matches:		.byte 0
 
 
 	Rows:	.byte 21, 17, 13, 9, 6, 3
@@ -23,10 +25,10 @@ CAMPAIGN: {
 	CloudTimes:	.byte 3, 2, 1, 2, 3, 1
 
 
+
+
 	BeanTimer:	.byte 3
 	BeanFrame:	.byte 129
-
-
 
 
 	PlayerPointers:	.byte 53, 54
@@ -34,7 +36,30 @@ CAMPAIGN: {
 	PlayerX:		.byte 43, 43
 
 
-	Colours:	.byte RED, GREEN, YELLOW, BLUE, PURPLE, CYAN
+	Colours:	.byte RED, GREEN, YELLOW, BLUE, PURPLE, CYAN	
+
+	NextLevel:	.byte $01, $15, $00
+
+
+	OpponentID:		.byte 255
+	LastOpponentID: .byte 255
+	LastChoiceID:	.byte 255
+	RandomChoices:	.byte 20
+	RandomTimer:	.byte 20
+	RandomTimes:	.byte 35, 25, 20, 15, 10, 5, 3
+
+
+
+	Levels:		.byte $01, $50, $00, $00
+				.byte $04, $50, $00, $00
+				.byte $08, $00, $00, $00
+				.byte $12, $00, $00, $00
+				.byte $15, $00, $00, $00
+				.byte $20, $00, $00, $00
+
+
+
+
 
 
 	NewGame: {
@@ -42,10 +67,365 @@ CAMPAIGN: {
 		lda #0
 		sta CurrentLevel
 
+		rts
+	}
 
 
 
 
+	Show: {
+
+		lda #1
+		jsr ChangeTracks
+		
+		jsr MAIN.SetupVIC
+
+		jsr SetupColours
+
+		jsr DRAW.TowerScreen
+
+		jsr PlayerSprites
+		jsr Clouds
+		jsr DrawBean
+		jsr ColourText
+		jsr DrawLevelData
+
+
+		lda RandomTimes + 6
+		sta RandomTimer
+
+		jsr RANDOM.Get
+		and #%00000111
+		clc
+		adc #16
+		sta RandomChoices
+
+		jsr ChooseOpponent
+
+		lda #15
+		sta RandomTimer
+
+
+		lda #GAME_MODE_TOWER
+		sta IRQ.Mode
+
+		jmp CampaignLoop
+
+	}
+
+
+
+	
+
+	CampaignLoop: {
+		
+		WaitForRasterLine:
+
+			lda VIC.RASTER_LINE
+			cmp #160
+			bne WaitForRasterLine
+
+		lda RandomChoices
+		bne Finish
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+
+		jmp MAIN.StartGame
+
+		Finish:
+
+		jmp CampaignLoop
+
+	}	
+
+
+
+
+	HandleOpponentShow: {
+
+		lda RandomChoices
+		beq Finish
+
+		lda RandomTimer
+		beq Ready
+
+		dec RandomTimer
+		jmp Finish
+
+
+		Ready:
+
+		ldx RandomChoices
+		dex
+		stx RandomChoices
+
+		cpx #7
+		bcc UseTable
+
+		lda #2
+		sta RandomTimer
+		jmp Skip
+
+		UseTable:
+
+		lda RandomTimes, x
+		sta RandomTimer
+
+		Skip:
+
+		ldx #SFX_MOVE
+		sfxFromX()
+
+		jsr ChooseOpponent 
+
+		Finish:
+
+
+		rts
+	}
+
+
+	FrameUpdate: {
+
+
+		jsr HandleOpponentShow
+
+		lda BeanTimer
+		beq Ready
+
+		dec BeanTimer
+		jmp Finish
+
+		Ready:
+
+			lda #BeanTime
+			sta BeanTimer
+
+			lda BeanFrame
+			cmp #129
+			beq Make233
+
+		Make129:
+
+			lda #129
+			sta BeanFrame
+			jmp Draw
+
+		Make233:
+
+			lda #233
+			sta BeanFrame
+
+		Draw:
+
+			jsr DrawBean
+
+		Finish:
+
+
+
+		rts
+	}
+
+
+
+
+
+	ChooseOpponent: {
+
+		jsr RANDOM.Get
+		and #%00000111
+		sta ZP.Amount
+
+
+		lda CurrentLevel
+		asl
+		asl
+		asl
+		clc
+		adc ZP.Amount
+		sta OpponentID
+
+		cmp LastChoiceID
+		beq ChooseOpponent
+
+		sta LastChoiceID
+
+		tax
+
+		lda OPPONENTS.Pointers, x
+		sta PlayerPointers + 1
+		sta SPRITE_POINTERS + 1
+
+		lda OPPONENTS.Colours, x
+		sta VIC.SPRITE_COLOR_1
+		sta PlayerColours + 1
+
+
+		rts
+
+
+
+	}
+
+	DrawLevelData: {
+
+		lda CurrentLevel
+		asl
+		asl
+		tax
+
+		lda Levels, x
+		sta NextLevel + 2
+
+		lda Levels + 1, x
+		sta NextLevel + 1
+
+		lda Levels + 2, x
+		sta NextLevel
+
+		jsr SCORING.DrawExperience
+		jsr DrawTarget
+
+		Level:
+
+			lda CurrentLevel
+			clc
+			adc #1
+			asl
+			clc
+			adc #NumberCharID
+
+			sta SCREEN_RAM + 116
+			clc
+			adc #1
+			sta SCREEN_RAM + 156
+
+			lda #YELLOW + 8
+			sta COLOR_RAM + 116
+			sta COLOR_RAM + 156
+
+		Match:
+
+			lda Matches
+			clc
+			adc #1
+			asl
+			clc
+			adc #NumberCharID
+
+			sta SCREEN_RAM + 196
+			clc
+			adc #1
+			sta SCREEN_RAM + 236
+
+			lda #YELLOW + 8
+			sta COLOR_RAM + 196
+			sta COLOR_RAM + 236
+
+
+
+		
+		ldx #0
+
+		Loop:
+
+			lda #PURPLE + 8
+
+			sta COLOR_RAM + 108, x
+			sta COLOR_RAM + 148, x
+
+			lda #BLUE+ 8
+
+			sta COLOR_RAM + 188, x
+			sta COLOR_RAM + 228, x
+
+			inx
+			cpx #6
+			bcc Loop
+
+		
+
+
+		rts
+	}
+
+
+	DrawTarget: {
+
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+	
+		ScoreLoop:
+
+			lda NextLevel,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 166, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 206, y
+
+			ColourText:
+
+				lda #CYAN +8
+
+				sta COLOR_RAM +166, y
+				sta COLOR_RAM +206, y
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
+
+
+
+
+
+	SetupColours: {
+
+		lda #BLACK
+		sta VIC.BACKGROUND_COLOUR
+
+		lda #DARK_GRAY
+		sta VIC.BORDER_COLOUR
+
+		lda #WHITE
+		sta VIC.EXTENDED_BG_COLOR_1
+		lda #GRAY
+		sta VIC.EXTENDED_BG_COLOR_2
+
+		lda #LIGHT_RED
+		sta VIC.SPRITE_MULTICOLOR_1
+
+		lda #WHITE
+		sta VIC.SPRITE_MULTICOLOR_2
 
 
 		rts
@@ -56,17 +436,21 @@ CAMPAIGN: {
 
 	PlayerSprites: {
 
+
+		lda #%11111111
+		sta VIC.SPRITE_MULTICOLOR
+
+		lda #%11111111
+		sta VIC.SPRITE_ENABLE
+
+		lda #%00000000
+		sta VIC.SPRITE_PRIORITY
+
 		lda PlayerPointers
 		sta SPRITE_POINTERS
 
-		lda PlayerPointers + 1
-		sta SPRITE_POINTERS + 1
-
 		lda PlayerColours
 		sta VIC.SPRITE_COLOR_0
-
-		lda PlayerColours + 1
-		sta VIC.SPRITE_COLOR_0 +1
 
 		lda #PlayerSpriteY
 		sta VIC.SPRITE_0_Y
@@ -193,65 +577,17 @@ CAMPAIGN: {
 
 
 
-	Show: {
 
-
-		lda #1
-		jsr ChangeTracks
-		
-		jsr MAIN.SetupVIC
-
-		lda #%11111111
-		sta VIC.SPRITE_MULTICOLOR
-
-		lda #%11111111
-		sta VIC.SPRITE_ENABLE
-
-		lda #%00000000
-		sta VIC.SPRITE_PRIORITY
-
-
-		lda #BLACK
-		sta VIC.BACKGROUND_COLOUR
-
-		lda #DARK_GRAY
-		sta VIC.BORDER_COLOUR
-
-		lda #WHITE
-		sta VIC.EXTENDED_BG_COLOR_1
-		lda #GRAY
-		sta VIC.EXTENDED_BG_COLOR_2
-
-		lda #LIGHT_RED
-		sta VIC.SPRITE_MULTICOLOR_1
-
-		lda #WHITE
-		sta VIC.SPRITE_MULTICOLOR_2
-
-
-		jsr DRAW.TowerScreen
-
-		lda #GAME_MODE_TOWER
-		sta IRQ.Mode
-
-		jsr PlayerSprites
-		jsr Clouds
-		jsr DrawBean
+	ColourText: {
 
 
 
-		jmp CampaignLoop
 
+
+
+
+		rts
 	}
-
-
-
-	CampaignLoop: {
-
-		jmp CampaignLoop
-
-	}	
-
 
 
 
@@ -325,47 +661,6 @@ CAMPAIGN: {
 
 
 		Finish:
-
-
-		rts
-	}
-
-
-
-	FrameUpdate: {
-
-		lda BeanTimer
-		beq Ready
-
-		dec BeanTimer
-		jmp Finish
-
-		Ready:
-
-			lda #BeanTime
-			sta BeanTimer
-
-			lda BeanFrame
-			cmp #129
-			beq Make233
-
-		Make129:
-
-			lda #129
-			sta BeanFrame
-			jmp Draw
-
-		Make233:
-
-			lda #233
-			sta BeanFrame
-
-		Draw:
-
-			jsr DrawBean
-
-		Finish:
-
 
 
 		rts

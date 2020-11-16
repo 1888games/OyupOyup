@@ -401,10 +401,11 @@ PLAYER: {
 
 			ldx ZP.Player
 			jsr SCORING.AddOne
+			sfx(SFX_MOVE)
 
 			NoScore:
 
-			sfx(SFX_MOVE)
+			
 
 			jmp Finish
 
@@ -425,12 +426,14 @@ PLAYER: {
 			jsr Rotate
 
 
-		DidMove:
+		DidMove:	
+
+			ldx ZP.Player
+			bne NoSound
 
 			sfx(SFX_MOVE)
 
-
-			ldx ZP.Player
+			NoSound:
 
 			lda #ControlCooldown
 			sta ControlTimer, x

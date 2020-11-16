@@ -36,6 +36,7 @@ MAIN: {
 	#import "/scripts/game/grid_visuals.asm"
 	#import "/scripts/game/scoring.asm"
 	#import "/scripts/game/text.asm"
+	#import "/scripts/game/opponents.asm"
 
 	* = * "Main"
 
@@ -71,6 +72,9 @@ MAIN: {
 
 		lda #0
 		jsr ChangeTracks
+
+		lda #0
+		sta IRQ.Mode
 
 		jsr SetupGameColours
 		jsr SetupVIC
@@ -127,7 +131,7 @@ MAIN: {
 		sta VIC.SPRITE_MULTICOLOR
 
 
-		lda #GRAY
+		lda #LIGHT_RED
 		sta VIC.SPRITE_MULTICOLOR_1
 
 		lda #WHITE

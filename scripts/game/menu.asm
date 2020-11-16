@@ -36,7 +36,7 @@ MENU: {
 
 
 		lda #1
-		jsr ChangeTracks
+		//jsr ChangeTracks
 		
 		jsr MAIN.SetupVIC
 
