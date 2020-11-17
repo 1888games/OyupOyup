@@ -16,6 +16,7 @@ MemoryAddresses:
 
 
 
+
 .label ZERO = 0
 .label ONE = 1
 
@@ -35,6 +36,7 @@ MemoryAddresses:
 .label GRID_MODE_CHECK = 2
 .label GRID_MODE_WAIT_CHECK = 3
 .label GRID_MODE_FALL = 4
+.label GRID_MODE_END = 5
 
 .label LEFT_SIDE = 0
 .label RIGHT_SIDE = 1

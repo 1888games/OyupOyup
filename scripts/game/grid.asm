@@ -60,7 +60,7 @@ GRID: {
 	CheckProgress:		.byte 0, 0
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
-	Active:				.byte 1, 0
+	Active:				.byte 1, 1
 
 
 	// Matching
@@ -812,6 +812,7 @@ GRID: {
 
 	EndOfRound: {
 
+		
 		lda #0
 		sta Active
 		sta Active + 1
@@ -877,6 +878,10 @@ GRID: {
 	UpdateSide: {
 
 		ldx CurrentSide
+
+		lda Mode, x
+		cmp #GRID_MODE_END
+		beq Finish
 
 		jsr UpdateReadyToCheck
 
@@ -1174,6 +1179,7 @@ GRID: {
 	}
 
 	UpdateRow: {
+
 
 		jsr GetStartAndEnd
 

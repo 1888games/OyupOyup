@@ -22,7 +22,7 @@ ROUND_OVER: {
 	.label FlashTime = 25
 
 
-	ExplosionOffset: .byte 0, 16
+	ExplosionOffset: .byte 0, 24
 
 
 
@@ -401,9 +401,7 @@ ROUND_OVER: {
 
 	Show: {
 
-
-
-		stx Loser
+		sty Loser
 
 		lda #FlashTime
 		sta FlashTimer
@@ -415,7 +413,7 @@ ROUND_OVER: {
 		lda #0
 		sta Stage
 
-		lda ROCKS.Opponent, x
+		lda ROCKS.Opponent, y
 		sta Winner
 
 		bne RightWins

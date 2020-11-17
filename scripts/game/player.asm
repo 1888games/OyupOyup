@@ -26,7 +26,7 @@ PLAYER: {
 	ClearUp:			.byte 1, 0, 1, 0
 	AddForX:			.byte 1, 255, 255, 1
 	AddForY:			.byte 6, 6,	 250, 250
-	CPU:				.byte 0, 1
+	CPU:				.byte 0, 0
 
 	FailsafeTimer:		.byte 255, 255
 	
@@ -1237,21 +1237,27 @@ PLAYER: {
 	}
 
 
-	LostRound: {
+	LostRound:  {
 
-
-		lda #GRID_MODE_PAUSE
+		lda #GRID_MODE_END
 		sta GRID.Mode
 		sta GRID.Mode + 1
+
+		lda #0
+		sta GRID.Active
+		sta GRID.Active + 1
 
 		ldy ZP.Player
 		lda #GRID_MODE_FALL
 		sta GRID.Mode, y
 
+		lda #1
+		sta GRID.NumberMoving, y
+		sta GRID.Active, y
 
 		lda #GRID.LastRowID
 		sta GRID.StartRow
-
+		sta GRID.CurrentRow
 
 		lda #PLAYER_STATUS_END
 		sta Status
@@ -1264,7 +1270,6 @@ PLAYER: {
 		lda #0
 		sta PANEL.Mode
 		sta PANEL.Mode + 1
-
 
 		lda #3
 		jsr sid.init
