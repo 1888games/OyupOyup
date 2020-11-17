@@ -73,6 +73,8 @@ SCORING: {
 
 
 	DrawPlayer: {
+			
+		jsr ClearScorePanel
 
 		cpx #0
 		beq Player1
@@ -367,19 +369,23 @@ SCORING: {
 		sta ColourCount, x
 		sta CurrentChain, x
 		sta CurrentBeans ,x
+		sta CurrentMultiplier, x
+		sta CurrentColours, x
 
 		lda ColourOffset, x
 		tay
 
 		lda #0
-		sta Colours, x
-		sta Colours + 1, x
-		sta Colours + 2, x
-		sta Colours + 3, x
-		sta Colours + 4, x
-		sta Colours + 5, x
-		sta Colours + 6, x
-		sta Colours + 7, x
+		sta Colours, y
+		sta Colours + 1, y
+		sta Colours + 2, y
+		sta Colours + 3, y
+		sta Colours + 4, y
+		sta Colours + 5, y
+		sta Colours + 6, y
+		sta Colours + 7, y
+
+
 
 
 
@@ -400,11 +406,11 @@ SCORING: {
 
 			Loop1:
 
-				sta SCREEN_RAM + 858, y
-				sta SCREEN_RAM + 898, y
+				sta SCREEN_RAM + 857, y
+				sta SCREEN_RAM + 897, y
 					
 				iny
-				cpy #6
+				cpy #8
 				bcc Loop1
 
 			rts
@@ -416,11 +422,11 @@ SCORING: {
 
 			Loop2:
 
-				sta SCREEN_RAM + 736, y
-				sta SCREEN_RAM + 776, y
+				sta SCREEN_RAM + 735, y
+				sta SCREEN_RAM + 775, y
 					
 				iny
-				cpy #6
+				cpy #8
 				bcc Loop2
 
 

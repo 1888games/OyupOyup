@@ -16,6 +16,7 @@ ROCKS: {
 
 	.label Stage2Speed = 8
 	.label Stage2Speed_Y = 6
+	
 
 
 	Count:			.byte 0, 0
@@ -79,6 +80,12 @@ ROCKS: {
 	ChainScore:		.byte 24, 48, 96, 192, 255
 	ComboScore:		.byte 36, 72, 144, 216, 255
 
+	RockLookupAdd:	.byte 0
+	SecondsTimer:	.byte 0
+	SecondsCounter:	.byte 0
+	GameSeconds:	.byte 0
+	FramesPerSecond:	.byte 50
+	RampUpTime:		.byte 10
 
 
 
@@ -89,6 +96,10 @@ ROCKS: {
 		sta Count + 1
 		sta PreviousCount + 0
 		sta PreviousCount + 1
+		sta RockLookupAdd
+
+		lda FramesPerSecond
+		sta SecondsTimer
 
 		// ldy #0
 
@@ -777,7 +788,8 @@ ROCKS: {
 
 	CalculateChainRocks: {
 
-		
+		clc
+		adc RockLookupAdd
 
 		cmp #6
 		bcc Okay
@@ -805,9 +817,13 @@ ROCKS: {
 
 	CalculateComboRocks: {
 
-		pha
 
 		sta SCORING.CurrentChain, x
+
+		cmp #2
+		bcc Finish
+
+		pha
 
 		CalculatePointer:
 
@@ -831,6 +847,9 @@ ROCKS: {
 		CalculateTableLookup:
 
 			pla
+			clc
+			adc RockLookupAdd
+
 			cmp #6
 			bcc Okay
 
@@ -855,12 +874,48 @@ ROCKS: {
 
 		jsr StartCombo
 
+		Finish:
+
+
+		rts
+	}
+
+
+	UpdateTime: {
+
+		lda SecondsTimer
+		beq Ready
+
+		dec SecondsTimer
+		jmp Finish
+
+		Ready:
+
+		lda FramesPerSecond
+		sta SecondsTimer
+
+		inc SecondsCounter
+		inc GameSeconds
+
+		lda SecondsCounter
+		cmp RampUpTime
+		bcc Finish
+
+		lda #0
+		sta SecondsCounter
+
+		inc RockLookupAdd
+
+
+		Finish:
+
 
 		rts
 	}
 
 	FrameUpdate: {
 
+		jsr UpdateTime
 		jsr UpdateCombo
 		jsr UpdateOrb
 

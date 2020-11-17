@@ -265,6 +265,26 @@ CAMPAIGN: {
 		sta PlayerColours + 1
 
 
+		txa
+
+		ldx #10
+		stx ZP.TextRow
+
+		ldx #34
+		stx ZP.TextColumn
+
+		ldy #0
+		ldx #WHITE
+
+		jsr TEXT.Draw
+
+			// a = textID
+		// y = bank
+		// x = colour
+		// TextColumn
+		// TextRow
+
+
 		rts
 
 

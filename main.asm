@@ -42,6 +42,7 @@ MAIN: {
 
 	GameActive: 			.byte 0
 	GameMode:				.byte 0
+	MachineType:			.byte 0
 
 
 
@@ -52,6 +53,7 @@ MAIN: {
 		jsr BankOutKernalandBasic
 		jsr set_sfx_routine
 		jsr IRQ.Setup
+		jsr DetectMachine
 			
 
 		jmp TITLE.Show	
@@ -60,6 +62,34 @@ MAIN: {
 
 		jmp StartGame
 
+
+	}
+
+	DetectMachine: {
+
+		w0:  lda $D012
+		w1:  cmp $D012
+	    beq w1
+	    bmi w0
+	    and #$03
+	    sta MAIN.MachineType
+
+	    cmp #2
+	    bne PAL
+
+	    NTSC:
+
+	    lda #60
+	    sta ROCKS.FramesPerSecond
+
+	    jmp Finish
+	  
+	    PAL:
+
+
+	    Finish:
+
+	    rts
 
 	}
 
@@ -205,6 +235,7 @@ MAIN: {
 		jsr PANEL.FrameUpdate
 		jsr ROCKS.FrameUpdate
 		jsr SCORING.FrameUpdate
+		//jsr DRAW.CycleChars
 
 
 		Paused:

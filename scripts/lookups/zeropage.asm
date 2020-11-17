@@ -5,6 +5,7 @@ ZP: {
 	FrameCounter:		.byte $00
 	ScreenAddress:		.word $00
 	ColourAddress:		.word $00
+	TextAddress:		.word $00
 	Row:				.byte $00
 	Column:				.byte $00
 	RowOffset:			.byte $00
@@ -39,6 +40,7 @@ ZP: {
 	TempBeans:			.byte $00
 	TextColumn:			.byte $00
 	TextRow:			.byte $00
+	CharOffset:			.byte $00
 
 	
 

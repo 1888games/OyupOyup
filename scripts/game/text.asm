@@ -7,6 +7,8 @@ TEXT: {
 			.word Na37, Na38, Na39, Na40, Na41, Na42, Na43, Na44, Na45, Na46, Na47, Na48
 			.word Name
 
+	Bank2:	
+
 
 	.label CharacterSetStart = 0
 	.label Space = 48
@@ -79,65 +81,7 @@ TEXT: {
 
 
 
-	// DrawText: {
-
-	// 	ldy #0
-
-	// 	Loop:
-
-	// 		sty CharOffset
-
-	// 		lda (TextAddress), y
-	// 		beq Finish
-
-	// 		cmp #LineBreak
-	// 		bne Okay
-
-	// 		NextRow:
-
-	// 			lda Column
-	// 			sta TextColumn
-	// 			inc TextRow
-	// 			jmp EndLoop
-
-	// 		Okay:
-
-	// 		cmp #SpaceAscii
-	// 		bne NotSpace
-
-	// 		lda #Space
-	// 		jmp Write
-
-	// 		NotSpace:
-
-	// 		clc
-	// 		adc #CharacterSetStart
-
-	// 		Write:
-
-	// 		ldx TextColumn
-	// 		ldy TextRow
-
-	// 		jsr PLOT.PlotText
-
-	// 		lda Colour
-	// 		jsr PLOT.ColorCharacter
-
-	// 		inc TextColumn
-
-	// 		EndLoop:
-
-	// 		ldy CharOffset
-	// 		iny
-	// 		jmp Loop
-
-
-	// 	Finish:
-
-	// 	rts
-
-	// }
-
+	
 
 
 	ByteToDigits: {
@@ -272,56 +216,108 @@ TEXT: {
 	}
 
 
-	// Draw: {
+	Draw: {
 
-	// 	// a = textID
-	// 	// y = bank
-	// 	// x = colour
-	// 	// TextColumn
-	// 	// TextRow
+		// a = textID
+		// y = bank
+		// x = colour
+		// TextColumn
+		// TextRow
 
-	// 	stx Colour
+		stx ZP.Colour
 
-	// 	cmp #128
-	// 	bcc FromBank1
+		cmp #128
+		bcc FromBank1
 
 
-	// 	FromBank2:
+		FromBank2:
 
-	// 		sec
-	// 		sbc #128
-	// 		asl
-	// 		tax
+			sec
+			sbc #128
+			asl
+			tax
 
-	// 		lda Bank2, x
+			lda Bank2, x
 
-	// 		sta TextAddress
-	// 		inx
+			sta ZP.TextAddress
+			inx
 
-	// 		lda Bank2, x
-	// 		sta TextAddress + 1
-	// 		jmp DrawNow
+			lda Bank2, x
+			sta ZP.TextAddress + 1
+			jmp DrawNow
 
-	// 	FromBank1:
+		FromBank1:
 
-	// 		asl
-	// 		tax
-	// 		lda Bank1, x
+			asl
+			tax
+			lda Bank1, x
 
-	// 		sta TextAddress
-	// 		inx
+			sta ZP.TextAddress
+			inx
 
-	// 		lda Bank1, x
-	// 		sta TextAddress + 1
+			lda Bank1, x
+			sta ZP.TextAddress + 1
 
-	// 	DrawNow:
+		DrawNow:
 
-	// 		jsr DrawText
+			jsr DrawText
 
-	// 	rts
+		rts
 		
 
-	// }
+	}
+
+	DrawText: {
+
+		ldy #0
+
+		Loop:
+
+			sty ZP.CharOffset
+
+			lda (ZP.TextAddress), y
+			beq Finish
+
+			cmp #LineBreak
+			bne Okay
+
+			NextRow:
+
+				lda ZP.Column
+				sta ZP.TextColumn
+				inc ZP.TextRow
+				jmp EndLoop
+
+			Okay:
+
+			clc
+			adc #CharacterSetStart
+
+			Write:
+
+			ldx ZP.TextColumn
+			ldy ZP.TextRow
+
+			jsr DRAW.PlotCharacter
+
+			lda ZP.Colour
+			jsr DRAW.ColorCharacter
+
+			inc ZP.TextColumn
+
+			EndLoop:
+
+			ldy ZP.CharOffset
+			iny
+			jmp Loop
+
+
+		Finish:
+
+		rts
+
+	}
+
 
 
 

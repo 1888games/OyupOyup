@@ -28,7 +28,7 @@ PLAYER: {
 	AddForY:			.byte 6, 6,	 250, 250
 	CPU:				.byte 0, 1
 
-	FailsafeTimer:		.byte 0, 0
+	FailsafeTimer:		.byte 255, 255
 	
 
 	CharIDs:			.byte 129, 197
@@ -81,20 +81,18 @@ PLAYER: {
 				beq EndLoop
 
 				cmp #PLAYER_STATUS_PLACED
-				bne NotPlaced
+				beq EndLoop
 
 				lda FailsafeTimer, x
+				bmi NotPlaced
 				beq ForceCheck
 
 				dec FailsafeTimer, x
-				jmp EndLoop
-
-
+				
 				ForceCheck:
 
-					.break
-					nop
-
+					//.break
+					//nop
 
 				NotPlaced:
 

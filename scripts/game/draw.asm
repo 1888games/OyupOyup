@@ -9,6 +9,9 @@ DRAW: {
 	ScreenRowLSB:	.fill 25, <[i * $28]
 	ScreenRowMSB:	.fill 25, >[i * $28]
 
+	CharTimer:	.byte 3
+	.label CharTime = 3
+
 	ClearScreen: {
 
 		ldx #0
@@ -153,6 +156,29 @@ DRAW: {
 
 	}
 
+	LevelNumber: {
+
+		lda CAMPAIGN.CurrentLevel
+		clc
+		adc #1
+		asl
+		clc
+		adc #CAMPAIGN.NumberCharID
+
+		sta SCREEN_RAM + 623
+		clc
+		adc #1
+		sta SCREEN_RAM + 663
+
+		lda #GREEN + 8
+		sta COLOR_RAM + 623
+		sta COLOR_RAM + 663
+
+
+
+		rts
+	}
+
 	ColorCharacterOnly: {
 
 		sty ZP.Row
@@ -280,6 +306,128 @@ DRAW: {
 
 
 		rts
+	}
+
+
+
+	GameOpponentName: {
+
+		// a = textID
+		// y = bank
+		// x = colour
+		// TextColumn
+		// TextRow
+
+		lda #4
+		sta ZP.TextRow
+
+		lda #21
+		sta ZP.TextColumn
+
+		ldx #WHITE
+
+		lda CAMPAIGN.OpponentID
+
+		jsr TEXT.Draw
+
+		rts
+	}
+
+
+
+	CycleChars: {
+
+		lda CharTimer
+		beq Ready
+
+		dec CharTimer
+		rts
+
+
+		Ready:
+
+		lda #CharTime
+		sta CharTimer
+
+		ldx #0
+
+		Loop:
+
+			lda CHAR_SET + 1616, x
+			sta ZP.Amount
+
+			lda CHAR_SET + 1617, x
+			sta CHAR_SET + 1616, x
+
+			lda CHAR_SET + 1618, x
+			sta CHAR_SET + 1617, x
+
+			lda CHAR_SET + 1619, x
+			sta CHAR_SET + 1618, x
+
+			lda CHAR_SET + 1620, x
+			sta CHAR_SET + 1619, x
+
+			lda CHAR_SET + 1621, x
+			sta CHAR_SET + 1620, x
+
+			lda CHAR_SET + 1622, x
+			sta CHAR_SET + 1621, x
+
+			lda CHAR_SET + 1623, x
+			sta CHAR_SET + 1622, x
+
+			lda ZP.Amount
+			sta CHAR_SET + 1623, x
+
+			txa
+			clc
+			adc #8
+			tax
+
+			cpx #32
+			bcc Loop
+
+
+		rts
+	}
+	
+
+
+
+	GamePlayerSprites: {
+
+		lda CAMPAIGN.PlayerPointers
+		sta SPRITE_POINTERS + 4
+
+		lda CAMPAIGN.PlayerColours
+		sta VIC.SPRITE_COLOR_4
+
+		
+		lda CAMPAIGN.PlayerPointers + 1
+		sta SPRITE_POINTERS + 5
+
+		lda CAMPAIGN.PlayerColours + 1
+		sta VIC.SPRITE_COLOR_5
+
+
+		lda #50
+		sta VIC.SPRITE_4_Y
+		sta VIC.SPRITE_5_Y
+
+		lda #144
+		sta VIC.SPRITE_4_X
+
+		lda #198
+		sta VIC.SPRITE_5_X
+
+		lda VIC.SPRITE_MSB
+		and #%11001111
+		sta VIC.SPRITE_MSB
+
+		rts
+
+	
 	}
 
 

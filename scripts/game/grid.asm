@@ -26,6 +26,8 @@ GRID: {
 
 	Checked:	.fill TotalSquaresOnScreen, 0
 
+	* = * "CurrentType"
+
 	CurrentType:	.fill TotalSquaresOnScreen, 255
 	PreviousType:	.fill TotalSquaresOnScreen, 255
 	RocksAdjacent:	.fill TotalSquaresOnScreen, 255
@@ -58,7 +60,7 @@ GRID: {
 	CheckProgress:		.byte 0, 0
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
-	Active:				.byte 1, 1
+	Active:				.byte 1, 0
 
 
 	// Matching
@@ -103,50 +105,13 @@ GRID: {
 		lda #RowsPerFrame
 		sta RowsPerFrameUse
 
-		jsr PlayerSprites
+		jsr DRAW.GamePlayerSprites
+		jsr DRAW.GameOpponentName
+		jsr DRAW.LevelNumber
 
 
 
 		rts
-	}
-
-
-
-	PlayerSprites: {
-
-
-
-		lda CAMPAIGN.PlayerPointers
-		sta SPRITE_POINTERS + 4
-
-		lda CAMPAIGN.PlayerColours
-		sta VIC.SPRITE_COLOR_4
-
-		
-		lda CAMPAIGN.PlayerPointers + 1
-		sta SPRITE_POINTERS + 5
-
-		lda CAMPAIGN.PlayerColours + 1
-		sta VIC.SPRITE_COLOR_5
-
-
-		lda #50
-		sta VIC.SPRITE_4_Y
-		sta VIC.SPRITE_5_Y
-
-		lda #144
-		sta VIC.SPRITE_4_X
-
-		lda #198
-		sta VIC.SPRITE_5_X
-
-		lda VIC.SPRITE_MSB
-		and #%11001111
-		sta VIC.SPRITE_MSB
-
-		rts
-
-	
 	}
 
 
@@ -462,20 +427,25 @@ GRID: {
 
 	Scan: {
 
+
+
 		lda #0
 		sta QueueLength
 		sta MatchCount
 		sta NumberPopped
 
 		ldx CurrentSide
-		// bne NoStop
+		bne NoStop
+
+		//.break
+	//	nop
 
 		// lda NumberMoving, x
 		// .break
 		// nop
 
 
-		// NoStop:
+		NoStop:
 			
 		lda PlayerLookup, x
 		sta ZP.EndID
@@ -726,6 +696,8 @@ GRID: {
 				lda #0
 				sta Combo, x
 				sta Active, x
+
+
 
 				jsr SCORING.ResetMultipliers
 				jsr SCORING.DrawPlayer
