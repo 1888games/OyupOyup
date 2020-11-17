@@ -41,7 +41,7 @@ CAMPAIGN: {
 	NextLevel:	.byte $01, $15, $00
 
 
-	OpponentID:		.byte 255
+	OpponentID:		.byte 0
 	LastOpponentID: .byte 255
 	LastChoiceID:	.byte 255
 	RandomChoices:	.byte 20

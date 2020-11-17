@@ -76,12 +76,11 @@ PLAYER: {
 
 			CheckActive:
 
-				lda Status, x
-				cmp #PLAYER_STATUS_WAIT
-				beq EndLoop
 
-				cmp #PLAYER_STATUS_PLACED
-				beq EndLoop
+
+				lda Status, x
+				cmp #PLAYER_STATUS_NORMAL
+				bne EndLoop
 
 				lda FailsafeTimer, x
 				bmi NotPlaced
@@ -1265,6 +1264,11 @@ PLAYER: {
 		lda #0
 		sta PANEL.Mode
 		sta PANEL.Mode + 1
+
+
+		lda #3
+		jsr ChangeTracks
+		
 		
 		lda #2
 		//sta GRID.RowsPerFrameUse

@@ -820,7 +820,7 @@ GRID: {
 		sta Mode
 		sta Mode + 1
 
-		inc $d020
+		jsr ROUND_OVER.Show
 
 
 		rts
@@ -855,7 +855,6 @@ GRID: {
 			bne NotGameOver
 
 			EndRound:	
-
 
 				jsr EndOfRound
 				rts

@@ -1,4 +1,4 @@
-.var sid = LoadSid("assets/ppidea.sid")
+.var sid = LoadSid("assets/ppidea2.sid")
 
 MAIN: {
 
@@ -31,12 +31,13 @@ MAIN: {
 	#import "/scripts/game/title.asm"
 	#import "/scripts/game/campaign.asm"
 
-	* = $9000
 	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
 	#import "/scripts/game/scoring.asm"
 	#import "/scripts/game/text.asm"
 	#import "/scripts/game/opponents.asm"
+	#import "/scripts/game/roundOver.asm"
+
 
 	* = * "Main"
 
@@ -56,9 +57,9 @@ MAIN: {
 		jsr DetectMachine
 			
 
-		jmp TITLE.Show	
-		jmp MENU.Show
-		jmp CAMPAIGN.Show
+		//jmp TITLE.Show	
+		//jmp MENU.Show
+		//jmp CAMPAIGN.Show
 
 		jmp StartGame
 

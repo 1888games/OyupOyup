@@ -21,8 +21,9 @@ Default-segment:
   $0e4c-$196a CurrentType
   $196b-$1b07 -Random
   $1b08-$2108 Queue
-  $2109-$2de1 Queue Data
-  $3000-$3b99 sid
+  $2109-$2e05 Queue Data
+  $2e06-$3a2b SpriteData
+  $3a2c-$3b17 Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -33,9 +34,8 @@ Default-segment:
   $8100-$84e7 Game Map
   $84e8-$88cf Tower Map
   $88d0-$8cb7 Menu Map
-  $9000-$9022 Unnamed
-  $9023-$9a84 SpriteData
-  $9a85-$9b79 Main
+  $8cb8-$8ef7 Win
+  $9000-$9c63 sid
   $c400-$d0bf Sprites
   $f000-$f7ff Charset
 

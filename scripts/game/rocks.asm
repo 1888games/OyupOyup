@@ -85,7 +85,7 @@ ROCKS: {
 	SecondsCounter:	.byte 0
 	GameSeconds:	.byte 0
 	FramesPerSecond:	.byte 50
-	RampUpTime:		.byte 10
+	RampUpTime:		.byte 90
 
 
 
