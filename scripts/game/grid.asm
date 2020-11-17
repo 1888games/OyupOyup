@@ -190,7 +190,7 @@ GRID: {
 
 		Finish:
 
-		//jsr DummyBeans
+		jsr DummyBeans
 	
 		rts
 
@@ -225,7 +225,7 @@ GRID: {
 			ldy ZP.TempY
 
 			iny
-			cpy #40
+			cpy #80
 			bcc Loop2
 
 		lda #CYAN
@@ -812,7 +812,7 @@ GRID: {
 
 	EndOfRound: {
 
-		
+
 		lda #0
 		sta Active
 		sta Active + 1
@@ -820,6 +820,8 @@ GRID: {
 		lda #GRID_MODE_PAUSE
 		sta Mode
 		sta Mode + 1
+
+		jsr ROUND_OVER.ShowRest
 
 
 		rts

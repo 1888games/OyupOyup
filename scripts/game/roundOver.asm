@@ -19,7 +19,9 @@ ROUND_OVER: {
 
 	FlashTimer:	.byte 30
 	Colours:	.byte 0, 8 +GREEN
+	WaitTimer:	.byte 
 	.label FlashTime = 25
+	.label WaitTime = 60
 
 
 	ExplosionOffset: .byte 0, 24
@@ -32,14 +34,35 @@ ROUND_OVER: {
 		beq Finish
 
 		lda Stage
-		bne NotFlash
+		cmp #2
+		bcs NotFlash
 
 		Flash:
 
 			jsr FlashText
+
+			lda Stage
+			beq Finish
+
+			lda WaitTimer
+			beq Ready
+
+			dec WaitTimer
+			jmp Finish
+
+			Ready:
+
+				lda #2
+				sta Stage
+
+				jsr ShowBottom
+
 			rts
 
 		NotFlash:
+
+			
+
 
 
 		Finish:
@@ -49,6 +72,8 @@ ROUND_OVER: {
 
 		rts
 	}	
+
+
 
 
 
@@ -430,6 +455,41 @@ ROUND_OVER: {
 		rts
 	}
 
+
+
+	ShowBottom: {
+
+		lda Winner
+		beq Player1
+
+		Player2:
+
+			jsr PlayerTwoWinBottom
+			jmp Finish
+
+		Player1:
+
+			jsr PlayerOneWinBottom
+
+		Finish:
+
+
+		rts
+	}
+
+	ShowRest: {
+
+		lda #1
+		sta Stage
+
+		lda #WaitTime
+		sta WaitTimer
+
+
+
+
+		rts
+	}
 
 
 }

@@ -18,12 +18,12 @@ Default-segment:
   $0a36-$0c72 Draw
   $0c73-$0d2b -Input
   $0d2c-$0e4b Grid Data
-  $0e4c-$196e CurrentType
-  $196f-$1b07 -Random
-  $1b08-$2108 Queue
-  $2109-$2e1b Queue Data
-  $2e1c-$3b62 SpriteData
-  $3b63-$3c51 Main
+  $0e4c-$1974 CurrentType
+  $1975-$1b0d -Random
+  $1b0e-$210e Queue
+  $210f-$2e21 Queue Data
+  $2e22-$3b9c SpriteData
+  $3b9d-$3c8e Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
