@@ -28,6 +28,9 @@ WIN_LEFT: .import binary "../../assets/puyo - MapArea (8bpc, 12x24).bin"
 
 WIN_RIGHT: .import binary "../../assets/puyo - MapArea (8bpc, 12x24)R.bin"
 
+
+WIN_BOTTOM: .import binary "../../assets/puyo - MapArea (8bpc, 12x12)B.bin"
+
 		
 		
 * = $f000 "Charset"

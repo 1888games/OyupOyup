@@ -820,8 +820,6 @@ GRID: {
 		sta Mode
 		sta Mode + 1
 
-		jsr ROUND_OVER.Show
-
 
 		rts
 	}

@@ -47,9 +47,6 @@ EXPLOSIONS: {
 		lda #FrameTime
 		sta FrameTimer, x
 
-		tya
-		sta VIC.SPRITE_COLOR_0, x
-
 		lda NextSprite
 		asl
 		tax

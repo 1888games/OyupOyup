@@ -11,7 +11,166 @@ ROUND_OVER: {
 	Winner:		.byte 0
 	Loser:		.byte 0
 
+	Active:		.byte 0
+	Stage:		.byte 0
 
+	GameOver:	.byte 0
+	FlashState:	.byte 0
+
+	FlashTimer:	.byte 30
+	Colours:	.byte 0, 8 +GREEN
+	.label FlashTime = 25
+
+
+	ExplosionOffset: .byte 0, 16
+
+
+
+	FrameUpdate: {
+
+		lda Active
+		beq Finish
+
+		lda Stage
+		bne NotFlash
+
+		Flash:
+
+			jsr FlashText
+			rts
+
+		NotFlash:
+
+
+		Finish:
+
+
+
+
+		rts
+	}	
+
+
+
+	RandomRow: {
+
+		jsr RANDOM.Get
+		and #%00000011
+		clc
+		adc #6
+		sta ZP.Row
+
+
+		rts
+	}
+
+	RandomColumn: {
+
+
+		ldx Winner
+		
+
+		jsr RANDOM.Get
+		and #%00000011
+		clc
+		adc #3
+		clc
+		adc ExplosionOffset, x
+		sta ZP.Column
+
+
+		rts
+	}
+
+	RandomExplosion: {
+
+		jsr RandomRow
+		jsr RandomColumn
+
+		jsr RANDOM.Get
+		and #%00001111
+		sta ZP.BeanColour
+		
+		jsr RANDOM.Get
+		and #%00000001
+		clc
+		adc #1
+		tax
+
+		jsr EXPLOSIONS.StartExplosion
+
+		rts
+	}
+
+
+	FlashText: {
+
+		lda FlashTimer
+		beq Ready
+
+		dec FlashTimer
+		rts
+
+
+		Ready:
+
+		lda #FlashTime
+		sta FlashTimer
+
+		jsr RandomExplosion
+
+		lda FlashState
+		beq TurnOn
+
+		TurnOff:
+
+
+			lda #0
+			sta FlashState
+			jmp CheckSide
+
+		TurnOn:
+
+			lda #1
+			sta FlashState
+
+
+		CheckSide:
+
+			ldy FlashState
+			lda Colours, y
+			ldx #0
+
+			ldy Winner
+			beq LeftSide
+
+		RightSide:
+
+			Loop2:
+				sta COLOR_RAM + 148, x
+				sta COLOR_RAM + 188, x
+
+				inx
+				cpx #8
+				bcc Loop2
+			
+			jmp Finish
+
+		LeftSide:
+
+			Loop:
+				sta COLOR_RAM + 124, x
+				sta COLOR_RAM + 164, x
+
+				inx
+				cpx #8
+				bcc Loop
+
+
+		Finish:
+
+		rts
+	}
 
 	MoveDownRow: {
 
@@ -37,26 +196,14 @@ ROUND_OVER: {
 
 		rts
 	}
-	PlayerOneWins: {
 
-		lda #GREEN
-		sta VIC.BORDER_COLOUR
+
+
+	YouWinTop: {
 
 
 		ldx #0
 		ldy #0
-
-		lda #<SCREEN_RAM + 42
-		sta ZP.ScreenAddress
-
-		lda #>SCREEN_RAM + 42
-		sta ZP.ScreenAddress + 1
-
-		lda #<COLOR_RAM + 42
-		sta ZP.ColourAddress
-
-		lda #>COLOR_RAM + 42
-		sta ZP.ColourAddress + 1
 
 		Loop:
 
@@ -85,7 +232,13 @@ ROUND_OVER: {
 		 	cpx #144
 		 	bcc Loop
 
+		rts
+	}
+
+	YouWinBottom: {
+
 		 ldx #0
+		 ldy #0
 
 		 Loop2:
 
@@ -97,7 +250,6 @@ ROUND_OVER: {
 		 	tax
 		 	lda CHAR_COLORS, x
 		 	sta (ZP.ColourAddress), y
-
 
 		 	iny
 		 	cpy #12
@@ -116,25 +268,166 @@ ROUND_OVER: {
 		 	bcc Loop2
 
 
+
+		rts
+	}
+
+	BlankBottom: {
+
+
+		 ldx #0
+		 ldy #0
+
+		 Loop2:
+
+		 	stx ZP.X
+
+		 	lda WIN_BOTTOM, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	tax
+		 	lda CHAR_COLORS, x
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay2
+
+		 	ldy #0
+
+		 	jsr MoveDownRow
+
+		 	Okay2:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop2
+
+
+
+		rts
+	}
+
+	PlayerOneWinBottom: {
+
+		lda #<SCREEN_RAM + 522
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 522
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 522
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 522
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinBottom
+
+		rts
+	}
+
+
+	PlayerTwoWinBottom: {
+
+		lda #<SCREEN_RAM + 546
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 546
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 546
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 546
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinBottom
+		rts
+	}
+
+	PlayerTwoWins: {
+
+		lda #GREEN
+		sta VIC.BORDER_COLOUR
+
+		
+		lda #<SCREEN_RAM + 66
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 66
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 66
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 66
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinTop
+		jsr BlankBottom
+
+	
+		rts
+	}
+
+
+	PlayerOneWins: {
+
+		lda #GREEN
+		sta VIC.BORDER_COLOUR
+
+		lda #<SCREEN_RAM + 42
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 42
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 42
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 42
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinTop
+		jsr BlankBottom
+
+	
 		rts
 	}
 
 
 	Show: {
 
+
+
 		stx Loser
+
+		lda #FlashTime
+		sta FlashTimer
+
+		lda #1
+		sta FlashState
+		sta Active
+
+		lda #0
+		sta Stage
 
 		lda ROCKS.Opponent, x
 		sta Winner
 
-	//	bne RightWins
+		bne RightWins
+
+		LeftWins:
 
 		jsr PlayerOneWins
 		rts
 
 		RightWins:
 
-
+		jsr PlayerTwoWins
 
 		rts
 	}

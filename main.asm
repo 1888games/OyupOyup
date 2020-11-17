@@ -236,6 +236,7 @@ MAIN: {
 		jsr PANEL.FrameUpdate
 		jsr ROCKS.FrameUpdate
 		jsr SCORING.FrameUpdate
+		jsr ROUND_OVER.FrameUpdate
 		//jsr DRAW.CycleChars
 
 

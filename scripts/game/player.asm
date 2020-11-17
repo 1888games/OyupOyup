@@ -1267,7 +1267,9 @@ PLAYER: {
 
 
 		lda #3
-		jsr ChangeTracks
+		jsr sid.init
+
+		jsr ROUND_OVER.Show
 		
 		
 		lda #2
