@@ -124,6 +124,8 @@ TEXT: {
 		// amount = number to draw
 		// y=colour
 
+		sta ZP.ShowSpaces
+
 		stx ZP.Amount	
 		ldx #0
 		sty ZP.Colour
@@ -174,11 +176,13 @@ TEXT: {
 
 				inc ZP.TextColumn
 
-
 				jmp EndLoop
 
 
 			SkipDraw:
+
+				lda ZP.ShowSpaces
+				beq EndLoop
 
 				lda #0
 				ldx ZP.TextColumn
@@ -188,8 +192,13 @@ TEXT: {
 				iny
 				jsr DRAW.PlotCharacter
 
+				inc ZP.TextColumn
+
 
 			EndLoop:
+
+
+			
 
 				ldx ZP.X
 				inx

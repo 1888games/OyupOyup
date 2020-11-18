@@ -8,7 +8,7 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$002b Temp vars zero page
+  *$0002-$002c Temp vars zero page
   $0800-$0800 Upstart
   $0801-$080d Basic
   $080d-$080c End Of Basic
@@ -21,9 +21,9 @@ Default-segment:
   $0e4c-$1974 CurrentType
   $1975-$1b0d -Random
   $1b0e-$210e Queue
-  $210f-$2e21 Queue Data
-  $2e22-$3b9c SpriteData
-  $3b9d-$3c8e Main
+  $210f-$2e3d Queue Data
+  $2e3e-$3d11 SpriteData
+  $3d12-$3e03 Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data

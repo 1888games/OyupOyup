@@ -47,6 +47,7 @@ PLAYER: {
 	ControlTimer:		.byte 0, 0
 
 	DoubleClickTimer:	.byte 0, 0
+	RoundOver:			.byte 0
 
 
 
@@ -56,6 +57,13 @@ PLAYER: {
 		lda #1
 		sta Status
 		sta Status + 1
+
+		lda #0
+		sta RoundOver
+		sta Beans 
+		sta Beans + 1
+		sta Beans + 2
+		sta Beans + 3
 
 		rts
 	}	
@@ -1239,6 +1247,12 @@ PLAYER: {
 
 	LostRound:  {
 
+		lda RoundOver
+		bne Finish
+
+		lda #1
+		sta RoundOver
+
 		lda #GRID_MODE_END
 		sta GRID.Mode
 		sta GRID.Mode + 1
@@ -1279,6 +1293,8 @@ PLAYER: {
 		
 		lda #2
 		//sta GRID.RowsPerFrameUse
+
+		Finish:
 
 		rts
 	}

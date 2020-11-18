@@ -478,6 +478,7 @@ SCORING: {
 			lda TextColours, x
 			tay
 
+			lda #0
 			ldx #3
 			jsr TEXT.DrawTallDigits
 
@@ -510,6 +511,7 @@ SCORING: {
 		DrawBean:
 
 			ldx #3
+			lda #0
 			jsr TEXT.DrawTallDigits
 
 			ldx GRID.CurrentSide

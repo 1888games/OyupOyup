@@ -50,7 +50,7 @@ Error - CRT header invalid.
 CART: 'bin/main.prg' is not a valid CRT file.
 AUTOSTART: Loading PRG file `bin/main.prg' with direct RAM injection.
 AUTOSTART: Resetting the machine to autostart '*'
-VIC-II: VSP Bug: safe channels are: 0124. Emulation of memory corruption is disabled.
+VIC-II: VSP Bug: safe channels are: 256. Emulation of memory corruption is disabled.
 AUTOSTART: `bin/main.prg' recognized as program/p00 file.
 Main CPU: starting at ($FFFC).
 Main CPU: RESET.

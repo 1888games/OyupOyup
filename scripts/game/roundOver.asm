@@ -21,7 +21,13 @@ ROUND_OVER: {
 	Colours:	.byte 0, 8 +GREEN
 	WaitTimer:	.byte 
 	.label FlashTime = 25
-	.label WaitTime = 60
+	.label WaitTime = 95
+	.label StartSeconds = 130
+
+
+	Bonus:		.byte 0, 0, 0
+	CurrentSeconds:	.byte 130
+	
 
 
 	ExplosionOffset: .byte 0, 24
@@ -55,13 +61,21 @@ ROUND_OVER: {
 				lda #2
 				sta Stage
 
+				lda #1
+				sta FlashState
+
+				lda #StartSeconds
+				sta CurrentSeconds
+	
+				jsr ColourText
 				jsr ShowBottom
 
 			rts
 
 		NotFlash:
 
-			
+			jsr CalculateTimeBonus
+			jsr DrawBonus
 
 
 
@@ -74,6 +88,191 @@ ROUND_OVER: {
 	}	
 
 
+	CalculateTimeBonus: {
+
+		lda CurrentSeconds
+		cmp #24
+		bcc SetTo24
+
+		cmp #131
+		bcs SetTo130
+
+		jmp GetBonus
+
+
+		SetTo130:
+
+			lda #130
+			jmp GetBonus
+
+		SetTo24:
+
+			lda #24
+
+		GetBonus:
+
+			tax
+
+			lda TimeLookupL, x
+			sta Bonus
+
+			lda TimeLookupM, x
+			sta Bonus + 1
+
+			lda TimeLookupH, x
+			sta Bonus + 2
+
+
+		dec CurrentSeconds
+		lda CurrentSeconds
+		cmp ROCKS.GameSeconds
+		bcc ReachedTarget
+
+		jmp Finish
+
+		ReachedTarget:
+
+			lda ROCKS.GameSeconds
+			sta CurrentSeconds
+
+			.break
+			nop
+
+
+		Finish:
+
+
+		rts
+	}
+
+
+	DrawBonus: {
+
+		lda Winner
+		beq Player1
+
+		Player2:
+
+			jsr DrawPlayerTwoBonus
+			rts
+
+		Player1:
+
+			jsr DrawPlayerOneBonus
+			rts
+
+	}
+
+
+
+	DrawPlayerOneBonus: {
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+	
+		ScoreLoop:
+
+			lda Bonus,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			cpy #0
+			beq Skip
+
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 844, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 884, y
+
+			ColourText:
+
+				lda #YELLOW +8
+
+				sta COLOR_RAM +844, y
+				sta COLOR_RAM +884, y
+
+			Skip:
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
+
+
+	DrawPlayerTwoBonus: {
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+	
+		ScoreLoop:
+
+			lda Bonus,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			cpy #0
+			beq Skip
+
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 867, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 907, y
+
+			ColourText:
+
+				lda #YELLOW +8
+
+				sta COLOR_RAM +867, y
+				sta COLOR_RAM +907, y
+
+			Skip:
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
 
 
 
@@ -94,7 +293,6 @@ ROUND_OVER: {
 
 		ldx Winner
 		
-
 		jsr RANDOM.Get
 		and #%00000011
 		clc
@@ -125,40 +323,11 @@ ROUND_OVER: {
 		jsr EXPLOSIONS.StartExplosion
 
 		rts
-	}
+	}	
 
 
-	FlashText: {
 
-		lda FlashTimer
-		beq Ready
-
-		dec FlashTimer
-		rts
-
-
-		Ready:
-
-		lda #FlashTime
-		sta FlashTimer
-
-		jsr RandomExplosion
-
-		lda FlashState
-		beq TurnOn
-
-		TurnOff:
-
-
-			lda #0
-			sta FlashState
-			jmp CheckSide
-
-		TurnOn:
-
-			lda #1
-			sta FlashState
-
+	ColourText: {
 
 		CheckSide:
 
@@ -191,6 +360,49 @@ ROUND_OVER: {
 				cpx #8
 				bcc Loop
 
+
+		Finish:
+
+
+
+		rts
+	}
+
+
+	FlashText: {
+
+		lda FlashTimer
+		beq Ready
+
+		dec FlashTimer
+		rts
+
+
+		Ready:
+
+		lda #FlashTime
+		sta FlashTimer
+
+		jsr RandomExplosion
+
+		lda FlashState
+		beq TurnOn
+
+		TurnOff:
+
+
+			lda #0
+			sta FlashState
+			jmp Colour
+
+		TurnOn:
+
+			lda #1
+			sta FlashState
+
+		Colour:
+
+			jsr ColourText
 
 		Finish:
 
@@ -260,6 +472,10 @@ ROUND_OVER: {
 		rts
 	}
 
+
+
+
+
 	YouWinBottom: {
 
 		 ldx #0
@@ -291,6 +507,14 @@ ROUND_OVER: {
 		 	inx
 		 	cpx #144
 		 	bcc Loop2
+
+
+		ldy #YELLOW+ 8
+		ldx #3
+
+		lda #1
+		jsr TEXT.DrawTallDigits
+
 
 
 
@@ -349,6 +573,42 @@ ROUND_OVER: {
 		lda #>COLOR_RAM + 522
 		sta ZP.ColourAddress + 1
 
+		PlayerSprite:
+
+			lda CAMPAIGN.PlayerPointers
+			sta SPRITE_POINTERS + 1
+
+			lda #63
+			sta VIC.SPRITE_1_X
+
+			lda #100
+			sta VIC.SPRITE_1_Y
+
+			lda CAMPAIGN.PlayerColours
+			sta VIC.SPRITE_COLOR_1
+
+			lda VIC.SPRITE_MSB
+			and #%11111101
+			sta VIC.SPRITE_MSB
+
+			lda VIC.SPRITE_DOUBLE_Y
+			ora #%00000010
+			sta VIC.SPRITE_DOUBLE_Y
+
+			lda VIC.SPRITE_DOUBLE_X
+			ora #%00000010
+			sta VIC.SPRITE_DOUBLE_X
+
+
+		SetupText:
+
+			lda #6
+			sta ZP.TextColumn
+
+			lda #15
+			sta ZP.TextRow
+
+
 		jsr YouWinBottom
 
 		rts
@@ -357,17 +617,57 @@ ROUND_OVER: {
 
 	PlayerTwoWinBottom: {
 
-		lda #<SCREEN_RAM + 546
-		sta ZP.ScreenAddress
+		GrabAddresses:
 
-		lda #>SCREEN_RAM + 546
-		sta ZP.ScreenAddress + 1
+			lda #<SCREEN_RAM + 546
+			sta ZP.ScreenAddress
 
-		lda #<COLOR_RAM + 546
-		sta ZP.ColourAddress
+			lda #>SCREEN_RAM + 546
+			sta ZP.ScreenAddress + 1
 
-		lda #>COLOR_RAM + 546
-		sta ZP.ColourAddress + 1
+			lda #<COLOR_RAM + 546
+			sta ZP.ColourAddress
+
+			lda #>COLOR_RAM + 546
+			sta ZP.ColourAddress + 1
+
+		PlayerSprite:
+
+			lda CAMPAIGN.PlayerPointers + 1
+			sta SPRITE_POINTERS + 0
+
+			lda #255
+			sta VIC.SPRITE_0_X
+
+			lda #100
+			sta VIC.SPRITE_0_Y
+
+			lda CAMPAIGN.PlayerColours + 1
+			sta VIC.SPRITE_COLOR_0
+
+			lda VIC.SPRITE_MSB
+			and #%11111110
+			sta VIC.SPRITE_MSB
+
+			lda VIC.SPRITE_DOUBLE_Y
+			ora #%00000001
+			sta VIC.SPRITE_DOUBLE_Y
+
+			lda VIC.SPRITE_DOUBLE_X
+			ora #%00000001
+			sta VIC.SPRITE_DOUBLE_X
+
+
+		SetupText:
+
+			lda #30
+			sta ZP.TextColumn
+
+			lda #15
+			sta  ZP.TextRow
+
+
+
 
 		jsr YouWinBottom
 		rts
@@ -458,6 +758,9 @@ ROUND_OVER: {
 
 
 	ShowBottom: {
+
+		lda ROCKS.GameSeconds
+		jsr TEXT.ByteToDigits
 
 		lda Winner
 		beq Player1

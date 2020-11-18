@@ -41,6 +41,7 @@ ZP: {
 	TextColumn:			.byte $00
 	TextRow:			.byte $00
 	CharOffset:			.byte $00
+	ShowSpaces:			.byte $00
 
 	
 
