@@ -42,6 +42,7 @@ ZP: {
 	TextRow:			.byte $00
 	CharOffset:			.byte $00
 	ShowSpaces:			.byte $00
+	SolidBelow:			.byte $00
 
 	
 

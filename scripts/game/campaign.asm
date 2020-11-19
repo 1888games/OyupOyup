@@ -38,7 +38,8 @@ CAMPAIGN: {
 
 	Colours:	.byte RED, GREEN, YELLOW, BLUE, PURPLE, CYAN	
 
-	NextLevel:	.byte $01, $15, $00
+	NextLevel:	.byte $00, $15, $01
+	Remaining:	.byte $00, $15, $01
 
 
 	OpponentID:		.byte 0
@@ -289,6 +290,31 @@ CAMPAIGN: {
 
 
 
+	}
+
+
+	IncreaseLevel: {
+
+		inc CurrentLevel
+		lda CurrentLevel
+		asl
+		asl
+		tax
+
+		lda Levels, x
+		sta NextLevel + 2
+		sta Remaining + 2
+
+
+		lda Levels + 1, x
+		sta NextLevel + 1
+		sta Remaining + 1
+
+		lda Levels + 2, x
+		sta NextLevel
+		sta Remaining
+
+		rts
 	}
 
 	DrawLevelData: {

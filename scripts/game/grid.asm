@@ -19,6 +19,8 @@ GRID: {
 	.label BeanPoppedType = 25
 	.label LastPoppedFrame = 23
 
+
+
 	* = * "Grid Data"
 
 	PlayerOne:	.fill Rows * Columns, GREEN
@@ -46,6 +48,8 @@ GRID: {
 
 	BackgroundCharIDs:	.byte 202, 203, 204, 205, 202, 203
 	BackgroundColours:	.byte GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE
+
+	ScreenShakeTimer:	.byte 0
 
 
 
@@ -117,8 +121,55 @@ GRID: {
 
 
 
+	ScreenShake: {
+
+		lda ScreenShakeTimer
+		beq None
+
+		dec ScreenShakeTimer
+
+		// jsr RANDOM.Get
+		// and #%00000111
+		// sta ZP.Amount
+
+		// lda VIC.SCREEN_CONTROL
+		// and #%11111000
+		// ora ZP.Amount
+		// sta VIC.SCREEN_CONTROL
+
+		jsr RANDOM.Get
+		and #%00000111
+		sta ZP.Amount
+
+		lda VIC.SCREEN_CONTROL_2
+		and #%11111000
+		ora ZP.Amount
+		sta VIC.SCREEN_CONTROL_2
+
+		rts
+
+		None:
+/*
+		lda VIC.SCREEN_CONTROL
+		and #%11111000
+		sta VIC.SCREEN_CONTROL
+*/
+		lda VIC.SCREEN_CONTROL_2
+		and #%11111000
+		sta VIC.SCREEN_CONTROL_2
+
+
+
+
+		rts
+
+
+	}
+
 
 	FrameUpdate: {
+
+
 
 		lda ZP.FrameCounter
 		and #%00001111
@@ -129,6 +180,8 @@ GRID: {
 
 			lda MAIN.GameActive
 			beq Finish
+
+		jsr ScreenShake
 
 		UpdateLeftSide:
 
@@ -1193,6 +1246,9 @@ GRID: {
 			
 			CheckIfEmpty:
 
+				lda #0
+				sta ZP.SolidBelow
+
 				lda PlayerOne, x
 				sta ZP.BeanColour
 				bne CheckLeft
@@ -1225,9 +1281,9 @@ GRID: {
 				CheckBeanBelow:
 
 					lda PlayerOne, x
-					beq MoveBeanDown
+					bne SolidBelow
 
-					jmp SolidBelow
+					jmp MoveBeanDown
 
 				BottomRow:
 
@@ -1243,12 +1299,17 @@ GRID: {
 					jmp DeleteOldGridSpace
 
 				SolidBelow:
+
+					inc ZP.SolidBelow
 				
 					ldy ZP.PreviousType
 					bmi NotAnimating
 
 					cpy #BeanFallingType
 					beq FinishedFalling
+
+					cpy #32
+					beq IsRock
 
 					cpy #FirstAnimationFrame
 					bcc NotAnimating
@@ -1271,10 +1332,6 @@ GRID: {
 
 				CheckSoundToPlay:
 
-					lda ZP.BeanColour
-					cmp #CYAN
-					beq IsRock
-
 					IsBean:
 
 						sfx(SFX_EXPLODE)
@@ -1282,12 +1339,25 @@ GRID: {
 
 					IsRock:
 
+						ldx CurrentSide
+						lda PLAYER.Status, x
+						cmp #PLAYER.PLAYER_STATUS_NORMAL
+						bne AlreadyLanded
+
+						lda ScreenShakeTimer
+						clc
+						adc #3
+						sta ScreenShakeTimer
+
 						ldx ZP.CurrentSlot
 						lda RocksAdjacent, x
 						ora #DOWN
 						sta RocksAdjacent, x
 
 						sfx(SFX_LAND)
+
+						AlreadyLanded:
+
 						jmp Draw
 
 				NotAnimating:

@@ -24,11 +24,13 @@ ROUND_OVER: {
 	.label WaitTime = 95
 	.label StartSeconds = 130
 
-
+	PreviousBonus:	.byte 0, 0, 0
 	Bonus:		.byte 0, 0, 0
 	CurrentSeconds:	.byte 130
 	
-
+	PlayerScore:	.byte 0, 0, 0
+	Remaining:		.byte 0, 0, 0
+	HitLevelTarget: .byte 0
 
 	ExplosionOffset: .byte 0, 24
 
@@ -69,13 +71,34 @@ ROUND_OVER: {
 	
 				jsr ColourText
 				jsr ShowBottom
-
-			rts
+				jsr DrawOtherSide
+				jmp Finish
 
 		NotFlash:
 
+			cmp #3
+			bcs NotBonus
+
 			jsr CalculateTimeBonus
 			jsr DrawBonus
+
+			lda Stage
+			cmp #3
+			bcs Finish
+
+			jsr AddBonusToScore
+			jmp Finish
+
+
+		NotBonus:
+
+			cmp #4
+			bcs AllClear
+
+			jsr AddScoreToRemaining
+
+		AllClear:
+
 
 
 
@@ -83,13 +106,295 @@ ROUND_OVER: {
 
 
 
-
 		rts
 	}	
 
 
+
+
+	AddScoreToRemaining: {
+
+		sed
+
+
+		TryTen:
+
+			lda PlayerScore
+			bne NotFinished
+
+			jmp TryThousand
+
+			NotFinished:
+
+			sec
+			sbc #1
+			sta PlayerScore
+
+			lda HitLevelTarget
+			beq DoRemain
+
+			jmp Draw
+
+			DoRemain:
+
+			lda Remaining
+			sec
+			sbc #01
+			sta Remaining
+
+			lda Remaining + 1
+			sbc #00
+			sta Remaining + 1
+
+			lda Remaining + 2
+			sbc #00
+			sta Remaining + 2
+
+			cmp #$99
+			bne Draw
+
+			lda #0
+			sta Remaining + 2
+			sta Remaining + 1
+			sta Remaining + 0
+
+			jmp HitTarget
+
+
+		TryThousand:
+
+			lda PlayerScore + 1
+			beq TryHundredThousand
+
+			sec
+			sbc #1
+			sta PlayerScore + 1
+
+
+			lda HitLevelTarget
+			bne Draw
+
+			lda Remaining + 1
+			sec
+			sbc #01
+			sta Remaining + 1
+
+			lda Remaining + 2
+			sbc #00
+			sta Remaining + 2
+
+			cmp #$99
+			bne Draw
+
+			lda #0
+			sta Remaining + 2
+			sta Remaining + 1
+			sta Remaining + 0
+
+			jmp HitTarget
+
+
+		TryHundredThousand:
+
+			lda PlayerScore + 2
+			beq Finished
+
+			
+			sec
+			sbc #1
+			sta PlayerScore + 2
+
+			lda HitLevelTarget
+			bne Draw
+
+			lda Remaining + 2
+			sec
+			sbc #01
+			sta Remaining + 2
+
+			cmp #$99
+			bne Draw
+
+			lda #0
+			sta Remaining + 2
+			sta Remaining + 1
+			sta Remaining + 0
+
+			jmp HitTarget
+			
+		HitTarget:
+
+			cld
+	
+			jsr LevelClear
+			jmp Draw
+
+
+		Finished:
+
+			lda #4
+			sta Stage
+
+			jmp Draw
+
+		Draw:
+
+		cld
+
+		ldx Winner
+		beq Player1
+
+		Player2:
+
+			jsr DrawPlayerTwoScore
+			jsr DrawPlayerTwoRemaining
+			rts
+
+
+		Player1:
+
+			jsr DrawPlayerOneScore
+			jsr DrawPlayerOneRemaining
+			rts
+
+
+		
+	}
+
+
+
+
+	TransferScoreToPlayer: {
+
+		ldx Winner
+		beq Player1
+
+		Player2:
+
+			lda PlayerScore
+			sta SCORING.PlayerTwo
+
+			lda PlayerScore + 1
+			sta SCORING.PlayerTwo + 1
+
+			lda PlayerScore + 2
+			sta SCORING.PlayerTwo + 2
+
+			rts
+
+
+		Player1:
+
+			lda PlayerScore
+			sta SCORING.PlayerOne
+
+			lda PlayerScore + 1
+			sta SCORING.PlayerOne + 1
+
+			lda PlayerScore + 2
+			sta SCORING.PlayerOne + 2
+
+			rts
+
+
+	}
+
+
+	DrawOtherSide: {
+
+		lda Winner
+		beq Player1
+
+		Player2:
+
+			jsr PlayerTwoWinsOther
+			rts
+
+
+		Player1:
+
+			jsr PlayerOneWinsOther
+			rts
+
+
+
+	}
+
+
+	AddBonusToTemp: {
+
+	
+		sed
+		clc
+		lda PlayerScore
+		adc Bonus
+		sta PlayerScore
+		lda PlayerScore + 1
+		adc #ZERO
+		clc
+		adc Bonus + 1
+		sta PlayerScore + 1
+
+		lda PlayerScore + 2
+
+		adc #ZERO
+		clc
+		adc Bonus + 2
+		sta PlayerScore + 2
+		cld
+
+
+		rts
+	}
+
+
+	AddBonusToScore: {
+
+		ldx Winner
+		beq Player1
+
+
+		Player2:
+
+			lda SCORING.PlayerTwo
+			sta PlayerScore
+
+			lda SCORING.PlayerTwo + 1
+			sta PlayerScore + 1
+
+			lda SCORING.PlayerTwo + 2
+			sta PlayerScore + 2
+			
+			jsr AddBonusToTemp
+			jsr DrawPlayerTwoScore
+			
+			rts
+
+
+		Player1:
+
+			
+			lda SCORING.PlayerOne
+			sta PlayerScore
+
+			lda SCORING.PlayerOne + 1
+			sta PlayerScore + 1
+
+			lda SCORING.PlayerOne + 2
+			sta PlayerScore + 2
+			
+			jsr AddBonusToTemp
+			jsr DrawPlayerOneScore
+
+			rts
+
+
+	}
+
+
 	CalculateTimeBonus: {
 
+		
 		lda CurrentSeconds
 		cmp #24
 		bcc SetTo24
@@ -111,6 +416,9 @@ ROUND_OVER: {
 
 		GetBonus:
 
+			sec
+			sbc #24
+
 			tax
 
 			lda TimeLookupL, x
@@ -121,7 +429,6 @@ ROUND_OVER: {
 
 			lda TimeLookupH, x
 			sta Bonus + 2
-
 
 		dec CurrentSeconds
 		lda CurrentSeconds
@@ -135,9 +442,16 @@ ROUND_OVER: {
 			lda ROCKS.GameSeconds
 			sta CurrentSeconds
 
-			.break
-			nop
+			lda #3
+			sta Stage
 
+			lda #60
+			sta FlashTimer
+
+			lda #0
+			sta HitLevelTarget
+
+			jsr TransferScoreToPlayer
 
 		Finish:
 
@@ -195,18 +509,18 @@ ROUND_OVER: {
 
 			asl
 			adc #SCORING.CharacterSetStart
-			sta SCREEN_RAM + 844, y
+			sta SCREEN_RAM + 843, y
 
 			clc
 			adc #1
-			sta SCREEN_RAM + 884, y
+			sta SCREEN_RAM + 883, y
 
 			ColourText:
 
-				lda #YELLOW +8
+				lda #CYAN +8
 
-				sta COLOR_RAM +844, y
-				sta COLOR_RAM +884, y
+				sta COLOR_RAM +843, y
+				sta COLOR_RAM +883, y
 
 			Skip:
 
@@ -258,7 +572,7 @@ ROUND_OVER: {
 
 			ColourText:
 
-				lda #YELLOW +8
+				lda #CYAN +8
 
 				sta COLOR_RAM +867, y
 				sta COLOR_RAM +907, y
@@ -431,6 +745,636 @@ ROUND_OVER: {
 	 	sta ZP.ColourAddress + 1
 
 
+		rts
+	}
+
+
+	DrawPlayerOneScore: {
+
+
+		lda #0
+		sta ZP.Amount
+
+		lda PlayerScore + 2
+		bne NoIncrease
+
+		inc ZP.Amount
+
+		NoIncrease:
+
+		cmp #$10
+		bcs Okay
+
+		inc ZP.Amount
+
+		Okay:
+
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+		stx ZP.Amount
+		
+		ScoreLoop:
+
+			lda PlayerScore,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			cpy ZP.Amount
+			bcs NotBlank
+
+			lda #0
+			sta SCREEN_RAM + 307, y
+			sta SCREEN_RAM + 347, y
+
+			jmp Skip
+
+			NotBlank:
+			
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 307, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 347, y
+
+			ColourText:	
+				
+				lda #PURPLE +8
+				sta COLOR_RAM +307, y
+				sta COLOR_RAM +347, y
+
+			Skip:
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
+
+
+	DrawPlayerTwoScore: {
+
+		lda #0
+		sta ZP.Amount
+
+		lda PlayerScore + 2
+		bne NoIncrease
+
+		inc ZP.Amount
+
+		NoIncrease:
+
+		cmp #$10
+		bcs Okay
+
+		inc ZP.Amount
+
+		Okay:
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+		
+		ScoreLoop:
+
+			lda PlayerScore,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			cpy ZP.Amount
+			bcs NotBlank
+
+			lda #0
+			sta SCREEN_RAM + 283, y
+			sta SCREEN_RAM + 323, y
+
+			jmp Skip
+
+			NotBlank:
+			
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 283, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 323, y
+
+			ColourText:
+			
+				lda #PURPLE +8
+				sta COLOR_RAM +283, y
+				sta COLOR_RAM +323, y
+
+			Skip:
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
+
+
+	YouWinOther: {
+
+
+		lda CAMPAIGN.Remaining
+		sta Remaining
+
+		lda CAMPAIGN.Remaining + 1
+		sta Remaining + 1
+
+		lda CAMPAIGN.Remaining + 2
+		sta Remaining + 2
+
+		ldx #0
+		ldy #0
+
+		Loop:
+
+			stx ZP.X
+
+		 	lda WIN_RIGHT, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	tax
+		 	lda CHAR_COLORS, x
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay
+
+		 	ldy #0
+
+		 	jsr MoveDownRow
+
+		 	Okay:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop
+
+		ldx #0
+		ldy #0
+
+		Loop2:
+
+			stx ZP.X
+
+		 	lda WIN_RIGHT + 144, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	cpx #48
+		 	bcc UseColour
+
+		 	cpx #132
+		 	bcs UseColour
+
+		 	cpy #0
+		 	beq UseColour
+
+		 	cpy #11
+		 	beq UseColour
+
+		 	
+		 	lda #0
+		 	jmp Colour
+
+		 	UseColour:
+
+		 	tax
+		 	lda CHAR_COLORS, x
+
+		 	Colour:
+
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay2
+
+		 	ldy #0
+
+		 	jsr MoveDownRow
+
+		 	Okay2:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop2
+
+
+		rts
+
+
+
+
+
+	}
+
+
+	LevelClear: {
+
+		lda #1
+		sta HitLevelTarget	
+
+		ldx Winner
+		beq Player1
+
+		Player2:
+
+		jsr PlayerTwoLevelUp
+		jmp Draw
+
+		Player1:
+
+		jsr PlayerOneLevelUp
+
+		Draw:
+
+		ldx #0
+		ldy #0
+
+		Loop2:
+
+			stx ZP.X
+
+		 	lda WIN_RIGHT + 144, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	cpx #84
+		 	bcc UseColour
+		 	
+		 	lda #CYAN + 8
+		 	jmp Colour
+
+		 	UseColour:
+
+		 	tax
+		 	lda CHAR_COLORS, x
+
+		 	Colour:
+
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay2
+
+		 	ldy #0
+
+		 	jsr MoveDownRow
+
+		 	Okay2:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop2
+
+
+		rts
+
+
+
+	}
+
+
+
+	DrawPlayerOneRemaining: {
+
+
+		lda #0
+		sta ZP.Amount
+
+		lda Remaining + 2
+		bne NoIncrease
+
+		inc ZP.Amount
+
+		NoIncrease:
+
+		cmp #$10
+		bcs Okay
+
+		inc ZP.Amount
+
+		Okay:
+
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+		stx ZP.Amount
+		
+		ScoreLoop:
+
+			lda Remaining,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			cpy ZP.Amount
+			bcs NotBlank
+
+			lda #0
+			sta SCREEN_RAM + 667, y
+			sta SCREEN_RAM + 707, y
+
+			NotBlank:
+
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 667, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 707, y
+
+			ColourText:	
+				
+				lda #CYAN +8
+				sta COLOR_RAM +667, y
+				sta COLOR_RAM +707, y
+
+			Skip:
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
+
+
+	DrawPlayerTwoRemaining: {
+
+		lda #0
+		sta ZP.Amount
+
+		lda Remaining + 2
+		bne NoIncrease
+
+		inc ZP.Amount
+
+		NoIncrease:
+
+		cmp #$10
+		bcs Okay
+
+		inc ZP.Amount
+
+		Okay:
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+		
+		ScoreLoop:
+
+			lda Remaining,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+			cpy ZP.Amount
+			bcs NotBlank
+
+			lda #0
+			sta SCREEN_RAM + 603, y
+			sta SCREEN_RAM + 643, y
+
+			jmp Skip
+
+			NotBlank:
+			
+			asl
+			adc #SCORING.CharacterSetStart
+			sta SCREEN_RAM + 603, y
+
+			clc
+			adc #1
+			sta SCREEN_RAM + 643, y
+
+			ColourText:
+			
+				lda #CYAN +8
+				sta COLOR_RAM +603, y
+				sta COLOR_RAM +643, y
+
+			Skip:
+
+			dey
+			rts
+
+		}
+
+
+		rts
+	}
+
+
+
+	PlayerOneLevelUp: {
+
+
+		lda #<SCREEN_RAM + 546
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 546
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 546
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 546
+		sta ZP.ColourAddress + 1
+
+		rts
+
+	}
+
+	PlayerTwoLevelUp: {
+
+
+		lda #<SCREEN_RAM + 522
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 522
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 522
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 522
+		sta ZP.ColourAddress + 1
+
+
+
+		rts
+	}
+
+
+	PlayerTwoWinsOther: {
+
+	
+		lda #<SCREEN_RAM + 42
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 42
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 42
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 42
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinOther
+		jsr DrawPlayerTwoRemaining
+
+	
+	
+		rts
+	}
+
+
+	PlayerOneWinsOther: {
+
+		lda #<SCREEN_RAM + 66
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 66
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 66
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 66
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinOther
+		jsr DrawPlayerOneRemaining
+		
+		rts
+	}
+
+
+
+	PlayerTwoWins: {
+
+		lda #GREEN
+		sta VIC.BORDER_COLOUR
+
+		
+		lda #<SCREEN_RAM + 66
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 66
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 66
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 66
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinTop
+		jsr BlankBottom
+
+	
+		rts
+	}
+
+
+	PlayerOneWins: {
+
+		lda #GREEN
+		sta VIC.BORDER_COLOUR
+
+		lda #<SCREEN_RAM + 42
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 42
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 42
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 42
+		sta ZP.ColourAddress + 1
+
+		jsr YouWinTop
+		jsr BlankBottom
+
+	
 		rts
 	}
 
@@ -670,56 +1614,6 @@ ROUND_OVER: {
 
 
 		jsr YouWinBottom
-		rts
-	}
-
-	PlayerTwoWins: {
-
-		lda #GREEN
-		sta VIC.BORDER_COLOUR
-
-		
-		lda #<SCREEN_RAM + 66
-		sta ZP.ScreenAddress
-
-		lda #>SCREEN_RAM + 66
-		sta ZP.ScreenAddress + 1
-
-		lda #<COLOR_RAM + 66
-		sta ZP.ColourAddress
-
-		lda #>COLOR_RAM + 66
-		sta ZP.ColourAddress + 1
-
-		jsr YouWinTop
-		jsr BlankBottom
-
-	
-		rts
-	}
-
-
-	PlayerOneWins: {
-
-		lda #GREEN
-		sta VIC.BORDER_COLOUR
-
-		lda #<SCREEN_RAM + 42
-		sta ZP.ScreenAddress
-
-		lda #>SCREEN_RAM + 42
-		sta ZP.ScreenAddress + 1
-
-		lda #<COLOR_RAM + 42
-		sta ZP.ColourAddress
-
-		lda #>COLOR_RAM + 42
-		sta ZP.ColourAddress + 1
-
-		jsr YouWinTop
-		jsr BlankBottom
-
-	
 		rts
 	}
 

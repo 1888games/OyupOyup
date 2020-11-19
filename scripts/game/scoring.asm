@@ -143,6 +143,7 @@ SCORING: {
 	DrawPlayerOne: {
 
 
+
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
 	
@@ -198,10 +199,9 @@ SCORING: {
 
 	DrawPlayerTwo: {
 
-
+	
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
-		stx ZP.Amount
 		
 		ScoreLoop:
 
@@ -223,7 +223,6 @@ SCORING: {
 
 		PlotDigit: {
 
-			
 			asl
 			adc #CharacterSetStart
 			sta SCREEN_RAM + 858, y
@@ -237,6 +236,8 @@ SCORING: {
 				lda #CYAN +8
 				sta COLOR_RAM +858, y
 				sta COLOR_RAM +898, y
+
+			Skip:
 
 			dey
 			rts

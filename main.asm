@@ -36,6 +36,9 @@ MAIN: {
 	#import "/scripts/game/scoring.asm"
 	#import "/scripts/game/text.asm"
 	#import "/scripts/game/opponents.asm"
+
+	* = $7000
+
 	#import "/scripts/game/roundOver.asm"
 
 
@@ -57,7 +60,7 @@ MAIN: {
 		jsr DetectMachine
 			
 
-		jmp TITLE.Show	
+		//jmp TITLE.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
 
@@ -65,7 +68,7 @@ MAIN: {
 
 
 	}
-
+   
 	DetectMachine: {
 
 		w0:  lda $D012

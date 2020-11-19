@@ -73,11 +73,14 @@ GRID_VISUALS: {
 
 
 
+
 		rts
 	}
 
 
 	DrawBean: {
+
+		stx ZP.TempX
 
 		lda ZP.BeanColour
 		cmp #CYAN
@@ -169,6 +172,19 @@ GRID_VISUALS: {
 			clc
 			adc #8
 			sta (ZP.ColourAddress), y
+
+
+
+		ldx ZP.TempX
+		lda GRID.CurrentType, x
+		cmp #16
+		bne Finish
+
+		lda ZP.SolidBelow
+		bne Finish
+
+		lda #32
+		sta GRID.PreviousType, x
 
 
 		Finish:
