@@ -99,8 +99,7 @@ ROUND_OVER: {
 
 		AllClear:
 
-
-
+			jsr Exit
 
 		Finish:
 
@@ -110,14 +109,59 @@ ROUND_OVER: {
 	}	
 
 
+	Exit: {
+
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+		lda #GAME_MODE_SWITCH_CAMPAIGN
+		sta MAIN.GameMode
+
+		lda HitLevelTarget
+		beq NextOpponent
+
+		NextLevel:
+
+			inc CAMPAIGN.CurrentLevel
+			lda #0
+			sta CAMPAIGN.Matches
+
+			lda CAMPAIGN.OpponentID
+			sta CAMPAIGN.LastOpponentID
+			jmp Finish
+
+		NextOpponent:
+
+			inc CAMPAIGN.Matches
+
+		Finish:
+
+
+
+		rts
+	}
+
+
 
 
 	AddScoreToRemaining: {
 
-		sed
+		lda HitLevelTarget
+		bne TryTen
 
+		lda ZP.FrameCounter
+		and #%00000111
+		bne TryTen
 
+		ldx #SFX_BLOOP
+		sfxFromX()
+
+	
 		TryTen:
+
+			sed
 
 			lda PlayerScore
 			bne NotFinished
@@ -349,6 +393,15 @@ ROUND_OVER: {
 
 
 	AddBonusToScore: {
+
+		lda ZP.FrameCounter
+		and #%00000111
+		bne NoSfx
+		
+		ldx #SFX_MOVE
+		sfxFromX()
+
+		NoSfx:
 
 		ldx Winner
 		beq Player1
@@ -1015,6 +1068,9 @@ ROUND_OVER: {
 
 	LevelClear: {
 
+		ldx #SFX_ROTATE
+		sfxFromX()
+
 		lda #1
 		sta HitLevelTarget	
 
@@ -1041,6 +1097,7 @@ ROUND_OVER: {
 
 		 	lda WIN_RIGHT + 144, x
 		 	sta (ZP.ScreenAddress), y
+
 
 		 	cpx #84
 		 	bcc UseColour
@@ -1084,9 +1141,17 @@ ROUND_OVER: {
 
 	DrawPlayerOneRemaining: {
 
-
 		lda #0
 		sta ZP.Amount
+
+		lda HitLevelTarget
+		beq SomeLeft
+
+		lda #6
+		sta ZP.Amount
+		jmp Okay
+
+		SomeLeft:
 
 		lda Remaining + 2
 		bne NoIncrease
@@ -1105,8 +1170,7 @@ ROUND_OVER: {
 
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
-		stx ZP.Amount
-		
+	
 		ScoreLoop:
 
 			lda Remaining,x
@@ -1133,6 +1197,7 @@ ROUND_OVER: {
 			lda #0
 			sta SCREEN_RAM + 667, y
 			sta SCREEN_RAM + 707, y
+			jmp Skip
 
 			NotBlank:
 
@@ -1166,6 +1231,15 @@ ROUND_OVER: {
 
 		lda #0
 		sta ZP.Amount
+
+		lda HitLevelTarget
+		beq SomeLeft
+
+		lda #6
+		sta ZP.Amount
+		jmp Okay
+
+		SomeLeft:
 
 		lda Remaining + 2
 		bne NoIncrease
@@ -1210,7 +1284,6 @@ ROUND_OVER: {
 			lda #0
 			sta SCREEN_RAM + 603, y
 			sta SCREEN_RAM + 643, y
-
 			jmp Skip
 
 			NotBlank:

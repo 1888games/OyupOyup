@@ -228,6 +228,17 @@ MAIN: {
 
 		dec PerformFrameCodeFlag
 
+		lda GameMode
+		cmp #GAME_MODE_SWITCH_CAMPAIGN
+		bne NotCampaign
+
+		lda #0
+		sta GameMode
+
+		jmp CAMPAIGN.Show
+
+		NotCampaign:
+
 		jsr sfx_cooldown
 
 		lda MAIN.GameActive

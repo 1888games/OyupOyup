@@ -20,16 +20,16 @@ Default-segment:
   $0d2c-$0e4b Grid Data
   $0e4c-$19b2 CurrentType
   $19b3-$1b4b -Random
-  $1b4c-$214c Queue
-  $214d-$2ea3 Queue Data
-  $2ea4-$3923 SpriteData
+  $1b4c-$2174 Queue
+  $2175-$2ed1 Queue Data
+  $2ed2-$3951 SpriteData
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
-  $7000-$783b Unnamed
-  $783c-$792a Main
+  $7000-$78bb Unnamed
+  $78bc-$79b9 Main
   $8000-$7fff Assets
   $8000-$80ff Game Colours
   $8100-$84e7 Game Map

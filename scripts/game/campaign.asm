@@ -106,7 +106,6 @@ CAMPAIGN: {
 		lda #15
 		sta RandomTimer
 
-
 		lda #GAME_MODE_TOWER
 		sta IRQ.Mode
 
@@ -491,6 +490,10 @@ CAMPAIGN: {
 
 		lda #%00000000
 		sta VIC.SPRITE_PRIORITY
+		sta VIC.SPRITE_DOUBLE_Y
+		sta VIC.SPRITE_DOUBLE_X
+
+	
 
 		lda PlayerPointers
 		sta SPRITE_POINTERS

@@ -52,6 +52,10 @@ ROCKS: {
 	ComboTimer:		.byte 0, 0
 	ComboFrame:		.byte 0, 0
 
+	GridOffset:		.byte 0, 66
+
+	DropTimeout:	.byte 0
+
 		
 	SpriteLookup:	.byte 0, 2, 4, 6, 8, 10, 12, 14
 	
@@ -101,6 +105,8 @@ ROCKS: {
 		lda FramesPerSecond
 		sta SecondsTimer
 
+		lda #60
+		sta PendingCount + 1
 		// ldy #0
 
 		// jsr TransferToQueue
@@ -963,17 +969,21 @@ ROCKS: {
 
 	TryQueue: {
 
-		lda #0
-		sta ZP.Okay
-
-		cpy #0
+		lda DropTimeout
 		beq Okay2
 
-		//.break
-		nop
+		dec DropTimeout
+		lda DropTimeout
+		bne Okay2
 
+		sty ZP.Player
+		jsr PLAYER.LostRound
+		rts
 
 		Okay2:
+
+		lda #0
+		sta ZP.Okay
 
 		lda QueueOffset, y
 		tax
@@ -989,10 +999,9 @@ ROCKS: {
 
 			txa
 			clc
-			adc GRID.PlayerLookup, y
+			adc GridOffset, y
 			tay
 
-		
 			lda GRID.PlayerOne, y
 			beq Okay
 
@@ -1031,9 +1040,20 @@ ROCKS: {
 		Finish:
 
 			lda ZP.Okay
+			beq Done
+
+			lda DropTimeout
 			bne NotDone
 
+			lda #90
+			sta DropTimeout
+
+			jmp NotDone
+
 		Done:
+
+			lda #0
+			sta DropTimeout
 
 			//.break
 			ldy ZP.Player
@@ -1055,8 +1075,6 @@ ROCKS: {
 
 			lda #1
 			sta GRID.Active, y
-
-
 
 
 
