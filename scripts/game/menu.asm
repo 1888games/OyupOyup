@@ -35,12 +35,13 @@ MENU: {
 
 	Show: {
 
+		lda #0
+		sta SelectedOption
+		sta PreviousOption
+		sta ControlTimer
 
-		lda #1
-		//jsr ChangeTracks
-		
 		jsr MAIN.SetupVIC
-
+		jsr DRAW.HideSprites
 
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR

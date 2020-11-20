@@ -37,7 +37,7 @@ MAIN: {
 	#import "/scripts/game/text.asm"
 	#import "/scripts/game/opponents.asm"
 
-	* = $7000
+	* = $6900
 
 	#import "/scripts/game/roundOver.asm"
 
@@ -220,26 +220,51 @@ MAIN: {
 		lda PerformFrameCodeFlag
 		beq Loop
 
-		jsr FrameCode
+		dec PerformFrameCodeFlag
 
-		jmp Loop
+		jmp CheckSwitchMode
 	}
 
 
-	FrameCode: {
-
-		dec PerformFrameCodeFlag
+	CheckSwitchMode: {
 
 		lda GameMode
 		cmp #GAME_MODE_SWITCH_CAMPAIGN
 		bne NotCampaign
 
-		lda #0
-		sta GameMode
+		SwitchCampaign:
 
-		jmp CAMPAIGN.Show
+			lda #0
+			sta GameMode
+
+			jmp CAMPAIGN.Show
 
 		NotCampaign:
+
+			cmp #GAME_MODE_SWITCH_MENU
+			bne NotMenu
+
+		SwitchMenu:
+
+			lda #0
+			sta GameMode
+
+			lda #2
+			jsr ChangeTracks
+
+			jmp MENU.Show
+
+		NotMenu:
+
+
+		jmp FrameCode
+
+
+
+	}
+
+	FrameCode: {
+
 
 		jsr sfx_cooldown
 
@@ -258,8 +283,7 @@ MAIN: {
 
 		Paused:
 
-		
-		rts
+		jmp Loop
 
 	}
 

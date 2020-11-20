@@ -16,7 +16,7 @@ ROUND_OVER: {
 	Active:		.byte 0
 	Stage:		.byte 0
 
-	GameOver:	.byte 0
+	IsGameOver:	.byte 0
 	FlashState:	.byte 0
 
 	FlashTimer:	.byte 30
@@ -37,14 +37,20 @@ ROUND_OVER: {
 	ExplosionOffset: .byte 0, 24
 
 
+	GameOverDirection:	.byte 0
 
+
+	GameOverStartX:		.byte 45, 66, 87, 108
+	GameOverPointers:	.byte 68, 69, 70, 71
+	FrameTimer:			.byte 0
+	XChange:			.byte 254, 255, 1, 2
 
 	Reset: {
 
 		lda #0
 		sta HitLevelTarget
 		sta Stage
-		sta GameOver
+		sta IsGameOver
 		sta FlashState
 		sta Active
 
@@ -78,13 +84,291 @@ ROUND_OVER: {
 		jsr PlayerOneWins
 		rts
 
-		RightWins:
+		RightWins:	
 
-		jsr PlayerTwoWins
+			ldx Winner
+			lda PLAYER.CPU, x
+			beq HumanWins
+
+		CPUWins:
+
+			lda #5
+			sta Stage
+			rts
+
+
+		HumanWins:
+
+			jsr PlayerTwoWins
+			rts
+	}
+
+
+	ShowGameOver: {
+
+		lda #0
+		sta GameOverDirection
+
+		lda #RED
+		sta VIC.BORDER_COLOUR
+
+		lda #<SCREEN_RAM + 42
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 42
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 42
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 42
+		sta ZP.ColourAddress + 1
+	
+		ldx #0
+		ldy #0
+
+		Loop:
+
+			stx ZP.X
+
+		 	lda LOSE, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	tax
+		 	lda CHAR_COLORS, x
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay
+
+		 	ldy #0
+		 	jsr MoveDownRow
+
+		 	Okay:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop
+
+
+		ldx #0
+		ldy #0
+
+		Loop2:
+
+			stx ZP.X
+
+		 	lda LOSE + 144, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	tax
+		 	lda CHAR_COLORS, x
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay2
+
+		 	ldy #0
+		 	jsr MoveDownRow
+
+		 	Okay2:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop2
+
+
+
+		rts
+	}	
+
+
+	SetupGameOverSprites: {
+
+		ldx #0
+		ldy #0
+
+		lda VIC.SPRITE_MSB
+		and #%11110000
+		sta VIC.SPRITE_MSB
+
+		Loop:
+
+			lda GameOverStartX, x
+			sta VIC.SPRITE_0_X, y
+
+			lda #253
+			sta VIC.SPRITE_0_Y, y
+
+			lda PANEL.Colours, x
+			sta VIC.SPRITE_COLOR_0, x
+
+			lda GameOverPointers, x
+			sta SPRITE_POINTERS, x
+
+			inx
+			iny
+			iny
+			cpx #4
+			bcc Loop	
+
+
 
 		rts
 	}
-	
+
+
+
+	GameOverUpdate: {
+
+		lda Stage
+		cmp #6
+		beq Sprites
+
+		cmp #7
+		beq SpritesLeft
+
+
+		jmp Finish
+
+
+		Sprites:
+
+			jsr UpdateSprites
+			rts
+
+
+		SpritesLeft:
+
+			jsr ExitGameOver
+
+		Finish:
+
+
+		rts
+	}
+
+
+	UpdateSprites: {
+
+
+		ldx #0
+		ldy #0
+
+		stx ZP.Okay
+
+		Loop:
+
+			lda FrameTimer
+			beq Ready
+
+			dec FrameTimer
+			jmp NoFrameUpdate
+
+			Ready:	
+
+				lda #4
+				sta FrameTimer
+
+				inc SPRITE_POINTERS, x
+				lda SPRITE_POINTERS, x
+				cmp #72
+				bcc NoFrameUpdate
+
+				lda #68
+				sta SPRITE_POINTERS, x
+
+			NoFrameUpdate:
+
+
+				jsr RANDOM.Get
+				and #%00000001
+				clc
+				adc #1
+				sta ZP.Amount
+
+				stx ZP.X
+
+				txa
+				clc
+				adc ZP.FrameCounter
+				and #%00000011
+				tax
+				
+				lda XChange, x
+				beq NoX
+				
+				clc
+				adc VIC.SPRITE_0_X, y
+				sta VIC.SPRITE_0_X, y
+
+				NoX:
+
+				ldx ZP.X
+				lda GameOverDirection
+				beq GoingUp
+
+				GoingDown:
+
+					lda VIC.SPRITE_0_Y, y
+					cmp #250
+					bcs Finished
+
+					clc
+					adc ZP.Amount
+					sta VIC.SPRITE_0_Y, y
+					jmp EndLoop
+
+
+					Finished:
+
+						inc ZP.Okay
+						jmp EndLoop
+
+
+				GoingUp:
+
+					lda VIC.SPRITE_0_Y, y
+					sec
+					sbc ZP.Amount
+					sta VIC.SPRITE_0_Y, y
+
+					cmp #100
+					bcs EndLoop
+
+					lda #1
+					sta GameOverDirection
+
+
+				EndLoop:
+
+					inx
+					iny
+					iny
+					cpx #4
+					bcc Loop
+
+		
+		lda ZP.Okay
+		cmp #4
+		bcc NotYet
+
+		lda #7
+		sta Stage
+
+		NotYet:
+
+
+
+
+		rts
+	}
 
 	FrameUpdate: {
 
@@ -92,6 +376,14 @@ ROUND_OVER: {
 		beq Finish
 
 		lda Stage
+		cmp #5
+		bcc NotGameOver
+
+		jsr GameOverUpdate
+		rts
+
+		NotGameOver:
+
 		cmp #2
 		bcs NotFlash
 
@@ -158,6 +450,35 @@ ROUND_OVER: {
 		rts
 	}	
 
+
+
+
+	ExitGameOver: {
+
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+		lda #GAME_MODE_SWITCH_MENU
+		sta MAIN.GameMode
+
+		Reset:
+
+			lda #0
+			sta CAMPAIGN.CurrentLevel
+			sta CAMPAIGN.Matches
+
+			lda #255
+			sta CAMPAIGN.OpponentID
+
+			
+		Finish:
+
+
+
+		rts
+	}
 
 	Exit: {
 
@@ -1769,16 +2090,30 @@ ROUND_OVER: {
 
 	ShowRest: {
 
-		lda #1
-		sta Stage
+		lda Stage
+		beq WinMode
 
-		lda #WaitTime
-		sta WaitTimer
+		LostMode:
+
+			lda #6
+			sta Stage
+
+			jsr ShowGameOver
+			jsr SetupGameOverSprites
+			rts
+
+
+		WinMode:
+
+			lda #1
+			sta Stage
+
+			lda #WaitTime
+			sta WaitTimer
+			rts
 
 
 
-
-		rts
 	}
 
 
