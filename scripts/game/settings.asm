@@ -1,39 +1,33 @@
-MENU: {
+SETTINGS: {
 
 
 
-	.label LogoStartPointer = 39
-	.label MaxYOffset = 13
+	DropSpeed:		.byte 1, 1
+	RockLayers:		.byte 0, 0
+	BeanColours:	.byte 5, 5
+	RoundsToWin:	.byte 2, 2
+	Character:		.byte 0, 1
+
+	SelectedOption:	.byte 0
+	PreviousOption:	.byte 0
+	ControlTimer:	.byte 0
+
 	.label ControlCooldown = 3
 
-	Colours:		.byte LIGHT_BLUE, LIGHT_RED, LIGHT_GREEN, YELLOW, PURPLE
-	Pointers:		.byte 39, 40, 41, 42, 43
-	XPos:			.byte 124, 149, 174, 199, 224
-	YPos:			.byte 74, 74, 74, 74, 74
-	XPos_MSB:		.byte 0, 0, 0, 0, 0
-	FrameTimer:		.fill 5, 0
-	FrameTime:		.byte 1, 1, 2, 1, 1
+	Min:			.byte 1, 0, 3, 1, 0
+	Max:			.byte 5, 6, 6, 5, 47
 
-	* = * "Menu"
+	OptionColours:	.byte YELLOW + 8 ,  GREEN +8, CYAN + 8, PURPLE + 8,BLUE + 8, RED+ 8 
 
-	YOffset:		.byte 2, 12, 5, 7, 0
-	Direction:		.byte -1, 1, 1, -1, 1
+	SelectionRows:	.byte 5, 8, 11, 14, 17, 21
 
+	SelectionColumns:	.byte 9, 29
 
-	PreviousOption:	.byte 0
-	SelectedOption:	.byte 0
-	OptionColours:	.byte RED + 8, PURPLE + 8, GREEN +8, YELLOW + 8
-	ControlTimer: .byte 0
-
-	SelectionRows:	.byte 9, 12, 15, 18
-
-	SelectionColumns:	.byte 13, 25
 	OptionCharType:	.byte 0, 0
 
 
-
-
 	Show: {
+
 
 		lda #0
 		sta SelectedOption
@@ -46,7 +40,7 @@ MENU: {
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR
 
-		lda #CYAN
+		lda #GREEN
 		sta VIC.BORDER_COLOUR
 
 		lda #WHITE
@@ -54,67 +48,14 @@ MENU: {
 		lda #GRAY
 		sta VIC.EXTENDED_BG_COLOR_2
 
-		jsr DRAW.MenuScreen
-		jsr MenuColours
-		jsr SetupSprites
+		jsr DRAW.SettingScreen
+		jsr SettingsColours
 
 		jsr DrawSelection
 
 		
-		jmp MenuLoop
+		jmp SettingsLoop
 
-	}
-
-
-
-	MenuLoop: {
-
-
-		WaitForRasterLine:
-
-			lda VIC.RASTER_LINE
-			cmp #160
-			bne WaitForRasterLine
-
-		lda #0
-		sta cooldown
-
-
-		ldy #1
-		lda INPUT.FIRE_UP_THIS_FRAME, y
-		beq Finish
-
-		jmp DecidePath
-
-		Finish:
-
-		jsr SpriteUpdate
-		jsr ControlUpdate
-
-		jmp MenuLoop
-
-	}
-
-
-
-	DecidePath: {
-
-		lda SelectedOption
-		beq Scenario
-
-		cmp #3
-		beq Options
-
-		jmp MAIN.StartGame
-
-		Scenario:
-
-			jmp CAMPAIGN.Show
-
-
-		Options:
-
-			jmp SETTINGS.Show
 
 
 
@@ -155,7 +96,7 @@ MENU: {
 			inc SelectedOption
 
 			lda SelectedOption
-			cmp #4
+			cmp #6
 			bcc Okay
 
 			lda #0
@@ -192,7 +133,7 @@ MENU: {
 			cmp #255
 			bne Okay2
 
-			lda #3
+			lda #5
 			sta SelectedOption
 
 			Okay2:
@@ -210,7 +151,6 @@ MENU: {
 
 		rts
 	}
-
 
 	DeleteSelection: {
 
@@ -385,190 +325,92 @@ MENU: {
 		rts
 	}
 
-	MenuColours: {
+	SettingsColours: {
 
 
-		ldx #40
+		ldx #0
 
 		Loop:	
 
 			lda OptionColours + 0
-			sta COLOR_RAM + 336, x
-			sta COLOR_RAM + 376, x
+			sta COLOR_RAM + 209, x
+			sta COLOR_RAM + 249, x
 
 			lda OptionColours + 1
-			sta COLOR_RAM + 456, x
-			sta COLOR_RAM + 496, x
+			sta COLOR_RAM + 329, x
+			sta COLOR_RAM + 369, x
 
 			lda OptionColours + 2
-			sta COLOR_RAM + 576, x
-			sta COLOR_RAM + 616, x
+			sta COLOR_RAM + 449, x
+			sta COLOR_RAM + 489, x
 
 			lda OptionColours + 3
-			sta COLOR_RAM + 696, x
-			sta COLOR_RAM + 736, x
+			sta COLOR_RAM + 569, x
+			sta COLOR_RAM + 609, x
+
+			lda OptionColours + 4
+			sta COLOR_RAM + 689, x
+			sta COLOR_RAM + 729, x
+
+			lda OptionColours + 5
+			sta COLOR_RAM + 849, x
+			sta COLOR_RAM + 889, x
 
 			inx
-			cpx #48
+			cpx #22
 			bcc Loop
 
 
+		ldx #0
+
+		Loop2:	
+
+			lda #RED + 8
+			sta COLOR_RAM + 84, x
+			sta COLOR_RAM + 124, x
+
+			lda #CYAN +8
+			sta COLOR_RAM + 108, x
+			sta COLOR_RAM + 148, x
+
+			
+			inx
+			cpx #8
+			bcc Loop2
+
 		rts
 	}
 
 
 
-	SetupSprites: {	
 
-		lda #%11111111
-		sta VIC.SPRITE_ENABLE
-		sta VIC.SPRITE_MULTICOLOR
+	SettingsLoop: 
+	{
 
 
-		lda #DARK_GRAY
-		sta VIC.SPRITE_MULTICOLOR_1
+		WaitForRasterLine:
 
-		lda #WHITE
-		sta VIC.SPRITE_MULTICOLOR_2
-
+			lda VIC.RASTER_LINE
+			cmp #160
+			bne WaitForRasterLine
 
 		lda #0
-		sta VIC.SPRITE_5_Y
-		sta VIC.SPRITE_6_Y
-		sta VIC.SPRITE_7_Y
+		sta cooldown
 
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
 
+		jmp MENU.Show
 
-		ldx #0
+		Finish:
 
-		Loop:	
+		//jsr SpriteUpdate
+		jsr ControlUpdate
 
-			txa
-			asl
-			tay
-
-			lda Pointers, x
-			sta SPRITE_POINTERS, x
-			
-			lda Colours, x
-			sta VIC.SPRITE_COLOR_0, x
-
-			lda XPos, x
-			sta VIC.SPRITE_0_X, y
-
-			lda YPos, x
-			sta VIC.SPRITE_0_Y, y
-
-			lda FrameTime, x
-			sta FrameTimer, x
-
-			lda XPos_MSB, x
-			bne MSB
-
-
-			NoMSB:
-
-				lda VIC.SPRITE_MSB
-				and DRAW.MSB_Off, x
-				sta VIC.SPRITE_MSB
-				jmp EndLoop
-
-			MSB:
-
-				lda VIC.SPRITE_MSB
-				ora DRAW.MSB_On, x
-				sta VIC.SPRITE_MSB
-
-			EndLoop:
-
-				inx
-				cpx #5
-				bcc Loop
-
-
-
-		rts
+		jmp SettingsLoop
 	}
 
-
-	SpriteUpdate: {
-
-		ldx #0
-
-		Loop:	
-
-
-			lda FrameTimer, x
-			beq Ready
-
-			dec FrameTimer, x
-			jmp EndLoop
-
-			Ready:
-
-			
-
-				lda FrameTime, x
-				sta FrameTimer, x
-
-				txa
-				asl
-				tay
-
-				lda YPos, x
-				clc
-				adc YOffset, x
-				sta VIC.SPRITE_0_Y, y
-
-				lda YOffset, x
-				clc
-				adc Direction, x
-				sta YOffset, x
-
-				cmp #0
-				beq MakeOne
-
-				cmp #MaxYOffset
-				beq Make255
-
-				jmp EndLoop
-
-			Make255:
-
-				lda #255
-				sta Direction, x
-				jmp EndLoop
-
-
-			MakeOne:
-
-				lda #1
-				sta Direction, x
-
-			EndLoop:
-
-				inx
-				cpx #5
-				bcc Loop
-
-
-
-
-		rts
-	}
-
-
-	GameTitle: {
-
-
-
-
-
-
-
-
-		rts
-	}
 
 
 

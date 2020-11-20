@@ -412,6 +412,49 @@ DRAW: {
 	}
 
 
+	SettingScreen: {
+
+		ldx #0
+		
+		Loop:
+
+			lda SETTINGS_MAP + 0, x
+			sta SCREEN_RAM + 0, x
+
+			lda #LIGHT_GREEN
+			sta COLOR_RAM + 0, x
+
+			lda SETTINGS_MAP   + 250, x
+			sta SCREEN_RAM + 250, x
+
+			lda #LIGHT_GREEN
+			sta COLOR_RAM + 250, x
+
+			lda SETTINGS_MAP   + 500, x
+			sta SCREEN_RAM + 500, x
+
+			lda #LIGHT_GREEN
+			sta COLOR_RAM + 500, x
+
+			lda SETTINGS_MAP + 750, x
+			sta SCREEN_RAM + 750, x
+
+			lda #LIGHT_GREEN
+			sta COLOR_RAM + 750, x
+
+			inx
+			bne Loop
+
+
+		rts
+
+
+
+
+		rts
+	}
+
+
 
 	GamePlayerSprites: {
 

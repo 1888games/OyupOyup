@@ -23,6 +23,9 @@ TOWER_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [1,0].bin"
  * = * "Menu Map"
 MENU_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [2,0].bin"
 
+ * = * "Settings Map"
+SETTINGS_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [3,0].bin"
+
  * = * "Win"
 WIN_LEFT: .import binary "../../assets/puyo - MapArea (8bpc, 12x24).bin"
 

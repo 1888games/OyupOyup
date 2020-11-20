@@ -40,6 +40,7 @@ MAIN: {
 	* = $6900
 
 	#import "/scripts/game/roundOver.asm"
+	#import "/scripts/game/settings.asm"
 
 
 	* = * "Main"
@@ -60,7 +61,9 @@ MAIN: {
 		jsr DetectMachine
 			
 
-		//jmp TITLE.Show	
+
+		//jmp TITLE.Show
+		 jmp SETTINGS.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
 
