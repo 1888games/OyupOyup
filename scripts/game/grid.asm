@@ -79,6 +79,7 @@ GRID: {
 	Combo:				.byte 0, 0
 
 
+	* = * "Grid"
 
 	Reset: {
 
@@ -232,7 +233,7 @@ GRID: {
 
 		Finish:
 
-		//jsr DummyBeans
+		jsr DummyBeans
 	
 		rts
 
@@ -250,6 +251,8 @@ GRID: {
 
 			jsr RANDOM.Get
 			and #%00111111
+			clc
+			adc #72
 			tax
 
 			jsr RANDOM.Get

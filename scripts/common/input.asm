@@ -175,8 +175,23 @@ INPUT: {
 		sta INPUT.JOY_UP_NOW, y
 		sta INPUT.JOY_DOWN_NOW, y
 
+		cpy #0
+		bne CheckJoystick
+
+		lda PLAYER.CPU + 1
+		beq CheckJoystick
+
+		lda #0
+		sta INPUT.FIRE_UP_THIS_FRAME, y
+		jmp Finish
+
+		CheckJoystick:
+
 		jsr INPUT.ReadC64Joystick
 		jsr INPUT.CalculateButtons
+
+
+		Finish:
 
 
 		rts

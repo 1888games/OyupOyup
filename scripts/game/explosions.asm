@@ -1,6 +1,7 @@
 EXPLOSIONS: {
 
 
+	* = * "Explosions"
 	.label FrameTime = 4
 	.label FirstSprite = 6
 	.label MaxSprites = 8 - FirstSprite

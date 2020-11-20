@@ -14,7 +14,8 @@ MENU: {
 	FrameTimer:		.fill 5, 0
 	FrameTime:		.byte 1, 1, 2, 1, 1
 
-	* = * "SpriteData"
+	* = * "Menu"
+
 	YOffset:		.byte 2, 12, 5, 7, 0
 	Direction:		.byte -1, 1, 1, -1, 1
 

@@ -1,5 +1,8 @@
 SCORING: {
 
+
+
+* = * "Scoring"
 	Value: 		.byte 0, 0, 0	
 	Value2: 	.byte 0, 0, 0
 
@@ -338,7 +341,7 @@ SCORING: {
 					jsr AddPlayerTwo
 
 					lda ZP.TempBeans
-					jmp CheckLoop1
+					jmp CheckLoop2
 
 				Okay2:
 

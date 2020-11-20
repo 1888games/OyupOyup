@@ -1,6 +1,9 @@
 TITLE: {
 
 
+
+* = * "Title"
+
 	.label SPRITE_POINTER = 160
 
 	Colours:		.byte LIGHT_BLUE, YELLOW, GREEN, RED, PURPLE, CYAN, LIGHT_RED, ORANGE

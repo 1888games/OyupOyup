@@ -1,5 +1,7 @@
 PANEL: {
 
+	* = * "Panel"
+
 	MaxColours:	.byte 5
 	Colours:	.byte RED, GREEN, BLUE, YELLOW, PURPLE
 

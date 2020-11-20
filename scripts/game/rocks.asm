@@ -1,6 +1,9 @@
 ROCKS: {
 
 
+	* = * "Rocks"
+
+
 	.label FullCharID = 106
 	.label SingleCharID = 105
 	.label ComboTime = 50

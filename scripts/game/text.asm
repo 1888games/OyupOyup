@@ -1,6 +1,8 @@
 TEXT: {
 
 
+	* = * "Text"
+
 	Bank1:	.word Na01, Na02, Na03, Na04, Na05, Na06, Na07, Na08, Na09, Na10, Na11, Na12
 			.word Na13, Na14, Na15, Na16, Na17, Na18, Na19, Na20, Na21, Na22, Na23, Na24
 			.word Na25, Na26, Na27, Na28, Na29, Na30, Na31, Na32, Na33, Na34, Na35, Na36

@@ -1,5 +1,8 @@
 GRID_VISUALS: {
 
+		* = * "Grid Visuals"
+
+
 
 	RowLookup:	.fill GRID.TotalSquaresOnGrid, 1 + (floor(i / GRID.Columns) * 2)
 				.fill GRID.TotalSquaresOnGrid, 1 + (floor(i / GRID.Columns) * 2)

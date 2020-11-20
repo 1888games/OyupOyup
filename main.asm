@@ -60,7 +60,7 @@ MAIN: {
 		jsr DetectMachine
 			
 
-		jmp TITLE.Show	
+		//jmp TITLE.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
 

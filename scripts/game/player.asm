@@ -1,5 +1,7 @@
 PLAYER: {
 
+	* = * "Player"
+
 	.label AutoDropTime = 18
 	.label FlashTime = 10
 	.label ControlCooldown = 3
@@ -270,12 +272,7 @@ PLAYER: {
 			sta INPUT.JOY_RIGHT_NOW, y
 
 
-
-
 		Finish:
-
-
-
 
 
 

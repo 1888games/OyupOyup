@@ -94,7 +94,7 @@ IRQ: {
 
 	PerformEveryFrame: {
 
-		jsr SidFrameUpdate
+		//jsr SidFrameUpdate
 	
 		SetDebugBorder(2)
 		
@@ -105,6 +105,7 @@ IRQ: {
 
 		ldy #1
 		jsr INPUT.ReadJoystick
+
 
 		lda #1
 		sta MAIN.PerformFrameCodeFlag
