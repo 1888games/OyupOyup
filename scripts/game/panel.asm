@@ -52,6 +52,9 @@ PANEL: {
 		sta QueueIterations + 1
 		sta MasterQueueIterations
 		sta MasterQueuePosition
+		sta FrameTimer
+		sta FrameTimer + 1
+
 
 		jsr FillQueue
 		jsr StartMove

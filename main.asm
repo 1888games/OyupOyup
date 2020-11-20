@@ -60,7 +60,7 @@ MAIN: {
 		jsr DetectMachine
 			
 
-		//jmp TITLE.Show	
+		jmp TITLE.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
 
@@ -115,12 +115,14 @@ MAIN: {
 		jsr SetupSprites
 
 		jsr DRAW.GameScreen
-		 
+		 	
+		jsr EXPLOSIONS.Reset
 		jsr GRID.Reset
 		jsr PANEL.Reset
 		jsr PLAYER.Reset
 		jsr ROCKS.Reset
 		jsr SCORING.Reset
+		jsr ROUND_OVER.Reset
 
 
 		jmp Loop

@@ -26,7 +26,7 @@ PLAYER: {
 	ClearUp:			.byte 1, 0, 1, 0
 	AddForX:			.byte 1, 255, 255, 1
 	AddForY:			.byte 6, 6,	 250, 250
-	CPU:				.byte 0, 0
+	CPU:				.byte 0, 1
 
 	FailsafeTimer:		.byte 255, 255
 	
@@ -64,6 +64,29 @@ PLAYER: {
 		sta Beans + 1
 		sta Beans + 2
 		sta Beans + 3
+
+		sta ControlTimer
+		sta ControlTimer + 1
+		sta DoubleClickTimer
+		sta DoubleClickTimer + 1
+		sta FlashTimer
+		sta FlashTimer + 1
+		sta Flashing
+		sta Flashing + 1
+		sta Rotation
+		sta Rotation + 1
+		sta Rotation + 2
+		sta Rotation + 3
+
+		lda #2
+		sta GridPosition
+		sta GridPosition + 1
+
+		lda #74
+		sta GridPosition + 2
+		sta GridPosition + 3
+
+
 
 		rts
 	}	

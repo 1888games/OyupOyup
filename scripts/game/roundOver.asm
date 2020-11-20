@@ -36,6 +36,21 @@ ROUND_OVER: {
 
 
 
+
+	Reset: {
+
+		lda #0
+		sta HitLevelTarget
+		sta Stage
+		sta GameOver
+		sta FlashState
+		sta Active
+
+
+
+		rts
+	}
+
 	FrameUpdate: {
 
 		lda Active

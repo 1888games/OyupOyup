@@ -8,6 +8,7 @@ IRQ: {
 	.label RASTER_INTERRUPT_VECTOR = 		$fffe
 
 	.label MainIRQLine = 220
+	.label ShakeIRQLine = 254
 
 
 	Mode:	.byte 0
@@ -28,6 +29,11 @@ IRQ: {
 
 	DisableCIAInterrupts: {
 
+		lda #<NMI
+		sta $fffa
+		lda #>NMI
+		sta $fffb
+
 		// prevent CIA interrupts now the kernal is banked out
 		lda #$7f
 		sta VIC.IRQ_CONTROL_1
@@ -38,6 +44,11 @@ IRQ: {
 
 		rts
 
+	}
+
+	NMI: {
+
+		rts
 	}
 
 
@@ -83,7 +94,7 @@ IRQ: {
 
 	PerformEveryFrame: {
 
-		//inc $d020
+		inc $d020
 
 		jsr SidFrameUpdate
 	
@@ -100,10 +111,65 @@ IRQ: {
 		lda #1
 		sta MAIN.PerformFrameCodeFlag
 
+		
+
+		Finish:
+
+			dec $d020
+
+
+
 
 		rts
 	}
 
+	ShakeIRQ: {
+
+		:StoreState()
+
+		ScreenShake:
+
+			lda GRID.ScreenShakeValue
+			beq Reset
+
+			lda VIC.SCREEN_CONTROL
+			and #%01111000
+			ora GRID.ScreenShakeValue
+			sta VIC.SCREEN_CONTROL
+
+			lda VIC.SCREEN_CONTROL_2
+			and #%01111000
+			ora GRID.ScreenShakeValue
+			sta VIC.SCREEN_CONTROL_2
+
+			jmp Finish
+
+		Reset:
+
+			lda VIC.SCREEN_CONTROL
+			and #%01111000
+			ora #%00000011
+			sta VIC.SCREEN_CONTROL
+
+			lda VIC.SCREEN_CONTROL_2
+			and #%11111000
+			sta VIC.SCREEN_CONTROL_2
+		
+
+		Finish:
+
+		ldy #MainIRQLine
+		lda #<MainIRQ
+		ldx #>MainIRQ
+		jsr SetNextInterrupt
+
+		asl INTERRUPT_STATUS
+
+		:RestoreState()
+
+
+		rti
+	}
 
 	MainIRQ: {
 
@@ -148,9 +214,17 @@ IRQ: {
 			ldx #>TowerIRQ
 
 			jsr SetNextInterrupt
+			jmp Tower
 
 
 		NotTower:
+
+		ldy #ShakeIRQLine
+		lda #<ShakeIRQ
+		ldx #>ShakeIRQ
+		jsr SetNextInterrupt
+
+		Tower:
 
 		SetDebugBorder(11)
 
@@ -172,8 +246,7 @@ IRQ: {
 		lda Mode
 		bne GetRasterOffScreen
 		
-		ldy MainIRQLine
-
+		ldy #MainIRQLine
 		lda #<MainIRQ
 		ldx #>MainIRQ
 

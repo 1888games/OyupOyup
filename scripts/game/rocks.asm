@@ -101,23 +101,37 @@ ROCKS: {
 		sta PreviousCount + 0
 		sta PreviousCount + 1
 		sta RockLookupAdd
+		sta FullCount
+		sta PendingCount
+		sta PendingCount + 1
 
 		lda FramesPerSecond
 		sta SecondsTimer
 
-		lda #60
-		sta PendingCount + 1
-		// ldy #0
+		lda #0
+		sta GameSeconds
+		sta SecondsCounter
+		sta SecondsTimer
+		sta RockLookupAdd
+		sta DropTimeout
+		sta ComboTimer 
+		sta ComboTimer + 1
+		sta ComboFrame
+		sta ComboFrame + 1
+		sta Stage
+		sta Stage + 1
+		sta Mode
+		sta Mode + 1
 
-		// jsr TransferToQueue
+		ldx #0
+		lda #0
 
-		// ldx #0
-		// jsr Draw
-		// ldx #1
-		// jsr Draw
+		Loop:
 
-		 lda #0
-		 sta Mode
+			sta Queue, x
+			inx 
+			cpx #12
+			bcc Loop
 
 		rts
 	}

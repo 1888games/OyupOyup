@@ -50,6 +50,8 @@ GRID: {
 	BackgroundColours:	.byte GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE
 
 	ScreenShakeTimer:	.byte 0
+	ScreenShakeValues:	.byte 3,4,3,5,3,6,3,6,3
+	ScreenShakeValue:	.byte 0
 
 
 
@@ -88,6 +90,7 @@ GRID: {
 
 		lda #0
 		sta CurrentSide
+		sta ScreenShakeTimer
 		sta ZP.BeanType
 		sta InitialDrawDone
 		sta CheckTimer
@@ -105,6 +108,8 @@ GRID: {
 		sta Mode
 		sta Mode + 1
 		sta MAIN.GameActive
+		sta Active
+		sta Active + 1
 
 		lda #RowsPerFrame
 		sta RowsPerFrameUse
@@ -112,7 +117,6 @@ GRID: {
 		jsr DRAW.GamePlayerSprites
 		jsr DRAW.GameOpponentName
 		jsr DRAW.LevelNumber
-
 
 
 		rts
@@ -127,39 +131,24 @@ GRID: {
 		beq None
 
 		dec ScreenShakeTimer
+		lda ScreenShakeTimer
+		beq Reset
 
-		// jsr RANDOM.Get
-		// and #%00000111
-		// sta ZP.Amount
-
-		// lda VIC.SCREEN_CONTROL
-		// and #%11111000
-		// ora ZP.Amount
-		// sta VIC.SCREEN_CONTROL
-
-		jsr RANDOM.Get
 		and #%00000111
-		sta ZP.Amount
+		sta ScreenShakeValue
 
-		lda VIC.SCREEN_CONTROL_2
-		and #%11111000
-		ora ZP.Amount
-		sta VIC.SCREEN_CONTROL_2
+		tax
 
+		lda ScreenShakeValues, x
+		sta ScreenShakeValue
 		rts
 
+		Reset:
+
+		lda #0
+		sta ScreenShakeValue
+
 		None:
-/*
-		lda VIC.SCREEN_CONTROL
-		and #%11111000
-		sta VIC.SCREEN_CONTROL
-*/
-		lda VIC.SCREEN_CONTROL_2
-		and #%11111000
-		sta VIC.SCREEN_CONTROL_2
-
-
-
 
 		rts
 
@@ -243,7 +232,7 @@ GRID: {
 
 		Finish:
 
-		jsr DummyBeans
+		//jsr DummyBeans
 	
 		rts
 
@@ -482,6 +471,7 @@ GRID: {
 
 
 
+
 		lda #0
 		sta QueueLength
 		sta MatchCount
@@ -490,8 +480,8 @@ GRID: {
 		ldx CurrentSide
 		bne NoStop
 
-		//.break
-	//	nop
+	//	inc $d020
+	
 
 		// lda NumberMoving, x
 		// .break
@@ -1346,7 +1336,7 @@ GRID: {
 
 						lda ScreenShakeTimer
 						clc
-						adc #3
+						adc #2
 						sta ScreenShakeTimer
 
 						ldx ZP.CurrentSlot

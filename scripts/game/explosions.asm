@@ -25,6 +25,27 @@ EXPLOSIONS: {
 
 
 
+	Reset: {
+
+		lda #0
+		ldx #0
+
+		Loop:
+
+			sta EndFrame, x
+			sta FrameTimer, x
+
+			inx
+			cpx #8
+			bcc Loop
+
+		lda #7
+		sta NextSprite
+
+		rts
+
+
+	}
 
 
 	StartExplosion: {

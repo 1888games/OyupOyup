@@ -50,15 +50,20 @@ SCORING: {
 	Reset:{
 
 		lda #ZERO
-		sta PlayerOne
-		sta PlayerOne + 1
-		sta PlayerOne + 2
 		sta PlayerTwo + 0
 		sta PlayerTwo + 1
 		sta PlayerTwo + 2
-
 		sta ScoreToAdd
 		sta Amount
+		
+		ldx #0
+		jsr ResetMultipliers
+
+		ldx #1
+		jsr ResetMultipliers
+
+		Loop:
+
 
 		Finish:
 
@@ -385,8 +390,6 @@ SCORING: {
 		sta Colours + 5, y
 		sta Colours + 6, y
 		sta Colours + 7, y
-
-
 
 
 
