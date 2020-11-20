@@ -94,8 +94,6 @@ IRQ: {
 
 	PerformEveryFrame: {
 
-		inc $d020
-
 		jsr SidFrameUpdate
 	
 		SetDebugBorder(2)
@@ -111,14 +109,9 @@ IRQ: {
 		lda #1
 		sta MAIN.PerformFrameCodeFlag
 
-		
-
 		Finish:
 
-			dec $d020
-
-
-
+		
 
 		rts
 	}
@@ -200,7 +193,6 @@ IRQ: {
 		lda Mode
 		cmp #GAME_MODE_TOWER
 		bne NotTower
-
 
 		SwitchToTowerMode:
 
