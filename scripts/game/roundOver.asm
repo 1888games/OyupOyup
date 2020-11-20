@@ -472,6 +472,11 @@ ROUND_OVER: {
 			lda #255
 			sta CAMPAIGN.OpponentID
 
+			lda #0
+			sta SCORING.PlayerOne
+			sta SCORING.PlayerOne + 1
+			sta SCORING.PlayerOne + 2
+
 			
 		Finish:
 

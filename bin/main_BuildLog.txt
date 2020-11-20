@@ -14,33 +14,33 @@ Default-segment:
   $080d-$080c End Of Basic
   $080e-$080d Basic End
   $080e-$0935 -Macros
-  $0936-$0a93 IRQ
-  $0a94-$0ceb Draw
-  $0cec-$0db5 -Input
-  $0db6-$0ed5 Grid Data
-  $0ed6-$1462 CurrentType
-  $1463-$1a4f Grid
-  $1a50-$1aaa -Random
-  $1aab-$1bf2 Explosions
-  $1bf3-$1bfd Rocks
-  $1bfe-$220c Queue
-  $220d-$225a Panel
-  $225b-$24ac Queue Data
-  $24ad-$2b16 Player
-  $2b17-$2ff1 Title
-  $2ff2-$3291 Menu
-  $3292-$34a8 Grid Visuals
-  $34a9-$37e9 Scoring
-  $37ea-$3a1e Text
-  $3a1f-$3a7e Opponent Data
+  $0936-$0a90 IRQ
+  $0a91-$0ce8 Draw
+  $0ce9-$0db2 -Input
+  $0db3-$0ed2 Grid Data
+  $0ed3-$145f CurrentType
+  $1460-$1a4c Grid
+  $1a4d-$1aa7 -Random
+  $1aa8-$1bef Explosions
+  $1bf0-$1bfa Rocks
+  $1bfb-$2209 Queue
+  $220a-$2257 Panel
+  $2258-$24a9 Queue Data
+  $24aa-$2b13 Player
+  $2b14-$2fee Title
+  $2fef-$328e Menu
+  $328f-$34a5 Grid Visuals
+  $34a6-$37e6 Scoring
+  $37e7-$3a1b Text
+  $3a1c-$3a7b Opponent Data
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff Unnamed
-  $6900-$7342 Round Over
-  $7343-$7459 Main
+  $6900-$734c Round Over
+  $734d-$7463 Main
   $7a00-$79ff Assets
   $7a00-$7aff Game Colours
   $7b00-$7ee7 Game Map
