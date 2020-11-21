@@ -125,6 +125,8 @@ MENU: {
 
 		TwoPlayer:
 
+			.break
+
 			lda SETTINGS.BeanColours
 			sta PANEL.MaxColours
 			lda SETTINGS.BeanColours + 1
@@ -132,17 +134,17 @@ MENU: {
 
 			lda #0
 			sta PLAYER.CPU + 1
-			lda #1
-			sta GRID.Active + 1
 
 			lda SETTINGS.Character + 1
 			sta CAMPAIGN.OpponentID
 
 			ldx SETTINGS.DropSpeed
+			dex
 			lda SETTINGS.DropSpeeds, x
 			sta PLAYER.CurrentAutoDropTime
 
 			ldx SETTINGS.DropSpeed + 1
+			dex
 			lda SETTINGS.DropSpeeds, x
 			sta PLAYER.CurrentAutoDropTime + 1
 

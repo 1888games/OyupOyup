@@ -159,7 +159,7 @@ MAIN: {
 
 	SetupSprites: {
 
-		lda #%11111111
+		lda #%11001111
 		sta VIC.SPRITE_ENABLE
 
 		lda #%00000000

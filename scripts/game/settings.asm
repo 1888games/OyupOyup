@@ -23,7 +23,7 @@ SETTINGS: {
 
 	SelectionColumns:	.byte 9, 29
 	SettingColumns:		.byte 4, 35
-	TextColumns:		.byte 4, 32
+	TextColumns:		.byte 5, 31
 
 	OptionCharType:	.byte 0, 0
 
@@ -58,13 +58,59 @@ SETTINGS: {
 		jsr SettingsColours
 
 		jsr DrawSelection
+		jsr SetupSprites
 		jsr PopulateSettings
+
 
 		
 		jmp SettingsLoop
 
 
 
+	}
+
+	SetupSprites: {
+
+
+		lda #LIGHT_RED
+		sta VIC.SPRITE_MULTICOLOR_1
+
+		lda #WHITE
+		sta VIC.SPRITE_MULTICOLOR_2
+
+
+		lda #%00110000
+		sta VIC.SPRITE_ENABLE
+
+		lda #%00000000
+		sta VIC.SPRITE_PRIORITY
+
+		lda #%11111111
+		sta VIC.SPRITE_MULTICOLOR
+
+
+		rts
+	}
+
+
+
+
+	PlayerSprites: {
+
+
+		lda #%11111111
+		sta VIC.SPRITE_MULTICOLOR
+
+		lda #%11111111
+		sta VIC.SPRITE_ENABLE
+
+		lda #%00000000
+		sta VIC.SPRITE_PRIORITY
+		sta VIC.SPRITE_DOUBLE_Y
+		sta VIC.SPRITE_DOUBLE_X
+
+
+		rts
 	}
 
 	PopulateSettings: {
@@ -152,6 +198,8 @@ SETTINGS: {
 			lda Character + 1
 			
 			jsr TEXT.Draw
+
+		jsr DRAW.SettingsPlayerSprites
 
 
 		rts

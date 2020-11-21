@@ -110,8 +110,16 @@ GRID: {
 		sta Mode + 1
 		sta MAIN.GameActive
 		sta Active
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_PRACTICE
+		beq NoSecondPlayer
+
+		lda #1
 		sta Active + 1
 
+		NoSecondPlayer:
+		
 		lda #RowsPerFrame
 		sta RowsPerFrameUse
 
@@ -273,7 +281,7 @@ GRID: {
 			cpy #80
 			bcc Loop2
 
-		lda #CYAN
+		lda #WHITE
 		sta PlayerOne
 
 		sta PlayerOne + 1
@@ -334,7 +342,7 @@ GRID: {
 		CheckIfRock:
 
 			lda ZP.PreviousBeanColour
-			cmp #CYAN
+			cmp #WHITE
 			bne NotRock
 
 		IsRock:
@@ -377,7 +385,7 @@ GRID: {
 		NoExplosion:
 
 			lda ZP.PreviousBeanColour
-			cmp #CYAN
+			cmp #WHITE
 			beq NoRockCheck
 
 			jsr CheckRocks
@@ -1055,7 +1063,7 @@ GRID: {
 			lda PlayerOne, x
 			inx
 			
-			cmp #CYAN
+			cmp #WHITE
 			bne NotRock
 
 			Rock:
@@ -1095,7 +1103,7 @@ GRID: {
 		tax
 
 		lda PlayerOne, x
-		cmp #CYAN
+		cmp #WHITE
 		bne NotRock
 
 		Rock:
@@ -1137,7 +1145,7 @@ GRID: {
 			lda PlayerOne, x
 			dex
 
-			cmp #CYAN
+			cmp #WHITE
 			bne NotRock
 
 		Rock:
@@ -1339,7 +1347,7 @@ GRID: {
 
 						lda ScreenShakeTimer
 						clc
-						adc #2
+						adc #3
 						sta ScreenShakeTimer
 
 						ldx ZP.CurrentSlot

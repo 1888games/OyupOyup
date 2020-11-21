@@ -492,6 +492,45 @@ DRAW: {
 	}
 
 
+	SettingsPlayerSprites: {
+
+
+		ldx SETTINGS.Character
+		lda OPPONENTS.Pointers, x
+		sta SPRITE_POINTERS + 4
+
+		lda OPPONENTS.Colours, x
+		sta VIC.SPRITE_COLOR_4
+
+		ldx SETTINGS.Character + 1
+		lda OPPONENTS.Pointers, x
+		sta SPRITE_POINTERS + 5
+
+		lda OPPONENTS.Colours, x
+		sta VIC.SPRITE_COLOR_5
+
+
+		lda #186
+		sta VIC.SPRITE_4_Y
+		sta VIC.SPRITE_5_Y
+
+		lda #37
+		sta VIC.SPRITE_4_X
+
+		lda #49
+		sta VIC.SPRITE_5_X
+
+		lda VIC.SPRITE_MSB
+		and #%11001111
+		ora #%00100000
+		sta VIC.SPRITE_MSB
+
+		rts
+
+
+	}
+
+
 	MenuScreen: {
 
 		ldx #0

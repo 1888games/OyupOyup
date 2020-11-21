@@ -3,7 +3,7 @@ PANEL: {
 	* = * "Panel"
 
 	MaxColours:	.byte 5, 5
-	Colours:	.byte RED, GREEN, BLUE, YELLOW, PURPLE, WHITE
+	Colours:	.byte RED, GREEN, BLUE, YELLOW, PURPLE, CYAN
 
 
 	.label WAITING = 0
@@ -446,8 +446,10 @@ PANEL: {
 
 		jsr RANDOM.Get
 
+		ldx ZP.X
+
 		and #%00000111
-		cmp MaxColours
+		cmp MaxColours, x
 		bcs AddToQueue
 
 		tay

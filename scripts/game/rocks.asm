@@ -1029,7 +1029,7 @@ ROCKS: {
 
 			dec Queue,x
 
-			lda #CYAN
+			lda #WHITE
 			sta GRID.PlayerOne, y
 
 			lda #255

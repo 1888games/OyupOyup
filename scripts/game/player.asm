@@ -40,7 +40,7 @@ PLAYER: {
 	BackgroundColours: 	.byte 0, 0, 0, 0
 	BackgroundCharIDs: 	.byte 0, 0, 0, 0
 
-	CurrentAutoDropTime:	.byte AutoDropTime
+	CurrentAutoDropTime:	.byte AutoDropTime, AutoDropTime
 
 	TableOffset:		.byte 0, 2
 	FlashBeans:			.byte 1, 3
@@ -157,7 +157,7 @@ PLAYER: {
 
 			ReadyToDrop:	
 
-				lda #AutoDropTime
+				lda CurrentAutoDropTime, x
 				sta DropTimer, x
 
 				jsr DeleteBeans
@@ -1332,7 +1332,7 @@ PLAYER: {
 		lda #FlashTime
 		sta FlashTimer, y
 
-		lda #AutoDropTime
+		lda CurrentAutoDropTime, y
 		sta DropTimer, y
 
 		lda PANEL.Offsets, y

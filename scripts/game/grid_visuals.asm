@@ -86,7 +86,7 @@ GRID_VISUALS: {
 		stx ZP.TempX
 
 		lda ZP.BeanColour
-		cmp #CYAN
+		cmp #WHITE
 		bne NotRock
 
 		lda #16
