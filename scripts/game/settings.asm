@@ -12,18 +12,24 @@ SETTINGS: {
 	PreviousOption:	.byte 0
 	ControlTimer:	.byte 0
 
-	.label ControlCooldown = 3
+	.label ControlCooldown = 10
 
 	Min:			.byte 1, 0, 3, 1, 0
-	Max:			.byte 5, 6, 6, 5, 47
+	Max:			.byte 8, 6, 6, 5, 47
 
 	OptionColours:	.byte YELLOW + 8 ,  GREEN +8, CYAN + 8, PURPLE + 8,BLUE + 8, RED+ 8 
 
 	SelectionRows:	.byte 5, 8, 11, 14, 17, 21
 
 	SelectionColumns:	.byte 9, 29
+	SettingColumns:		.byte 4, 35
+	TextColumns:		.byte 4, 32
 
 	OptionCharType:	.byte 0, 0
+
+	DropSpeeds:		.byte 18, 16, 14, 12, 10, 8, 6, 4
+
+
 
 
 	Show: {
@@ -52,14 +58,103 @@ SETTINGS: {
 		jsr SettingsColours
 
 		jsr DrawSelection
+		jsr PopulateSettings
 
 		
 		jmp SettingsLoop
 
 
 
+	}
+
+	PopulateSettings: {
+
+		ldx #0
 
 
+		Loop:
+
+			stx ZP.X
+
+			lda SelectionRows, x
+			tay
+			iny
+			sty ZP.Row
+
+			lda SelectionColumns
+			sta ZP.Column
+
+			
+			txa
+			asl
+			tax
+
+			lda DropSpeed, x
+			clc
+			adc #48
+
+			ldx SettingColumns
+			ldy ZP.Row
+
+			jsr DRAW.PlotCharacter
+
+			lda #WHITE
+
+			jsr DRAW.ColorCharacter
+
+			lda ZP.X
+			asl
+			tax
+			inx
+
+			lda DropSpeed, x
+			clc
+			adc #48
+
+			ldx SettingColumns + 1
+			ldy ZP.Row
+
+			jsr DRAW.PlotCharacter
+
+			lda #WHITE
+
+			jsr DRAW.ColorCharacter
+
+
+			EndLoop:
+
+				ldx ZP.X
+				inx
+				cpx #4
+				bcc Loop
+
+		PlayerOne:
+
+			lda SelectionRows + 4
+			tay
+			iny
+			sty ZP.TextRow
+
+			lda TextColumns
+			sta ZP.TextColumn
+
+			ldx #WHITE
+			lda Character
+
+			jsr TEXT.Draw
+
+		PlayerTwo:
+
+			lda TextColumns + 1
+			sta ZP.TextColumn
+
+			ldx #WHITE
+			lda Character + 1
+			
+			jsr TEXT.Draw
+
+
+		rts
 	}
 
 
@@ -85,7 +180,9 @@ SETTINGS: {
 			beq CheckUp
 
 			lda INPUT.JOY_DOWN_LAST, y
-			bne Finish
+			beq PressingDown
+
+			jmp Finish
 
 			PressingDown:
 
@@ -116,10 +213,16 @@ SETTINGS: {
 
 			ldy #1
 			lda INPUT.JOY_UP_NOW, y
-			beq Finish
+			bne Pressing
+
+			jmp CheckLeft
+
+			Pressing:
 
 			lda INPUT.JOY_UP_LAST, y
-			bne Finish
+			beq PressingUp
+
+			jmp Finish
 
 			PressingUp:
 
@@ -142,7 +245,73 @@ SETTINGS: {
 
 			sfx(SFX_BLOOP)
 
+		CheckLeft:
 
+			ldy #1
+			lda INPUT.JOY_LEFT_NOW, y
+			beq CheckRight
+
+			lda #ControlCooldown
+			sta ControlTimer
+
+			lda SelectedOption
+			tay
+			asl
+			tax
+
+			lda DropSpeed, x
+			cmp Max, y
+			beq Wrap2
+
+			inc DropSpeed, x
+			jmp Okay3
+
+			Wrap2:
+
+			lda Min, y
+			sta DropSpeed, x
+
+
+			Okay3:
+
+			jsr PopulateSettings
+
+			sfx(SFX_BLOOP)
+
+
+		CheckRight:
+
+
+			ldy #1
+			lda INPUT.JOY_RIGHT_NOW, y
+			beq Finish
+
+			lda #ControlCooldown
+			sta ControlTimer
+
+			lda SelectedOption
+			tay
+			asl
+			tax
+			inx
+
+			lda DropSpeed, x
+			cmp Max, y
+			beq Wrap3
+
+			inc DropSpeed, x
+			jmp Okay4
+
+			Wrap3:
+
+			lda Min, y
+			sta DropSpeed, x
+
+			Okay4:
+
+			jsr PopulateSettings
+
+			sfx(SFX_BLOOP)
 
 
 		Finish:

@@ -68,6 +68,9 @@ CAMPAIGN: {
 		lda #0
 		sta CurrentLevel
 
+		lda SETTINGS.DropSpeeds
+		sta PLAYER.CurrentAutoDropTime
+
 		rts
 	}
 
@@ -108,6 +111,10 @@ CAMPAIGN: {
 
 		lda #GAME_MODE_TOWER
 		sta IRQ.Mode
+
+		lda SETTINGS.BeanColours
+		sta PANEL.MaxColours
+		sta PANEL.MaxColours + 1
 
 		jmp CampaignLoop
 
@@ -493,7 +500,7 @@ CAMPAIGN: {
 		sta VIC.SPRITE_DOUBLE_Y
 		sta VIC.SPRITE_DOUBLE_X
 
-	
+
 
 		lda PlayerPointers
 		sta SPRITE_POINTERS

@@ -46,6 +46,11 @@ MemoryAddresses:
 .label PLAYER_1 = 0
 .label PLAYER_2 = 1
 
+.label PLAY_MODE_SCENARIO = 0
+.label PLAY_MODE_2P = 1
+.label PLAY_MODE_PRACTICE= 2
+
+
 
 .label RIGHT = 1
 .label LEFT= 2

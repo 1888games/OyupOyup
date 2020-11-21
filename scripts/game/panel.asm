@@ -2,8 +2,8 @@ PANEL: {
 
 	* = * "Panel"
 
-	MaxColours:	.byte 5
-	Colours:	.byte RED, GREEN, BLUE, YELLOW, PURPLE
+	MaxColours:	.byte 5, 5
+	Colours:	.byte RED, GREEN, BLUE, YELLOW, PURPLE, WHITE
 
 
 	.label WAITING = 0
@@ -47,6 +47,7 @@ PANEL: {
 
 	Reset: {
 
+		
 		lda #0
 		sta QueuePosition
 		sta QueuePosition + 1

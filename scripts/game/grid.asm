@@ -233,7 +233,7 @@ GRID: {
 
 		Finish:
 
-		jsr DummyBeans
+	//	jsr DummyBeans
 	
 		rts
 

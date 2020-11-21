@@ -105,7 +105,49 @@ MENU: {
 		cmp #3
 		beq Options
 
-		jmp MAIN.StartGame
+		cmp #PLAY_MODE_2P
+		beq TwoPlayer
+
+		Practice:
+
+			lda #0
+			sta GRID.Active + 1
+
+			ldx SETTINGS.DropSpeed
+			lda SETTINGS.DropSpeeds, x
+			sta PLAYER.CurrentAutoDropTime
+
+			lda SETTINGS.BeanColours
+			sta PANEL.MaxColours
+
+			jmp MAIN.StartGame
+
+
+		TwoPlayer:
+
+			lda SETTINGS.BeanColours
+			sta PANEL.MaxColours
+			lda SETTINGS.BeanColours + 1
+			sta PANEL.MaxColours + 1
+
+			lda #0
+			sta PLAYER.CPU + 1
+			lda #1
+			sta GRID.Active + 1
+
+			lda SETTINGS.Character + 1
+			sta CAMPAIGN.OpponentID
+
+			ldx SETTINGS.DropSpeed
+			lda SETTINGS.DropSpeeds, x
+			sta PLAYER.CurrentAutoDropTime
+
+			ldx SETTINGS.DropSpeed + 1
+			lda SETTINGS.DropSpeeds, x
+			sta PLAYER.CurrentAutoDropTime + 1
+
+			jmp MAIN.StartGame
+
 
 		Scenario:
 

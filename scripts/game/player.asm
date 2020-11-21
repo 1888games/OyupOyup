@@ -4,7 +4,7 @@ PLAYER: {
 
 	.label AutoDropTime = 18
 	.label FlashTime = 10
-	.label ControlCooldown = 3
+	.label ControlCooldown = 5
 	.label FailsafeTime = 60
 
 	.label PLAYER_STATUS_NORMAL = 0
@@ -50,6 +50,7 @@ PLAYER: {
 
 	DoubleClickTimer:	.byte 0, 0
 	RoundOver:			.byte 0
+
 
 
 
