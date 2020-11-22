@@ -20,7 +20,7 @@ IRQ: {
 
 	.label Colours = 2
 	TowerColours:	.byte BLACK, BLACK
-	TowerLines:		.byte 30, 218
+	TowerLines:		.byte 62, 218
 
 
 	TowerStatus:	.byte 0
@@ -104,6 +104,7 @@ IRQ: {
 		Okay:
 
 		jsr SidFrameUpdate
+
 
 		Skip:
 
@@ -292,9 +293,8 @@ IRQ: {
 			bne NotTop	
 
 			jsr CAMPAIGN.PlayerSprites
-			jsr CAMPAIGN.Clouds
+			jsr CAMPAIGN.Clouds  
 			jsr CAMPAIGN.FrameUpdate
-
 
 			NotTop:
 
@@ -308,13 +308,21 @@ IRQ: {
 
 			jsr PerformEveryFrame
 
-			ldx #0
-			stx TowerStatus
+			NoDouble:
+
+				ldx #0
+				stx TowerStatus
+				jmp Skip
 
 		SetupNextIRQLine:
 
-	
+			lda CAMPAIGN.Complete
+			beq Skip
 
+			jsr SidFrameUpdate
+
+			Skip:
+			
 			lda TowerLines, x
 			sta VIC.RASTER_LINE
 

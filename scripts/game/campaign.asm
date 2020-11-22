@@ -9,7 +9,11 @@ CAMPAIGN: {
 	.label CloudTime = 3
 	.label BeanTime = 5
 	.label NumberCharID = 206
+	.label ArlaFrameTime = 6
 
+
+	ArlaPointer:	.byte 72
+	ArlaTimer:		.byte 4
 
 	CurrentLevel:	.byte 0
 	Matches:		.byte 0
@@ -24,7 +28,7 @@ CAMPAIGN: {
 	CloudTimer: .byte 3, 2, 1, 2, 3, 4
 	CloudTimes:	.byte 3, 2, 1, 2, 3, 1
 
-
+	Complete:	.byte 0
 
 
 	BeanTimer:	.byte 3
@@ -68,6 +72,9 @@ CAMPAIGN: {
 		lda #0
 		sta CurrentLevel
 
+		lda #0
+		sta Complete
+
 		lda SETTINGS.DropSpeeds
 		sta PLAYER.CurrentAutoDropTime
 
@@ -85,47 +92,232 @@ CAMPAIGN: {
 		jsr MAIN.SetupVIC
 
 		jsr SetupColours
-
 		jsr DRAW.TowerScreen
-
-		jsr PlayerSprites
-		jsr Clouds
-		jsr DrawBean
-		jsr ColourText
-		jsr DrawLevelData
-
-
-		lda RandomTimes + 6
-		sta RandomTimer
-
-		jsr RANDOM.Get
-		and #%00000111
-		clc
-		adc #16
-		sta RandomChoices
-
-		jsr ChooseOpponent
-
-		lda #15
-		sta RandomTimer
 
 		lda #GAME_MODE_TOWER
 		sta IRQ.Mode
 
-		lda SETTINGS.BeanColours
-		sta PANEL.MaxColours
-		sta PANEL.MaxColours + 1
 
-		ldx CurrentLevel
-		lda SETTINGS.DropSpeeds
-		sta PLAYER.CurrentAutoDropTime
-		sta PLAYER.CurrentAutoDropTime + 1
+		lda Complete
+		beq NotComplete
 
-		jmp CampaignLoop
+		GameComplete:
+
+			jsr Clouds
+			jsr RemovePanels
+			jsr ArlaSprite
+
+			
+			lda #60
+			sta RandomChoices
+
+			jmp CampaignLoop
+
+		NotComplete:
+
+			jsr PlayerSprites
+			
+			jsr DrawBean
+			jsr ColourText
+			jsr DrawLevelData
+
+			lda RandomTimes + 6
+			sta RandomTimer
+
+			jsr RANDOM.Get
+			and #%00000111
+			clc
+			adc #16
+			sta RandomChoices
+
+			jsr ChooseOpponent
+
+			lda #15
+			sta RandomTimer
+
+			lda SETTINGS.BeanColours
+			sta PANEL.MaxColours
+			sta PANEL.MaxColours + 1
+
+			ldx CurrentLevel
+			lda SETTINGS.DropSpeeds
+			sta PLAYER.CurrentAutoDropTime
+			sta PLAYER.CurrentAutoDropTime + 1
+
+			jmp CampaignLoop
 
 	}
 
 
+
+	ArlaSprite: {
+
+		lda #%11111111
+		sta VIC.SPRITE_MULTICOLOR
+
+		lda #%11111101
+		sta VIC.SPRITE_ENABLE
+
+		lda #%00000000
+		sta VIC.SPRITE_PRIORITY
+		sta VIC.SPRITE_DOUBLE_Y
+		sta VIC.SPRITE_DOUBLE_X
+
+
+		lda ArlaPointer
+		sta SPRITE_POINTERS
+
+		lda PlayerColours
+		sta VIC.SPRITE_COLOR_0
+
+		lda #70
+		sta VIC.SPRITE_0_Y
+
+		lda #172
+		sta VIC.SPRITE_0_X
+
+		lda VIC.SPRITE_MSB
+		and #%11111110
+		sta VIC.SPRITE_MSB
+
+		lda ArlaTimer
+		beq Ready
+
+		dec ArlaTimer
+		jmp Finish
+
+		Ready:
+
+			lda #ArlaFrameTime
+			sta ArlaTimer
+
+			lda ArlaPointer
+			cmp #72
+			beq Make73
+
+		Make72:
+
+			dec ArlaPointer
+			jmp Finish
+
+		Make73:
+
+			inc ArlaPointer
+
+
+		Finish:
+
+			jsr DrawAllBeans
+
+
+		lda RandomChoices
+		beq Okay
+
+		dec RandomChoices
+
+
+		Okay:
+
+
+
+		rts
+	
+	}
+
+
+
+	RemovePanels: {
+
+
+		ldx #0
+
+		Loop:
+
+
+			lda #46
+
+			sta SCREEN_RAM + 41, x
+			sta SCREEN_RAM + 81, x
+			sta SCREEN_RAM + 121, x
+			sta SCREEN_RAM + 161, x
+			sta SCREEN_RAM + 201, x
+			sta SCREEN_RAM + 241, x
+
+			sta SCREEN_RAM + 67, x
+			sta SCREEN_RAM + 107, x
+			sta SCREEN_RAM + 147, x
+			sta SCREEN_RAM + 187, x
+			sta SCREEN_RAM + 227, x
+			sta SCREEN_RAM + 267, x
+
+
+			cpx #6
+			bcs NotBottom
+
+			sta SCREEN_RAM + 313, x
+			sta SCREEN_RAM + 353, x
+			sta SCREEN_RAM + 393, x
+			sta SCREEN_RAM + 433, x
+			sta SCREEN_RAM + 473, x
+
+			sta SCREEN_RAM + 281, x
+			sta SCREEN_RAM + 321, x
+			sta SCREEN_RAM + 361, x
+			sta SCREEN_RAM + 401, x
+			sta SCREEN_RAM + 441, x
+
+
+			NotBottom:
+
+			lda #CYAN
+
+			sta COLOR_RAM + 41, x
+			sta COLOR_RAM + 81, x
+			sta COLOR_RAM + 121, x
+			sta COLOR_RAM + 161, x
+			sta COLOR_RAM + 201, x
+			sta COLOR_RAM + 241, x
+
+			sta COLOR_RAM + 67, x
+			sta COLOR_RAM + 107, x
+			sta COLOR_RAM + 147, x
+			sta COLOR_RAM + 187, x
+			sta COLOR_RAM + 227, x
+			sta COLOR_RAM + 267, x
+
+
+			cpx #6
+			bcs NotBottom2
+
+			sta COLOR_RAM + 313, x
+			sta COLOR_RAM + 353, x
+			sta COLOR_RAM + 393, x
+			sta COLOR_RAM + 433, x
+			sta COLOR_RAM + 473, x
+
+			sta COLOR_RAM + 281, x
+			sta COLOR_RAM + 321, x
+			sta COLOR_RAM + 361, x
+			sta COLOR_RAM + 401, x
+			sta COLOR_RAM + 441, x
+
+
+			NotBottom2:
+
+
+			inx
+			cpx #12
+			beq Finish
+
+			jmp Loop
+
+
+		Finish:
+
+
+
+		rts
+	}
 
 	
 
@@ -140,16 +332,28 @@ CAMPAIGN: {
 		lda RandomChoices
 		bne Finish
 
-		ldy #1
-		lda INPUT.FIRE_UP_THIS_FRAME, y
-		beq Finish
+		IsComplete:
 
+			ldy #1
+			lda INPUT.FIRE_UP_THIS_FRAME, y
+			beq Finish
 
-		jmp MAIN.StartGame
+			lda Complete
+			beq NotComplete
+
+			lda #2
+			jsr ChangeTracks
+			
+			jsr NewGame
+			jmp MENU.Show
+
+		NotComplete:
+
+			jmp MAIN.StartGame
 
 		Finish:
 
-		jmp CampaignLoop
+			jmp CampaignLoop
 
 	}	
 
@@ -203,39 +407,47 @@ CAMPAIGN: {
 	FrameUpdate: {
 
 
-		jsr HandleOpponentShow
+			lda Complete
+			bne NoOpponent
 
-		lda BeanTimer
-		beq Ready
+			jsr HandleOpponentShow
 
-		dec BeanTimer
-		jmp Finish
+			NoOpponent:
 
-		Ready:
+			lda BeanTimer
+			beq Ready
 
-			lda #BeanTime
-			sta BeanTimer
+			dec BeanTimer
+			jmp Finish
 
-			lda BeanFrame
-			cmp #129
-			beq Make233
+			Ready:
 
-		Make129:
+				lda #BeanTime
+				sta BeanTimer
 
-			lda #129
-			sta BeanFrame
-			jmp Draw
+				lda BeanFrame
+				cmp #129
+				beq Make233
 
-		Make233:
+			Make129:
 
-			lda #233
-			sta BeanFrame
+				lda #129
+				sta BeanFrame
+				jmp Draw
 
-		Draw:
+			Make233:
 
-			jsr DrawBean
+				lda #233
+				sta BeanFrame
 
-		Finish:
+			Draw:
+
+				lda Complete
+				bne Finish
+
+				jsr DrawBean
+
+			Finish:
 
 
 
@@ -306,8 +518,20 @@ CAMPAIGN: {
 
 	IncreaseLevel: {
 
+
 		inc CurrentLevel
 		lda CurrentLevel
+		cmp #6
+		bcc NotComplete
+
+		lda #1
+		sta Complete
+		dec CurrentLevel
+
+		jmp Finish
+
+		NotComplete:
+
 		asl
 		asl
 		tax
@@ -324,6 +548,11 @@ CAMPAIGN: {
 		lda Levels + 2, x
 		sta NextLevel
 		sta Remaining
+
+		lda #0
+		sta Complete
+
+		Finish:
 
 		rts
 	}
@@ -493,6 +722,13 @@ CAMPAIGN: {
 
 	PlayerSprites: {
 
+		lda Complete
+		beq NotComplete
+
+		jsr ArlaSprite
+		jmp Finish
+
+		NotComplete:
 
 		lda #%11111111
 		sta VIC.SPRITE_MULTICOLOR
@@ -529,6 +765,9 @@ CAMPAIGN: {
 		and #%11111100
 		ora #%00000010
 		sta VIC.SPRITE_MSB
+
+
+		Finish:
 
 		rts
 
@@ -667,6 +906,25 @@ CAMPAIGN: {
 	}
 
 
+
+	DrawAllBeans: {
+
+		ldx #0
+
+		Loop:
+
+			stx CurrentLevel
+
+			jsr DrawBean
+
+			ldx CurrentLevel
+			inx
+			cpx #5
+			bcc Loop
+
+
+		rts
+	}
 
 	DrawBean: {
 

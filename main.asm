@@ -35,7 +35,11 @@ MAIN: {
 	#import "/scripts/game/grid_visuals.asm"
 	#import "/scripts/game/scoring.asm"
 	#import "/scripts/game/text.asm"
+
+
+	* = $a000
 	#import "/scripts/game/opponents.asm"
+	
 
 	* = $6900
 
@@ -88,6 +92,7 @@ MAIN: {
 
 	    lda #60
 	    sta ROCKS.FramesPerSecond
+
 	    jsr SETTINGS.SetSpeedsNTSC
 
 	    jmp Finish

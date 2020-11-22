@@ -39,6 +39,8 @@ MENU: {
 		sta SelectedOption
 		sta PreviousOption
 		sta ControlTimer
+		sta VIC.SPRITE_ENABLE
+		sta IRQ.Mode
 
 		jsr MAIN.SetupVIC
 		jsr DRAW.HideSprites
@@ -151,6 +153,7 @@ MENU: {
 
 		Scenario:
 
+			jsr CAMPAIGN.NewGame
 			jmp CAMPAIGN.Show
 
 
