@@ -14,38 +14,38 @@ Default-segment:
   $080d-$080c End Of Basic
   $080e-$080d Basic End
   $080e-$0935 -Macros
-  $0936-$0a90 IRQ
-  $0a91-$0d56 Draw
-  $0d57-$0e20 -Input
-  $0e21-$0f40 Grid Data
-  $0f41-$14cf CurrentType
-  $14d0-$1ac4 Grid
-  $1ac5-$1b1f -Random
-  $1b20-$1c67 Explosions
-  $1c68-$1c72 Rocks
-  $1c73-$227f Queue
-  $2280-$22cf Panel
-  $22d0-$2535 Queue Data
-  $2536-$2bcc Player
-  $2bcd-$30c2 Title
-  $30c3-$33a8 Menu
-  $33a9-$35bf Grid Visuals
-  $35c0-$3900 Scoring
-  $3901-$3b35 Text
-  $3b36-$3bf5 Opponent Data
-  $3bf6-$3c3f AI
-  $3c40-$3c5f Scores
-  $3c60-$3c95 Lookup
-  $3c96-$3cab Rotations
-  $3cac-$3f21 Lookups
+  $0936-$0aad IRQ
+  $0aae-$0d73 Draw
+  $0d74-$0e3d -Input
+  $0e3e-$0f5d Grid Data
+  $0f5e-$14ec CurrentType
+  $14ed-$1ae1 Grid
+  $1ae2-$1b3c -Random
+  $1b3d-$1c84 Explosions
+  $1c85-$1c91 Rocks
+  $1c92-$22f9 Queue
+  $22fa-$2349 Panel
+  $234a-$25af Queue Data
+  $25b0-$2c57 Player
+  $2c58-$314d Title
+  $314e-$3433 Menu
+  $3434-$364a Grid Visuals
+  $364b-$398b Scoring
+  $398c-$3bc0 Text
+  $3bc1-$3c74 Opponent Data
+  $3c75-$3cbe AI
+  $3cbf-$3cde Scores
+  $3cdf-$3d14 Lookup
+  $3d15-$3d2a Rotations
+  $3d2b-$3f9e Lookups
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff Unnamed
-  $6900-$7688 Round Over
-  $7689-$77a2 Main
+  $6900-$76a8 Round Over
+  $76a9-$77c8 Main
   $7a00-$79ff Assets
   $7a00-$7aff Game Colours
   $7b00-$7ee7 Game Map

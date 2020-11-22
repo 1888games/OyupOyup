@@ -700,6 +700,8 @@ ROUND_OVER: {
 			lda PlayerScore + 2
 			sta SCORING.PlayerTwo + 2
 
+			jsr SCORING.DrawPlayerTwo
+
 			rts
 
 
@@ -713,6 +715,8 @@ ROUND_OVER: {
 
 			lda PlayerScore + 2
 			sta SCORING.PlayerOne + 2
+
+			jsr SCORING.DrawPlayerOne
 
 			rts
 

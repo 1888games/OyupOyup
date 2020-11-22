@@ -24,7 +24,7 @@ IRQ: {
 
 
 	TowerStatus:	.byte 0
-
+	SIDCounter:		.byte 0
 
 
 	DisableCIAInterrupts: {
@@ -94,7 +94,29 @@ IRQ: {
 
 	PerformEveryFrame: {
 
-		//jsr SidFrameUpdate
+		lda ROCKS.FramesPerSecond
+		cmp #50
+		beq Okay
+
+		lda SIDCounter
+		beq Skip
+
+		Okay:
+
+		jsr SidFrameUpdate
+
+		Skip:
+
+		ldx SIDCounter
+		inx
+		cpx #6
+		bcc Okay2
+
+		ldx #0
+
+		Okay2:
+
+		stx SIDCounter
 	
 		SetDebugBorder(2)
 		

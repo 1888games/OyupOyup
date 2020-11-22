@@ -62,7 +62,7 @@ MAIN: {
 			
 
 
-		//jmp TITLE.Show
+		jmp TITLE.Show
 		// jmp SETTINGS.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
@@ -88,6 +88,7 @@ MAIN: {
 
 	    lda #60
 	    sta ROCKS.FramesPerSecond
+	    jsr SETTINGS.SetSpeedsNTSC
 
 	    jmp Finish
 	  

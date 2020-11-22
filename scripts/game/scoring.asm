@@ -417,7 +417,7 @@ SCORING: {
 				sta SCREEN_RAM + 897, y
 					
 				iny
-				cpy #8
+				cpy #9
 				bcc Loop1
 
 			rts
@@ -433,7 +433,7 @@ SCORING: {
 				sta SCREEN_RAM + 775, y
 					
 				iny
-				cpy #8
+				cpy #9
 				bcc Loop2
 
 

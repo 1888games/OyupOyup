@@ -125,8 +125,6 @@ MENU: {
 
 		TwoPlayer:
 
-			.break
-
 			lda SETTINGS.BeanColours
 			sta PANEL.MaxColours
 			lda SETTINGS.BeanColours + 1

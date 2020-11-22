@@ -28,6 +28,7 @@ SETTINGS: {
 	OptionCharType:	.byte 0, 0
 
 	DropSpeeds:		.byte 18, 16, 14, 12, 10, 8, 6, 4
+	DropSpeedsNTSC:	.byte 3,  3,  3,  2,  2,  2, 1, 1
 
 
 
@@ -50,7 +51,7 @@ SETTINGS: {
 
 		lda #WHITE
 		sta VIC.EXTENDED_BG_COLOR_1
-		
+
 		lda #GRAY
 		sta VIC.EXTENDED_BG_COLOR_2
 
@@ -65,6 +66,25 @@ SETTINGS: {
 
 
 
+	}
+
+	SetSpeedsNTSC: {
+
+		ldx #0
+
+		Loop:
+
+			lda DropSpeeds, x
+			clc
+			adc DropSpeedsNTSC
+			sta DropSpeeds, x
+
+			inx
+			cpx #8
+			bcc Loop
+		
+
+		rts
 	}
 
 	SetupSprites: {

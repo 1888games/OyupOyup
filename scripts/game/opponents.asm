@@ -9,12 +9,12 @@ OPPONENTS: {
 				.byte PURPLE, GRAY, LIGHT_RED, WHITE, LIGHT_GREEN, LIGHT_RED, YELLOW, RED, WHITE, BLACK, BLACK, BLACK
 
 
-	Skill:		.byte 030, 042, 036, 050, 025, 044, 033, 040  			// 25 - 50
-				.byte 059, 075, 063, 069, 062, 080, 055, 060  			// 55 - 80
-				.byte 092, 110, 085, 112, 120, 093, 102, 089							  // 85 - 120
-				.byte 145, 129, 138, 150, 125, 132, 141, 135							  // 125 - 150
-				.byte 172, 163, 155, 167, 175, 159, 165, 160									  		// 155 - 175
-				.byte 205, 192, 198, 180, 183, 186, 201, 188	
+	Skill:		.fill 6, random() * 30 + 20			// 20 - 50
+				.fill 6, random() * 30 + 60		//    60 - 90
+				.fill 6, random() * 30 + 100								// 100 -130	  
+				.fill 6, random() * 30 + 140								 // 140-170
+				.fill 6, random() * 30 + 180										  		// 180 - 210
+				.fill 6, random() * 30 + 220										// 220 - 250
 
 	// Speed:		.byte 100, 150, 175, 125, 150, 100, 125, 150
 	// 			.byte 150, 200, 125, 150, 125, 175, 100, 150
@@ -22,6 +22,8 @@ OPPONENTS: {
 	// 			.byte 125, 150, 225, 175, 200, 200, 150, 175
 	// 			.byte 225, 200, 175, 150, 175, 250, 200, 150
 	// 			.byte 175, 150, 250, 150, 200, 225, 250, 200
+
+	.label SkillAdd = 0
 
 	Speed:		.fill 48, random() * 255
 
@@ -69,12 +71,12 @@ OPPONENTS: {
 	CurrentIteration:	.byte 0
 	Active:				.byte 0
 							//    0   1   2   3   4   5   6   7   
-	ColoursInSameColumn:	.byte 10, 08, 06, 04, 02, 01, 00, 00
+	ColoursInSameColumn:	.byte 10, 08, 04, 03, 02, 01, 00, 00
 	RowsFreeInColumn:		.byte 253, 01, 02, 03, 04, 05, 06, 07
 	ExtraMatched:			.byte 00, 20, 40, 60, 80, 80, 80, 80
 	SetsPopped:				.byte 00, 16, 32, 64, 100, 100, 100, 100
 
-	.label MatchLeftOrRight = 10
+	.label MatchLeftOrRight = 14
  		
  	TopScores:				.byte 0, 0, 0, 0, 0
  	WorstScore:				.byte 0
@@ -432,11 +434,8 @@ OPPONENTS: {
 		ldy CAMPAIGN.OpponentID
 		lda Skill, y
 		clc
-		adc #50
-
-		lda #255
+		adc #SkillAdd
 		sta ZP.Amount
-
 
 		Loop:
 

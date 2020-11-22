@@ -4,13 +4,14 @@ PLAYER: {
 
 	.label AutoDropTime = 18
 	.label FlashTime = 10
-	.label ControlCooldown = 5
+	.label ControlCooldown = 6
 	.label FailsafeTime = 60
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
 	.label PLAYER_STATUS_PLACED = 2
 	.label PLAYER_STATUS_END = 3
+	.label InitialAICooldownTime = 40
 
 	.label DoubleClickTime = 16
 
@@ -50,6 +51,7 @@ PLAYER: {
 
 	DoubleClickTimer:	.byte 0, 0
 	RoundOver:			.byte 0
+	InitialAICooldown:	.byte 30
 
 
 	TargetRotation:		.byte 0
@@ -232,6 +234,16 @@ PLAYER: {
 
 
 	AI: {
+
+		lda InitialAICooldown
+		beq Ready
+
+		dec InitialAICooldown
+		jmp Finish
+
+
+
+		Ready:
 
 		ldy #0
 
@@ -1421,6 +1433,9 @@ PLAYER: {
 
 		lda #PLAYER.PLAYER_STATUS_NORMAL
 		sta PLAYER.Status, y
+
+		lda #InitialAICooldownTime
+		sta InitialAICooldown
 
 		lda #GRID_MODE_NORMAL
 		sta GRID.Mode, y

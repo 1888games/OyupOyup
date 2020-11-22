@@ -29,6 +29,7 @@ ROCKS: {
 	SingleCount:	.byte 0
 	ColumnsDrawn:	.byte 0
 	Mode:			.byte 0, 0
+	FailsafeTimer:	.byte 0, 0
 
 	* = * "Queue"
 
@@ -223,8 +224,6 @@ ROCKS: {
 
 	TransferToQueue: {
 
-	
-
 		ldy GRID.CurrentSide
 
 		lda Count, y
@@ -238,7 +237,7 @@ ROCKS: {
 			jsr PANEL.KickOff
 
 			lda #0
-			sta Mode
+			sta Mode, y
 			rts
 
 		AreRocks:
@@ -309,6 +308,10 @@ ROCKS: {
 
 		lda #0
 		sta Frame, x
+
+		txa
+		asl
+		tax
 
 		lda #0
 		sta VIC.SPRITE_2_Y, x
@@ -429,24 +432,81 @@ ROCKS: {
 
 		Arrived:
 
-		
-			jsr Delete
-
-			lda Opponent, x
-			tax
+			ldx ZP.X
 
 			lda Count, x
-			clc
-			adc PendingCount, x
-			sta Count, x
-
-			lda #0
-			sta PendingCount, x
+			beq ClearOpponent
 
 			lda Opponent, x
-			tax
+			tay
 
-			dec GRID.NumberMoving, x
+			ClearOwn:
+
+				lda Count, x
+				cmp PendingCount, y
+				bcc ClearAll
+
+				ClearPartial:
+
+					lda Count, x
+					sec
+					sbc PendingCount, y
+					sta Count, x
+
+					lda #0
+					sta PendingCount, y
+
+					dec GRID.NumberMoving, x
+
+					jsr Delete
+					rts
+
+				ClearAll:
+
+					lda PendingCount, y
+					sec
+					sbc Count, x
+					sta PendingCount, y
+
+					lda #0
+					sta Count, x
+
+					lda Opponent, x
+					tax
+
+					lda TargetColumns, x
+					tay
+
+					lda Opponent, x
+					tax
+
+					lda EXPLOSIONS.XPosLSB, y
+					sta TargetXPos_LSB, x
+
+					lda EXPLOSIONS.XPosMSB, y
+					sta TargetXPos_MSB, x
+					rts
+
+			ClearOpponent:
+
+				jsr Delete
+
+				ldx ZP.X
+
+				lda Opponent, x
+				tax
+
+				lda Count, x
+				clc
+				adc PendingCount, x
+				sta Count, x
+
+				lda #0
+				sta PendingCount, x
+
+				lda Opponent, x
+				tax
+				dec GRID.NumberMoving, x
 
 
 
@@ -948,6 +1008,14 @@ ROCKS: {
 		Loop:	
 
 			stx ZP.Player
+
+			lda FailsafeTimer, x
+			beq Okay
+
+
+
+
+			Okay:
 
 			lda Mode, x
 			beq NoDrop
