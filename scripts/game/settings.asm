@@ -34,7 +34,6 @@ SETTINGS: {
 
 	Show: {
 
-
 		lda #0
 		sta SelectedOption
 		sta PreviousOption
@@ -51,6 +50,7 @@ SETTINGS: {
 
 		lda #WHITE
 		sta VIC.EXTENDED_BG_COLOR_1
+		
 		lda #GRAY
 		sta VIC.EXTENDED_BG_COLOR_2
 
@@ -60,9 +60,7 @@ SETTINGS: {
 		jsr DrawSelection
 		jsr SetupSprites
 		jsr PopulateSettings
-
-
-		
+	
 		jmp SettingsLoop
 
 

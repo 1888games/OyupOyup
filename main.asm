@@ -63,7 +63,7 @@ MAIN: {
 
 
 		//jmp TITLE.Show
-		 jmp SETTINGS.Show	
+		// jmp SETTINGS.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
 
@@ -281,6 +281,7 @@ MAIN: {
 		jsr ROCKS.FrameUpdate
 		jsr SCORING.FrameUpdate
 		jsr ROUND_OVER.FrameUpdate
+		jsr OPPONENTS.FrameUpdate
 		//jsr DRAW.CycleChars
 
 

@@ -67,6 +67,7 @@ GRID: {
 	NumberMoving:		.byte 1, 1
 	NumberLanded:		.byte 0, 0
 	Active:				.byte 1, 1
+	RealCheck:			.byte 1, 1
 
 
 	// Matching
@@ -241,7 +242,7 @@ GRID: {
 
 		Finish:
 
-	//	jsr DummyBeans
+		//jsr DummyBeans
 	
 		rts
 
@@ -558,8 +559,7 @@ GRID: {
 
 				Error:
 
-					.break
-					nop
+				jmp EndCellLoop
 
 				Increase:
 

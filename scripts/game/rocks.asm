@@ -233,8 +233,9 @@ ROCKS: {
 		NoRocks:
 
 			lda #1
-			sta PANEL.Mode, y
 			sta PLAYER.Status, y
+
+			jsr PANEL.KickOff
 
 			lda #0
 			sta Mode
@@ -1080,9 +1081,9 @@ ROCKS: {
 			lda PLAYER.Status, y
 			cmp #PLAYER.PLAYER_STATUS_END
 			beq NotDone
-			
-			lda #1
-			sta PANEL.Mode, y
+
+			jsr PANEL.KickOff
+		
 
 		NotDone:
 

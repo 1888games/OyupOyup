@@ -8,7 +8,7 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$002d Temp vars zero page
+  *$0002-$0031 Temp vars zero page
   $0800-$0800 Upstart
   $0801-$080d Basic
   $080d-$080c End Of Basic
@@ -18,21 +18,26 @@ Default-segment:
   $0a91-$0d56 Draw
   $0d57-$0e20 -Input
   $0e21-$0f40 Grid Data
-  $0f41-$14cd CurrentType
-  $14ce-$1ac0 Grid
-  $1ac1-$1b1b -Random
-  $1b1c-$1c63 Explosions
-  $1c64-$1c6e Rocks
-  $1c6f-$227d Queue
-  $227e-$22cd Panel
-  $22ce-$2521 Queue Data
-  $2522-$2b8e Player
-  $2b8f-$3078 Title
-  $3079-$335e Menu
-  $335f-$3575 Grid Visuals
-  $3576-$38b6 Scoring
-  $38b7-$3aeb Text
-  $3aec-$3b4b Opponent Data
+  $0f41-$14cf CurrentType
+  $14d0-$1ac4 Grid
+  $1ac5-$1b1f -Random
+  $1b20-$1c67 Explosions
+  $1c68-$1c72 Rocks
+  $1c73-$227f Queue
+  $2280-$22cf Panel
+  $22d0-$2535 Queue Data
+  $2536-$2bcc Player
+  $2bcd-$30c2 Title
+  $30c3-$33a8 Menu
+  $33a9-$35bf Grid Visuals
+  $35c0-$3900 Scoring
+  $3901-$3b35 Text
+  $3b36-$3bf5 Opponent Data
+  $3bf6-$3c3f AI
+  $3c40-$3c5f Scores
+  $3c60-$3c95 Lookup
+  $3c96-$3cab Rotations
+  $3cac-$3f21 Lookups
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data

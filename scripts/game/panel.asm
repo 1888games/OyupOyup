@@ -131,6 +131,27 @@ PANEL: {
 	}
 
 
+	KickOff: {
+
+		lda #1
+		sta Mode, y
+
+		cpy #0
+		beq NotCPU
+
+		lda PLAYER.CPU, y
+		beq NotCPU
+
+		jsr OPPONENTS.SetActive
+
+
+		NotCPU:
+
+
+
+		rts
+	}
+
 	MoveBeans: {
 
 		stx ZP.Player

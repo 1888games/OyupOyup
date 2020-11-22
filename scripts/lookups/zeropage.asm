@@ -44,6 +44,9 @@ ZP: {
 	ShowSpaces:			.byte $00
 	SolidBelow:			.byte $00
 
+	ScoresAddress:		.word $00
+	LookupAddress:		.word $00
+
 	
 
 

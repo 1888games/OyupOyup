@@ -116,6 +116,11 @@ CAMPAIGN: {
 		sta PANEL.MaxColours
 		sta PANEL.MaxColours + 1
 
+		ldx CurrentLevel
+		lda SETTINGS.DropSpeeds
+		sta PLAYER.CurrentAutoDropTime
+		sta PLAYER.CurrentAutoDropTime + 1
+
 		jmp CampaignLoop
 
 	}
@@ -465,7 +470,7 @@ CAMPAIGN: {
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR
 
-		lda #DARK_GRAY
+		lda #LIGHT_GREEN
 		sta VIC.BORDER_COLOUR
 
 		lda #WHITE

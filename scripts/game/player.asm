@@ -52,6 +52,11 @@ PLAYER: {
 	RoundOver:			.byte 0
 
 
+	TargetRotation:		.byte 0
+	TargetMove:			.byte 0
+	CurrentMove:		.byte 0, 0
+	CurrentRotation:	.byte 0, 0
+
 
 
 	Reset: {
@@ -230,23 +235,47 @@ PLAYER: {
 
 		ldy #0
 
-		jsr RANDOM.Get
-		cmp #4
-		bcc Left
+		lda TargetRotation
+		cmp Rotation + 2
+		beq RotationOK
 
-		cmp #252
-		bcs Right
+		jmp Rotate
 
-		cmp #251
-		bcs Rotate
+		RotationOK:
 
-		cmp #210
-		bcs Down
+			lda #0
+			sta INPUT.FIRE_UP_THIS_FRAME, y
 
+			lda TargetMove
+			cmp CurrentMove + 1
+			beq PositionOK
 
+			bcc Left
 
-		jmp Finish
+			jmp Right
 
+		PositionOK:
+
+			 jsr RANDOM.Get
+			// cmp #4
+			// bcc Left
+
+			// cmp #252
+			// bcs Right
+
+			// cmp #251
+			// bcs Rotate
+
+			 cmp #200
+			 bcc Finish
+
+			 jsr RANDOM.Get
+
+			 ldx CAMPAIGN.OpponentID
+			 cmp OPPONENTS.Speed, x
+			 bcc Down
+
+			 jmp Finish
 
 		Rotate:
 
@@ -275,20 +304,13 @@ PLAYER: {
 
 		Finish:
 
+		ldx ZP.Player
 
 
 		rts
 	}
 
 	HandleControls: {
-
-
-		lda CPU, x
-		beq NotCPU
-
-		jsr AI
-
-		NotCPU:
 
 		lda ControlTimer, x
 		beq Ready
@@ -297,6 +319,13 @@ PLAYER: {
 		jmp CheckFire
 
 		Ready:
+
+			lda CPU, x
+			beq NotCPU
+
+			jsr AI
+
+			NotCPU:
 
 			lda ControlPorts, x
 			tay
@@ -339,6 +368,7 @@ PLAYER: {
 				stx ZP.Offset
 
 				ldx ZP.Player
+				dec CurrentMove, x
 
 				jsr DeleteBeans
 
@@ -393,6 +423,7 @@ PLAYER: {
 				stx ZP.Offset
 
 				ldx ZP.Player
+				inc CurrentMove, x
 			
 				jsr DeleteBeans
 
