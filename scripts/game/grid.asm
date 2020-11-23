@@ -134,7 +134,11 @@ GRID: {
 
 		jsr DRAW.GamePlayerSprites
 		jsr DRAW.GameOpponentName
-		jsr DRAW.LevelNumber
+		jsr DRAW.GameTitle
+		
+		
+
+		
 		
 
 

@@ -40,6 +40,11 @@ LOSE: .import binary "../../assets/puyo - MapArea (8bpc, 12x24)_GO.bin"
 
 TWO_PLAYER: .import binary "../../assets/puyo - MapArea (8bpc, 12x12)_2P.bin"
 
+
+TITLE_1P:	.import binary "../../assets/puyo - MapArea (8bpc, 10x2)_1P.bin"
+TITLE_2P:	.import binary "../../assets/puyo - MapArea (8bpc, 10x2)_2P.bin"
+TITLE_PR:	.import binary "../../assets/puyo - MapArea (8bpc, 10x2_PR).bin"
+
 		
 		
 * = $f000 "Charset"

@@ -15,23 +15,23 @@ Default-segment:
   $080e-$080d Basic End
   $080e-$0935 -Macros
   $0936-$0ab8 IRQ
-  $0ab9-$0db9 Draw
-  $0dba-$0e83 -Input
-  $0e84-$0fa3 Grid Data
-  $0fa4-$1536 CurrentType
-  $1537-$1bba Grid
-  $1bbb-$1c15 -Random
-  $1c16-$1d5d Explosions
-  $1d5e-$1d6a Rocks
-  $1d6b-$241e Queue
-  $241f-$246e Panel
-  $246f-$26eb Queue Data
-  $26ec-$2d93 Player
-  $2d94-$33f2 Title
-  $33f3-$3720 Menu
-  $3721-$3937 Grid Visuals
-  $3938-$3c7a Scoring
-  $3c7b-$3eaf Text
+  $0ab9-$0e2d Draw
+  $0e2e-$0ef7 -Input
+  $0ef8-$1017 Grid Data
+  $1018-$15aa CurrentType
+  $15ab-$1c2e Grid
+  $1c2f-$1c89 -Random
+  $1c8a-$1dd1 Explosions
+  $1dd2-$1dde Rocks
+  $1ddf-$2492 Queue
+  $2493-$24e2 Panel
+  $24e3-$275f Queue Data
+  $2760-$2e07 Player
+  $2e08-$3466 Title
+  $3467-$3794 Menu
+  $3795-$39ab Grid Visuals
+  $39ac-$3cee Scoring
+  $3cef-$3f23 Text
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -45,7 +45,7 @@ Default-segment:
   $7ee8-$82cf Tower Map
   $82d0-$86b7 Menu Map
   $86b8-$8a9f Settings Map
-  $8aa0-$8f1f Win
+  $8aa0-$8f5b Win
   $9000-$9c63 sid
   $9d00-$9cff Unnamed
   $9d00-$9e2b Main

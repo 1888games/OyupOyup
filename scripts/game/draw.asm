@@ -72,6 +72,121 @@ DRAW: {
 
 
 
+	GameTitle: {
+
+		lda MENU.SelectedOption
+		beq Campaign
+
+		cmp #1
+		beq TwoPlayer
+
+		Practice:
+
+			lda #<TITLE_PR
+			sta ZP.LookupAddress
+
+			lda #>TITLE_PR
+			sta ZP.LookupAddress + 1
+
+			lda #YELLOW + 8
+			sta ZP.Colour
+
+			jmp Draw
+
+		TwoPlayer:
+
+			lda #<TITLE_2P
+			sta ZP.LookupAddress
+
+			lda #>TITLE_2P
+			sta ZP.LookupAddress + 1
+
+
+			lda #CYAN+ 8
+			sta ZP.Colour
+
+			jmp Draw
+
+		Campaign:
+
+			lda #<TITLE_1P
+			sta ZP.LookupAddress
+
+			lda #>TITLE_1P
+			sta ZP.LookupAddress + 1
+
+			lda #GREEN +8
+			sta ZP.Colour
+
+		Draw:
+
+		ldy #0
+
+		Loop:
+
+			lda (ZP.LookupAddress), y
+			sta SCREEN_RAM + 615, y
+
+			cmp #59
+			bcs Text
+
+			tax
+			lda CHAR_COLORS, x
+			jmp Skip
+
+			Text:
+
+			lda ZP.Colour
+
+			Skip:
+
+			sta COLOR_RAM + 615, y
+
+			iny 
+			cpy #10
+			bcc Loop
+
+
+
+		Loop2:
+
+			lda (ZP.LookupAddress), y
+			sta SCREEN_RAM + 645, y
+
+			cmp #59
+			bcs Text2
+
+			tax
+			lda CHAR_COLORS, x
+			jmp Skip2
+
+			Text2:
+
+			lda ZP.Colour
+
+			Skip2:
+
+			sta COLOR_RAM + 645, y
+
+			iny 
+			cpy #20
+			bcc Loop2
+
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_SCENARIO
+		bne Finish
+
+		jsr LevelNumber
+
+		Finish:
+		
+
+
+		rts
+
+	}
+
 	GetCharacter: {
 
 		sty ZP.Row
