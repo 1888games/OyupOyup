@@ -31,13 +31,16 @@ ROUND_OVER: {
 	CurrentSeconds:	.byte 130
 	
 	PlayerScore:	.byte 0, 0, 0
+	TempScore:		.byte 0, 0, 0
 	Remaining:		.byte 0, 0, 0
 	HitLevelTarget: .byte 0
 
 	ExplosionOffset: .byte 0, 24
+	ScoreColumns:	.byte 29, 5
 
 
 	GameOverDirection:	.byte 0
+	OverallWinner:	.byte 0
 
 
 	GameOverStartX:		.byte 45, 66, 87, 108
@@ -370,22 +373,90 @@ ROUND_OVER: {
 		rts
 	}
 
+
+	TwoPlayerUpdate: {
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+		lda #0
+		sta Active
+		sta Stage
+
+		lda OverallWinner
+		beq NoWinner
+
+		Winner:
+
+			lda #GAME_MODE_SWITCH_MENU
+			sta MAIN.GameMode
+			jmp NoExplosion
+
+		NoWinner:
+
+			lda #GAME_MODE_SWITCH_GAME
+			sta MAIN.GameMode
+			jmp NoExplosion
+
+		Finish:
+
+			lda OverallWinner
+			beq NoExplosion
+
+			Explosion:
+
+			jsr RANDOM.Get
+			cmp #20
+			bcs NoExplosion
+
+			jsr RANDOM.Get
+			and #%00001111
+			clc
+			adc #4
+			sta ZP.Row
+
+			jsr RANDOM.Get
+			and #%00011111
+			sta ZP.Column
+
+			jsr RANDOM.Get
+			and #%00001111
+			sta ZP.BeanColour
+	
+			jsr EXPLOSIONS.StartExplosion
+
+		NoExplosion:
+
+		rts
+	}
+
 	FrameUpdate: {
 
 		lda Active
 		beq Finish
 
 		lda Stage
-		cmp #5
-		bcc NotGameOver
+		cmp #8
+		bcc Not2Player
 
-		jsr GameOverUpdate
-		rts
+		TwoPlayer:
+
+			jsr TwoPlayerUpdate
+			rts
+
+		Not2Player:
+
+			cmp #5
+			bcc NotGameOver
+
+			jsr GameOverUpdate
+			rts
 
 		NotGameOver:
 
-		cmp #2
-		bcs NotFlash
+			cmp #2
+			bcs NotFlash
 
 		Flash:
 
@@ -414,6 +485,9 @@ ROUND_OVER: {
 				jsr ColourText
 				jsr ShowBottom
 				jsr DrawOtherSide
+				jsr CopyData
+				jsr ShowTwoPlayerScore
+
 				jmp Finish
 
 		NotFlash:
@@ -437,6 +511,8 @@ ROUND_OVER: {
 			cmp #4
 			bcs AllClear
 
+
+
 			jsr AddScoreToRemaining
 
 		AllClear:
@@ -451,6 +527,50 @@ ROUND_OVER: {
 	}	
 
 
+
+	CopyData: {
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_2P
+		bne Finish
+
+		lda Winner
+		beq Player1
+
+
+		Player2:
+
+			lda SCORING.PlayerTwo
+			sta TempScore
+
+			lda SCORING.PlayerTwo + 1
+			sta TempScore + 1
+
+			lda SCORING.PlayerTwo + 2
+			sta TempScore + 2
+			rts
+
+
+		Player1:
+
+			lda SCORING.PlayerOne
+			sta TempScore
+
+			lda SCORING.PlayerOne + 1
+			sta TempScore + 1
+
+			lda SCORING.PlayerOne + 2
+			sta TempScore + 2
+			rts
+
+
+
+		Finish:
+
+
+
+		rts
+	}
 
 
 	ExitGameOver: {
@@ -724,7 +844,168 @@ ROUND_OVER: {
 	}
 
 
+
+	YouWin2P: {
+
+
+		ldx #0
+		ldy #0
+
+		Loop:
+
+			stx ZP.X
+
+		 	lda TWO_PLAYER, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	tax
+		 	lda CHAR_COLORS, x
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay
+
+		 	ldy #0
+
+		 	jsr MoveDownRow
+
+		 	Okay:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop
+
+		ldx #0
+		ldy #0
+
+		Loop2:
+
+			stx ZP.X
+
+		 	lda WIN_BOTTOM, x
+		 	sta (ZP.ScreenAddress), y
+
+		 	cpx #132
+		 	bcs UseColour
+
+		 	cpy #0
+		 	beq UseColour
+
+		 	cpy #11
+		 	beq UseColour
+
+		 	
+		 	lda #0
+		 	jmp Colour
+
+		 	UseColour:
+
+		 	tax
+		 	lda CHAR_COLORS, x
+
+		 	Colour:
+
+		 	sta (ZP.ColourAddress), y
+
+		 	iny
+		 	cpy #12
+		 	bcc Okay2
+
+		 	ldy #0
+
+		 	jsr MoveDownRow
+
+		 	Okay2:
+
+		 	ldx ZP.X
+
+		 	inx
+		 	cpx #144
+		 	bcc Loop2
+
+
+		rts
+
+
+
+		rts
+	}
+
+
+	PlayerTwoWins2P: {
+
+	
+		lda #<SCREEN_RAM + 42
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 42
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 42
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 42
+		sta ZP.ColourAddress + 1
+
+		jsr YouWin2P
+		//jsr DrawPlayerTwoRemaining
+
+		rts
+	}
+
+
+	PlayerOneWins2P: {
+
+		lda #<SCREEN_RAM + 66
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 66
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 66
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 66
+		sta ZP.ColourAddress + 1
+
+		jsr YouWin2P
+	//	jsr DrawPlayerOneRemaining
+		
+		rts
+	}
+
+
+
+
+
 	DrawOtherSide: {
+
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_SCENARIO
+		beq Scenario
+
+		TwoPlayer:
+
+		lda Winner
+		beq Player1_
+
+		Player2_:
+
+			jsr PlayerTwoWins2P
+			rts
+
+
+		Player1_:
+
+			jsr PlayerOneWins2P
+			rts
+
+
+		Scenario:
 
 		lda Winner
 		beq Player1
@@ -739,7 +1020,6 @@ ROUND_OVER: {
 
 			jsr PlayerOneWinsOther
 			rts
-
 
 
 	}
@@ -772,6 +1052,92 @@ ROUND_OVER: {
 	}
 
 
+
+
+
+
+	AddToRealScore: {
+
+		ldx Winner
+		beq Player1
+
+		Player2:
+
+			lda TempScore
+			sta SCORING.PlayerTwo
+
+			lda TempScore + 1
+			sta SCORING.PlayerTwo + 1
+
+			lda TempScore + 2
+			sta SCORING.PlayerTwo + 2
+			
+			
+			sed
+			clc
+			lda SCORING.PlayerTwo
+			adc Bonus
+			sta SCORING.PlayerTwo
+			lda SCORING.PlayerTwo + 1
+			adc #ZERO
+			clc
+			adc Bonus + 1
+			sta SCORING.PlayerTwo + 1
+
+			lda SCORING.PlayerTwo + 2
+
+			adc #ZERO
+			clc
+			adc Bonus + 2
+			sta SCORING.PlayerTwo + 2
+			cld
+
+
+			jsr SCORING.DrawPlayerTwo
+
+
+			
+			rts
+
+
+		Player1:
+
+		
+			lda TempScore
+			sta SCORING.PlayerOne
+
+			lda TempScore + 1
+			sta SCORING.PlayerOne + 1
+
+			lda TempScore + 2
+			sta SCORING.PlayerOne + 2
+			
+			sed
+			clc
+			lda SCORING.PlayerOne
+			adc Bonus
+			sta SCORING.PlayerOne
+			lda SCORING.PlayerOne + 1
+			adc #ZERO
+			clc
+			adc Bonus + 1
+			sta SCORING.PlayerOne + 1
+
+			lda SCORING.PlayerOne + 2
+
+			adc #ZERO
+			clc
+			adc Bonus + 2
+			sta SCORING.PlayerOne + 2
+			cld
+
+			jsr SCORING.DrawPlayerOne
+
+			rts
+
+	}
+
+
 	AddBonusToScore: {
 
 		lda ZP.FrameCounter
@@ -783,9 +1149,17 @@ ROUND_OVER: {
 
 		NoSfx:
 
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_2P
+		bne AddToTempScore
+
+		jsr AddToRealScore
+		rts
+
+		AddToTempScore:
+
 		ldx Winner
 		beq Player1
-
 
 		Player2:
 
@@ -875,18 +1249,115 @@ ROUND_OVER: {
 			lda ROCKS.GameSeconds
 			sta CurrentSeconds
 
-			lda #3
-			sta Stage
+			lda MENU.SelectedOption
+			cmp #PLAY_MODE_2P
+			bne Not2Player
 
-			lda #60
-			sta FlashTimer
+			TwoPlayer:
 
-			lda #0
-			sta HitLevelTarget
+				lda #8
+				sta Stage
 
-			jsr TransferScoreToPlayer
+				jsr AddBonusToScore
+
+				ldx Winner
+				inc SCORING.Rounds, x
+
+
+
+				jsr CheckWinner
+
+				ldx #4
+				sfxFromX()
+
+				jsr ShowTwoPlayerScore
+				jmp Finish
+
+			Not2Player:
+
+				lda #3
+				sta Stage
+
+				lda #60
+				sta FlashTimer
+
+				lda #0
+				sta HitLevelTarget
+
+				jsr AddBonusToScore
+				jsr TransferScoreToPlayer
 
 		Finish:
+
+
+		rts
+	}
+
+	CheckWinner: {
+
+		lda #0
+		sta OverallWinner
+
+		Check1:
+
+			lda SCORING.Rounds
+			cmp SETTINGS.RoundsToWin
+			bcc Check2
+
+			lda #1
+			sta OverallWinner
+
+		Check2:
+
+			lda SCORING.Rounds + 1
+			cmp SETTINGS.RoundsToWin
+			bcc NoWinner
+
+			lda #2
+			sta OverallWinner
+
+		NoWinner:
+
+
+
+		rts
+	}
+
+	ShowTwoPlayerScore: {
+
+		lda #11
+		sta ZP.TextRow
+
+		ldx Winner
+		lda ScoreColumns, x
+		sta ZP.TextColumn
+
+		lda SCORING.Rounds
+		jsr TEXT.ByteToDigits
+
+		ldy #RED + 8
+		lda #0
+		ldx #3
+
+		jsr TEXT.DrawTallDigits
+
+		lda #11
+		sta ZP.TextRow
+
+		ldx Winner
+		lda ScoreColumns, x
+		clc
+		adc #5
+		sta ZP.TextColumn
+
+		lda SCORING.Rounds + 1
+		jsr TEXT.ByteToDigits
+
+		lda #0
+		ldy #CYAN + 8
+		ldx #3
+
+		jsr TEXT.DrawTallDigits
 
 
 		rts
@@ -1753,8 +2224,6 @@ ROUND_OVER: {
 		jsr YouWinOther
 		jsr DrawPlayerTwoRemaining
 
-	
-	
 		rts
 	}
 

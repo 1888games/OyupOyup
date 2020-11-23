@@ -5,7 +5,7 @@ SETTINGS: {
 	DropSpeed:		.byte 1, 1
 	RockLayers:		.byte 0, 0
 	BeanColours:	.byte 5, 5
-	RoundsToWin:	.byte 2, 2
+	RoundsToWin:	.byte 1, 1
 	Character:		.byte 0, 1
 
 	SelectedOption:	.byte 0

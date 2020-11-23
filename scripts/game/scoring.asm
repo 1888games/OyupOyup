@@ -13,6 +13,8 @@ SCORING: {
 
 	Amount:	.byte 0
 
+	Rounds:		.byte 0, 0
+
 
 	.label CharacterSetStart = 206
 

@@ -48,6 +48,10 @@ MENU: {
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR
 
+		lda #0
+		sta VIC.SPRITE_DOUBLE_X
+		sta VIC.SPRITE_DOUBLE_Y
+
 		lda #CYAN
 		sta VIC.BORDER_COLOUR
 
@@ -102,13 +106,21 @@ MENU: {
 	DecidePath: {
 
 		lda SelectedOption
-		beq Scenario
+		bne NoScenario
 
-		cmp #3
-		beq Options
+		jmp Scenario
 
-		cmp #PLAY_MODE_2P
-		beq TwoPlayer
+		NoScenario:
+
+			cmp #3
+			bne NotOptions
+
+			jmp Options
+
+		NotOptions:
+
+			cmp #PLAY_MODE_2P
+			beq TwoPlayer
 
 		Practice:
 
@@ -122,6 +134,14 @@ MENU: {
 			lda SETTINGS.BeanColours
 			sta PANEL.MaxColours
 
+			ldx SETTINGS.Character
+			lda OPPONENTS.Colours, x
+			sta CAMPAIGN.PlayerColours
+
+			lda OPPONENTS.Pointers, x
+			sta CAMPAIGN.PlayerPointers
+
+
 			jmp MAIN.StartGame
 
 
@@ -134,9 +154,25 @@ MENU: {
 
 			lda #0
 			sta PLAYER.CPU + 1
+			sta SCORING.Rounds 
+			sta SCORING.Rounds + 1
+
+			ldx SETTINGS.Character
+			lda OPPONENTS.Colours, x
+			sta CAMPAIGN.PlayerColours
+
+			lda OPPONENTS.Pointers, x
+			sta CAMPAIGN.PlayerPointers
 
 			lda SETTINGS.Character + 1
 			sta CAMPAIGN.OpponentID
+
+			tax
+			lda OPPONENTS.Colours, x
+			sta CAMPAIGN.PlayerColours + 1
+
+			lda OPPONENTS.Pointers, x
+			sta CAMPAIGN.PlayerPointers + 1
 
 			ldx SETTINGS.DropSpeed
 			dex

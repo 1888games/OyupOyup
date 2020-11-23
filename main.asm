@@ -46,6 +46,7 @@ MAIN: {
 	#import "/scripts/game/roundOver.asm"
 	#import "/scripts/game/settings.asm"
 
+	* = $9d00
 
 	* = * "Main"
 
@@ -265,6 +266,15 @@ MAIN: {
 
 		NotMenu:
 
+			cmp #GAME_MODE_SWITCH_GAME
+			bne NotGame
+
+			lda #0
+			sta GameMode
+
+			jmp StartGame
+
+		NotGame:
 
 		jmp FrameCode
 

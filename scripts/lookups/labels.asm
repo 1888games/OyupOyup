@@ -15,6 +15,7 @@ MemoryAddresses:
 .label GAME_MODE_TOWER = 3
 .label GAME_MODE_SWITCH_CAMPAIGN = 4
 .label GAME_MODE_SWITCH_MENU = 5
+.label GAME_MODE_SWITCH_GAME = 6
 
 
 

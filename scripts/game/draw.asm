@@ -458,33 +458,73 @@ DRAW: {
 
 	GamePlayerSprites: {
 
-		lda CAMPAIGN.PlayerPointers
-		sta SPRITE_POINTERS + 4
-
-		lda CAMPAIGN.PlayerColours
-		sta VIC.SPRITE_COLOR_4
-
+		lda #%11111111
+		sta VIC.SPRITE_ENABLE
 		
-		lda CAMPAIGN.PlayerPointers + 1
-		sta SPRITE_POINTERS + 5
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_SCENARIO
+		beq Scenario
 
-		lda CAMPAIGN.PlayerColours + 1
-		sta VIC.SPRITE_COLOR_5
+		Normal:
 
+			ldx SETTINGS.Character
+			lda OPPONENTS.Pointers, x
+			sta SPRITE_POINTERS + 4
 
-		lda #50
-		sta VIC.SPRITE_4_Y
-		sta VIC.SPRITE_5_Y
+			lda OPPONENTS.Colours, x
+			sta VIC.SPRITE_COLOR_4
 
-		lda #144
-		sta VIC.SPRITE_4_X
+			lda #0
+			sta VIC.SPRITE_5_Y
 
-		lda #198
-		sta VIC.SPRITE_5_X
+			lda MENU.SelectedOption
+			cmp #PLAY_MODE_PRACTICE
+			beq OnePlayer
 
-		lda VIC.SPRITE_MSB
-		and #%11001111
-		sta VIC.SPRITE_MSB
+			TwoPlayer:
+
+				ldx SETTINGS.Character + 1
+				lda OPPONENTS.Pointers, x
+				sta SPRITE_POINTERS + 5
+
+				lda OPPONENTS.Colours, x
+				sta VIC.SPRITE_COLOR_5
+
+				jmp Position
+
+		Scenario:
+
+			lda CAMPAIGN.PlayerPointers
+			sta SPRITE_POINTERS + 4
+
+			lda CAMPAIGN.PlayerColours
+			sta VIC.SPRITE_COLOR_4
+			
+			lda CAMPAIGN.PlayerPointers + 1
+			sta SPRITE_POINTERS + 5
+
+			lda CAMPAIGN.PlayerColours + 1
+			sta VIC.SPRITE_COLOR_5
+
+		Position:
+
+			lda #50
+			sta VIC.SPRITE_5_Y
+
+		OnePlayer:
+
+			lda #50
+			sta VIC.SPRITE_4_Y
+
+			lda #144
+			sta VIC.SPRITE_4_X
+
+			lda #198
+			sta VIC.SPRITE_5_X
+
+			lda VIC.SPRITE_MSB
+			and #%11001111
+			sta VIC.SPRITE_MSB
 
 		rts
 

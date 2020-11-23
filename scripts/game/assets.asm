@@ -38,6 +38,8 @@ WIN_BOTTOM: .import binary "../../assets/puyo - MapArea (8bpc, 12x12)B.bin"
 
 LOSE: .import binary "../../assets/puyo - MapArea (8bpc, 12x24)_GO.bin"
 
+TWO_PLAYER: .import binary "../../assets/puyo - MapArea (8bpc, 12x12)_2P.bin"
+
 		
 		
 * = $f000 "Charset"

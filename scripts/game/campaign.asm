@@ -78,6 +78,12 @@ CAMPAIGN: {
 		lda SETTINGS.DropSpeeds
 		sta PLAYER.CurrentAutoDropTime
 
+		lda #53
+		sta PlayerPointers
+
+		lda #YELLOW
+		sta PlayerColours
+
 		rts
 	}
 
