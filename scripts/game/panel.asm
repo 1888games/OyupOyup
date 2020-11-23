@@ -35,6 +35,7 @@ PANEL: {
 	MasterQueuePosition:	.byte 0
 	QueuePosition:			.byte 0, 0
 	QueueIterations:		.byte 0, 0
+	FirstKickOff:			.byte 0, 0
 
 	QueueValues:			.fill 32, 0
 
@@ -57,6 +58,8 @@ PANEL: {
 		sta MasterQueuePosition
 		sta FrameTimer
 		sta FrameTimer + 1
+		sta FirstKickOff
+		sta FirstKickOff + 1
 
 
 		jsr FillQueue
@@ -144,8 +147,18 @@ PANEL: {
 
 		jsr OPPONENTS.SetActive
 
-
 		NotCPU:
+
+			lda FirstKickOff, y
+			beq Finish
+
+			lda #1
+			sta GRID.GridClear, y
+			
+		Finish:
+
+		lda #1
+		sta FirstKickOff, y
 
 
 

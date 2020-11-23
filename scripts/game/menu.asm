@@ -16,7 +16,7 @@ MENU: {
 
 	* = * "Menu"
 
-	YOffset:		.byte 2, 12, 5, 7, 0
+	YOffset:		.byte 3, 12, 5, 7, 0
 	Direction:		.byte -1, 1, 1, -1, 1
 
 

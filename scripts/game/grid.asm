@@ -60,6 +60,8 @@ GRID: {
 
 	CurrentSide:		.byte 0
 	InitialDrawDone:	.byte 0
+	GridClear:			.byte 255, 255
+	BeanCount:			.byte 0, 0
 
 	CheckTimer:			.byte 0, 0
 	Mode:				.byte 1, 1
@@ -102,6 +104,12 @@ GRID: {
 		sta MatchCount
 		sta Combo
 		sta Combo + 1
+
+		lda #0
+		sta GridClear
+		sta GridClear + 1
+		sta BeanCount
+		sta BeanCount + 1
 
 		
 		lda #1
@@ -883,6 +891,26 @@ GRID: {
 
 
 
+	ClearCheck: {
+
+		//jsr RANDOM.Get
+		//and #%00000111
+		//sta BeanCount, x
+
+		lda BeanCount, x
+		bne Finish
+
+		jsr ROCKS.GridCleared
+
+		Finish:
+
+		lda #0
+		sta GridClear, x
+
+		rts
+	}
+
+
 	EndOfCycle: {
 
 		lda #LastRowID
@@ -892,6 +920,13 @@ GRID: {
 		sta InitialDrawDone
 
 		ldx CurrentSide
+
+		lda GridClear, x
+		beq NoClearCheck
+
+		jsr ClearCheck
+
+		NoClearCheck:
 
 		lda Mode, x
 		cmp #GRID_MODE_WAIT_CHECK
@@ -923,9 +958,12 @@ GRID: {
 
 		StillMoving:
 
+			ldx CurrentSide
+
 			lda #0
 			sta NumberMoving, x
 			sta NumberLanded, x
+			sta BeanCount, x
 
 
 		rts
@@ -1262,7 +1300,11 @@ GRID: {
 				bne CheckLeft
 				jmp Draw
 
-			CheckLeft:
+			CheckLeft:	
+
+				ldx CurrentSide
+				inc BeanCount, x
+				ldx ZP.CurrentSlot
 
 				jsr CheckLeftBean
 

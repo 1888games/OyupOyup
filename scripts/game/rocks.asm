@@ -59,6 +59,7 @@ ROCKS: {
 	GridOffset:		.byte 0, 66
 
 	DropTimeout:	.byte 0
+	ClearColumn:	.byte 6, 30
 
 		
 	SpriteLookup:	.byte 0, 2, 4, 6, 8, 10, 12, 14
@@ -217,6 +218,7 @@ ROCKS: {
 			sta XPos_MSB, x
 
 
+
 		rts
 	}
 
@@ -252,9 +254,14 @@ ROCKS: {
 		Loop:
 
 			lda Count, y
+			beq Finish
+			
 			sec
 			sbc #6
 			bpl FullRow
+
+			lda #10
+			sta ZP.Amount
 
 			lda Count, y
 			tay
@@ -265,12 +272,19 @@ ROCKS: {
 				and #%00000111
 				cmp #6
 				bcs PartialLoop
+				cmp ZP.Amount
+				beq PartialLoop
+
 				clc
 				adc ZP.Offset
+				sta ZP.Amount
+			
+				ldx GRID.CurrentSide
+				dec Count, x
+
 				tax
-
 				inc Queue, x
-
+	
 				dey
 				bne PartialLoop
 
@@ -512,6 +526,43 @@ ROCKS: {
 
 		NotArrived:
 
+
+
+		rts
+	}
+
+
+	GridCleared: {
+
+		// x = player
+
+		lda #15
+		sta ZP.Row
+
+		lda ClearColumn, x
+		sta ZP.Column
+
+		lda Opponent, x
+		tax
+
+		lda PendingCount, x
+		clc
+		adc #30
+		sta PendingCount, x
+
+		lda Opponent, x
+		tax
+
+		lda #67
+		sta ComboFrame, x
+
+		jsr StartCombo
+		jsr ROCKS.StartTransfer
+
+		ldx #0
+		sfxFromX()
+
+		ldx GRID.CurrentSide
 
 
 		rts
@@ -786,7 +837,6 @@ ROCKS: {
 
 
 	StartCombo: {
-
 
 
 		lda ComboFrame, x
