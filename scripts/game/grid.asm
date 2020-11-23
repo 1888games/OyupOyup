@@ -82,6 +82,8 @@ GRID: {
 	Combo:				.byte 0, 0
 
 
+
+
 	* = * "Grid"
 
 	Reset: {
@@ -104,8 +106,6 @@ GRID: {
 		sta MatchCount
 		sta Combo
 		sta Combo + 1
-
-		lda #0
 		sta GridClear
 		sta GridClear + 1
 		sta BeanCount
@@ -135,6 +135,7 @@ GRID: {
 		jsr DRAW.GamePlayerSprites
 		jsr DRAW.GameOpponentName
 		jsr DRAW.LevelNumber
+		
 
 
 		rts
@@ -220,6 +221,88 @@ GRID: {
 
 
 
+
+	StartingRocks: {
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_SCENARIO
+		beq Finish
+
+		Player1:
+
+			lda SETTINGS.RockLayers
+			beq Player2
+
+			ldy #11
+			tax
+			dex
+
+		Loop:	
+
+			stx ZP.Y
+
+			lda RowStart, y
+			tax
+
+			lda #WHITE
+			sta PlayerOne, x
+			sta PlayerOne + 1, x
+			sta PlayerOne + 2, X
+			sta PlayerOne + 3, x
+			sta PlayerOne + 4, x
+			sta PlayerOne + 5, x
+
+			EndLoop:
+
+				dey
+
+				ldx ZP.Y
+				dex
+				bpl Loop
+
+
+
+		Player2:
+
+		lda Active + 1
+		beq Finish
+
+		lda SETTINGS.RockLayers + 1
+		beq Finish
+
+		ldy #11
+		tax
+		dex
+
+		Loop2:	
+
+			stx ZP.X
+
+			lda RowStart, y
+			tax
+
+			lda #WHITE
+			sta PlayerOne + 72, x
+			sta PlayerOne + 73, x
+			sta PlayerOne + 74, X
+			sta PlayerOne + 75, x
+			sta PlayerOne + 76, x
+			sta PlayerOne + 77, x
+
+			EndLoop2:
+
+				dey
+
+				ldx ZP.X
+				dex
+				bpl Loop2
+
+
+		Finish:
+
+		rts
+	}
+
 	ClearGrid: {
 
 		ldx BottomRightIDs + 1
@@ -233,10 +316,10 @@ GRID: {
 				lda #BLACK
 				sta PlayerOne, x
 
-				jsr GRID_VISUALS.ClearSquare
-
 				lda #255
 				sta PreviousType, x
+
+				jsr GRID_VISUALS.ClearSquare
 
 			EndLoop:
 
@@ -249,6 +332,8 @@ GRID: {
 
 
 		Finish:
+
+		jsr StartingRocks
 
 		//jsr DummyBeans
 	
@@ -268,8 +353,8 @@ GRID: {
 
 			jsr RANDOM.Get
 			and #%00111111
-			clc
-			adc #72
+		//	clc
+			//adc #72
 			tax
 
 			jsr RANDOM.Get

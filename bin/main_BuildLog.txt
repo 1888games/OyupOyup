@@ -19,19 +19,19 @@ Default-segment:
   $0dba-$0e83 -Input
   $0e84-$0fa3 Grid Data
   $0fa4-$1536 CurrentType
-  $1537-$1b65 Grid
-  $1b66-$1bc0 -Random
-  $1bc1-$1d08 Explosions
-  $1d09-$1d15 Rocks
-  $1d16-$23c9 Queue
-  $23ca-$2419 Panel
-  $241a-$2696 Queue Data
-  $2697-$2d3e Player
-  $2d3f-$339d Title
-  $339e-$36cb Menu
-  $36cc-$38e2 Grid Visuals
-  $38e3-$3c25 Scoring
-  $3c26-$3e5a Text
+  $1537-$1bba Grid
+  $1bbb-$1c15 -Random
+  $1c16-$1d5d Explosions
+  $1d5e-$1d6a Rocks
+  $1d6b-$241e Queue
+  $241f-$246e Panel
+  $246f-$26eb Queue Data
+  $26ec-$2d93 Player
+  $2d94-$33f2 Title
+  $33f3-$3720 Menu
+  $3721-$3937 Grid Visuals
+  $3938-$3c7a Scoring
+  $3c7b-$3eaf Text
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
