@@ -37,7 +37,7 @@ Default-segment:
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff RoundOver
-  $6900-$7588 Round Over
+  $6900-$7597 Round Over
   $7a00-$79ff Assets
   $7a00-$7aff Game Colours
   $7b00-$7ee7 Game Map

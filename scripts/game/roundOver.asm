@@ -406,9 +406,19 @@ ROUND_OVER: {
 
 			Explosion:
 
+			jsr FullRandomExplosion
+
+		NoExplosion:
+
+		rts
+	}
+
+
+	FullRandomExplosion: {
+
 			jsr RANDOM.Get
-			cmp #20
-			bcs NoExplosion
+			cmp #18
+			bcs Finish
 
 			jsr RANDOM.Get
 			and #%00001111
@@ -426,7 +436,8 @@ ROUND_OVER: {
 	
 			jsr EXPLOSIONS.StartExplosion
 
-		NoExplosion:
+		Finish:
+
 
 		rts
 	}
@@ -610,7 +621,15 @@ ROUND_OVER: {
 
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y
+		bne FireHit
+
+		lda HitLevelTarget
 		beq Finish
+
+		jsr FullRandomExplosion
+		jmp Finish
+
+		FireHit:
 
 		lda #GAME_MODE_SWITCH_CAMPAIGN
 		sta MAIN.GameMode

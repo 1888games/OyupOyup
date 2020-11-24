@@ -152,7 +152,9 @@ SCORING: {
 
 	DrawPlayerOne: {
 
+		ldx #0
 
+		jsr ClearScorePanel
 
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
@@ -209,7 +211,10 @@ SCORING: {
 
 	DrawPlayerTwo: {
 
-	
+		ldx#0
+
+		jsr ClearScorePanel
+
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
 		
@@ -419,7 +424,7 @@ SCORING: {
 				sta SCREEN_RAM + 897, y
 					
 				iny
-				cpy #9
+				cpy #8
 				bcc Loop1
 
 			rts
@@ -435,7 +440,7 @@ SCORING: {
 				sta SCREEN_RAM + 775, y
 					
 				iny
-				cpy #9
+				cpy #8
 				bcc Loop2
 
 
