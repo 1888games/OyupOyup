@@ -951,11 +951,9 @@ ROCKS: {
 
 	CalculateComboRocks: {
 
-
 		sta SCORING.CurrentChain, x
 
-		cmp #2
-		bcc Finish
+		beq Finish
 
 		pha
 

@@ -78,6 +78,15 @@ PANEL: {
 	DrawInitialBeans: {
 
 		ldx #0
+		lda #8
+		sta ZP.Amount
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_PRACTICE
+		bne Loop
+
+		lda #4
+		sta ZP.Amount
 
 		Loop:
 
@@ -88,7 +97,7 @@ PANEL: {
 			ldx ZP.X
 
 			inx
-			cpx #8
+			cpx ZP.Amount
 			bcc Loop
 
 

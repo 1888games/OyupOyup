@@ -46,6 +46,7 @@ ZP: {
 
 	ScoresAddress:		.word $00
 	LookupAddress:		.word $00
+	CurrentSlotID:		.byte $00
 
 	
 

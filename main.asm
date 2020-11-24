@@ -34,26 +34,32 @@ MAIN: {
 	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
 	#import "/scripts/game/scoring.asm"
-	#import "/scripts/game/text.asm"
+
+
 
 
 	* = $a000
 	#import "/scripts/game/opponents.asm"
+	#import "/scripts/game/text.asm"
+	#import "/scripts/game/settings.asm"
 	
 
-	* = $6900
+	* = $6900 "RoundOver"
 
 	#import "/scripts/game/roundOver.asm"
-	#import "/scripts/game/settings.asm"
+
+	
 
 	* = $9d00
+
+
 
 	* = * "Main"
 
 	GameActive: 			.byte 0
 	GameMode:				.byte 0
 	MachineType:			.byte 0
-
+	
 
 
 	//exomizer sfx sys -t 64 -x "inc $d020" -o oyup.prg main.prg

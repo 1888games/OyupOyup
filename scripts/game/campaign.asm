@@ -154,6 +154,14 @@ CAMPAIGN: {
 
 	}
 
+	LevelUp: {
+
+
+
+
+		rts
+	}
+
 
 
 	ArlaSprite: {
@@ -524,7 +532,6 @@ CAMPAIGN: {
 
 	IncreaseLevel: {
 
-
 		inc CurrentLevel
 		lda CurrentLevel
 		cmp #6
@@ -557,6 +564,7 @@ CAMPAIGN: {
 
 		lda #0
 		sta Complete
+		sta Matches
 
 		Finish:
 

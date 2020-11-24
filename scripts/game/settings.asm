@@ -1,6 +1,6 @@
 SETTINGS: {
 
-
+	* = * "Settings"
 
 	DropSpeed:		.byte 1, 1
 	RockLayers:		.byte 0, 0

@@ -615,17 +615,15 @@ ROUND_OVER: {
 		lda #GAME_MODE_SWITCH_CAMPAIGN
 		sta MAIN.GameMode
 
+		lda CAMPAIGN.OpponentID
+		sta CAMPAIGN.LastOpponentID
+
 		lda HitLevelTarget
 		beq NextOpponent
 
 		NextLevel:
 
-			inc CAMPAIGN.CurrentLevel
-			lda #0
-			sta CAMPAIGN.Matches
-
-			lda CAMPAIGN.OpponentID
-			sta CAMPAIGN.LastOpponentID
+			jsr CAMPAIGN.IncreaseLevel
 			jmp Finish
 
 		NextOpponent:
@@ -1263,8 +1261,6 @@ ROUND_OVER: {
 				ldx Winner
 				inc SCORING.Rounds, x
 
-
-
 				jsr CheckWinner
 
 				ldx #4
@@ -1325,6 +1321,10 @@ ROUND_OVER: {
 
 	ShowTwoPlayerScore: {
 
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_2P
+		bne Finish
+
 		lda #11
 		sta ZP.TextRow
 
@@ -1358,6 +1358,8 @@ ROUND_OVER: {
 		ldx #3
 
 		jsr TEXT.DrawTallDigits
+
+		Finish:
 
 
 		rts

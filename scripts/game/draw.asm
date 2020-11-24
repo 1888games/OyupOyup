@@ -425,6 +425,39 @@ DRAW: {
 
 
 
+	GamePlayerName: {
+
+		lda #4
+		sta ZP.TextRow
+
+		lda #15
+		sta ZP.TextColumn
+
+		lda MENU.SelectedOption
+		beq Scenario
+
+		lda SETTINGS.Character
+		jmp Draw
+
+		Scenario:
+
+		lda #48
+
+		Draw:
+
+
+		ldx #WHITE
+		jsr TEXT.Draw
+
+
+		rts
+
+
+
+
+	}
+
+
 	GameOpponentName: {
 
 		// a = textID
@@ -432,6 +465,10 @@ DRAW: {
 		// x = colour
 		// TextColumn
 		// TextRow
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_PRACTICE
+		beq Finish
 
 		lda #4
 		sta ZP.TextRow
@@ -444,6 +481,8 @@ DRAW: {
 		lda CAMPAIGN.OpponentID
 
 		jsr TEXT.Draw
+
+		Finish:
 
 		rts
 	}

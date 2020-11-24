@@ -80,7 +80,7 @@ GRID: {
 	MatchCount:			.byte 0
 	NumberPopped:		.byte 0
 	Combo:				.byte 0, 0
-
+	ErrorCheck:			.byte 0
 
 
 
@@ -133,9 +133,10 @@ GRID: {
 		sta RowsPerFrameUse
 
 		jsr DRAW.GamePlayerSprites
+		jsr DRAW.GamePlayerName
 		jsr DRAW.GameOpponentName
 		jsr DRAW.GameTitle
-		
+
 		
 
 		
@@ -181,7 +182,15 @@ GRID: {
 
 	FrameUpdate: {
 
+		ldy #0
+		lda INPUT.JOY_UP_NOW
+		beq Nope
 
+		lda #1
+		sta ErrorCheck
+
+
+		Nope:
 
 		lda ZP.FrameCounter
 		and #%00001111
@@ -578,9 +587,6 @@ GRID: {
 
 	Scan: {
 
-
-
-
 		lda #0
 		sta QueueLength
 		sta MatchCount
@@ -596,9 +602,21 @@ GRID: {
 		// .break
 		// nop
 
+		lda ErrorCheck
+		beq NoStop
+
+		.break
+		nop
+
+		lda #0
+		sta ErrorCheck
+
+
+		
 
 		NoStop:
-			
+
+
 		lda PlayerLookup, x
 		sta ZP.EndID
 
@@ -608,6 +626,7 @@ GRID: {
 		CellLoop:
 
 			stx ZP.SlotID
+			stx ZP.CurrentSlotID
 
 			CheckWhichCellToLookAt:
 
@@ -620,7 +639,7 @@ GRID: {
 				sty QueueLength
 				lda Queue, y
 				tax
-				sta ZP.SlotID
+				sta ZP.CurrentSlotID
 
 			UseNextCell:
 
@@ -675,7 +694,7 @@ GRID: {
 
 				MatchToRight:
 
-					ldx ZP.SlotID
+					ldx ZP.CurrentSlotID
 					inx
 					lda Checked, x
 					bne CheckLeft
@@ -695,7 +714,7 @@ GRID: {
 
 				MatchToLeft:
 
-					ldx ZP.SlotID
+					ldx ZP.CurrentSlotID
 					dex
 					lda Checked, x
 					bne CheckDown
@@ -715,7 +734,7 @@ GRID: {
 
 				MatchToDown:
 
-					lda ZP.SlotID
+					lda ZP.CurrentSlotID
 					clc
 					adc #6
 					tax
@@ -737,7 +756,7 @@ GRID: {
 
 				MatchToUp:
 
-					lda ZP.SlotID
+					lda ZP.CurrentSlotID
 					sec
 					sbc #6
 					tax
@@ -755,7 +774,7 @@ GRID: {
 
 			EndCellLoop:
 
-				ldx ZP.SlotID
+				ldx ZP.CurrentSlotID
 				lda #1	
 				sta Checked, x
 
@@ -778,9 +797,15 @@ GRID: {
 				sta MatchCount
 
 				ldx ZP.SlotID
+
+				CheckLoop:
+
 				dex
 				cpx ZP.EndID
 				beq CompleteScan
+
+				lda Checked, x
+				bne CheckLoop
 
 				jmp CellLoop
 
@@ -807,7 +832,7 @@ GRID: {
 
 				lda Combo, x
 				sec
-				sbc #1
+				sbc #2
 				bmi NoGarbage2
 
 				jsr ROCKS.CalculateComboRocks
@@ -832,7 +857,11 @@ GRID: {
 				// asl
 				// sta CheckTimer, x
 
-				jsr ROCKS.StartTransfer
+				lda MENU.SelectedOption
+				cmp #PLAY_MODE_PRACTICE
+				beq Finish
+
+						jsr ROCKS.StartTransfer
 
 				jmp Finish
 
