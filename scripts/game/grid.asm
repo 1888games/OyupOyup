@@ -832,7 +832,10 @@ GRID: {
 
 				lda Combo, x
 				sec
-				sbc #2
+				sbc #1
+				sta SCORING.CurrentChain, x
+				sec
+				sbc #1
 				bmi NoGarbage2
 
 				jsr ROCKS.CalculateComboRocks

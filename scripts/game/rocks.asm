@@ -82,7 +82,7 @@ ROCKS: {
 
 	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
 	ChainLookup:	.byte 0, 3, 10, 27, 68, 90		// 1 - 6
-	ComboLookup:	.byte 0, 5, 14, 32, 69, 90		// 1 - 6
+	ComboLookup:	.byte 5, 14, 26, 41, 59 		// 1 - 6
 
 
 	BaseScore:		.byte 5, 18, 28, 40, 54, 70, 88, 108, 130   //4-12
@@ -950,10 +950,6 @@ ROCKS: {
 	}
 
 	CalculateComboRocks: {
-
-		sta SCORING.CurrentChain, x
-
-		beq Finish
 
 		pha
 

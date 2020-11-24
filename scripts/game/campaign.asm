@@ -42,8 +42,8 @@ CAMPAIGN: {
 
 	Colours:	.byte RED, GREEN, YELLOW, BLUE, PURPLE, CYAN	
 
-	NextLevel:	.byte $00, $15, $01
-	Remaining:	.byte $00, $15, $01
+	NextLevel:	.byte $00, $50, $01
+	Remaining:	.byte $00, $50, $01
 
 
 	OpponentID:		.byte 0
