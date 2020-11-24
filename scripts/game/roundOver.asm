@@ -1109,7 +1109,7 @@ ROUND_OVER: {
 			sta SCORING.PlayerTwo + 2
 			cld
 
-
+			jsr ClearScorePanel
 			jsr SCORING.DrawPlayerTwo
 
 
@@ -1147,7 +1147,8 @@ ROUND_OVER: {
 			adc Bonus + 2
 			sta SCORING.PlayerOne + 2
 			cld
-
+			
+			jsr ClearScorePanel
 			jsr SCORING.DrawPlayerOne
 
 			rts

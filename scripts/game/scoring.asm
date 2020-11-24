@@ -152,10 +152,6 @@ SCORING: {
 
 	DrawPlayerOne: {
 
-		ldx #0
-
-		jsr ClearScorePanel
-
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
 	
@@ -210,10 +206,6 @@ SCORING: {
 
 
 	DrawPlayerTwo: {
-
-		ldx#0
-
-		jsr ClearScorePanel
 
 		ldy #5	// screen offset, right most digit
 		ldx #ZERO	// score byte index
