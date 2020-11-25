@@ -29,7 +29,7 @@ MENU: {
 
 	SelectionColumns:	.byte 13, 25
 	OptionCharType:	.byte 0, 0
-
+	Active:		.byte 0
 
 
 
@@ -65,6 +65,9 @@ MENU: {
 		jsr SetupSprites
 
 		jsr DrawSelection
+
+		lda #1
+		sta Active
 
 		
 		jmp MenuLoop

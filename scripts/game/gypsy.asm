@@ -7,16 +7,31 @@ GYPSY: {
 	.label RightArm = 75
 	.label LeftLeg = 83
 	.label RightLeft = 87
-	.label FrameTime = 7
+	.label FrameTime = 5
 	.label BallPointer = 91
+	.label ControlCooldown = 10
+	.label NumberStart = 35
+
+
+
+	.label GAME_STATUS_MENU = 0
+	.label GAME_STATUS_PLAY = 1
+	.label GAME_STATUS_DEAD = 2
+
 
 	.label PosY = 219
 
 	PosX_LSB: .byte 150
-	PosX_MSB: .byte 0
+	PosX_MSB: .byte 0	
+
+
+	LivesLeft:	.byte 3, 3, 3, 3
+	NumPlayers:	.byte 1
+	CurrentPlayer:	.byte 0
 
 
 	Lag:	.byte 0
+	BirdPointers:	.byte 92, 95
 
 
 	YOffsets:		.byte -6, -6, 15, 15
@@ -25,8 +40,10 @@ GYPSY: {
 	XOffsets:		.byte -20, 4, -20, 4
 
 	LegCounter:		.byte FrameTime
+	ArmCounter:		.byte 255, 255
 
 	FrameOrder:		.byte 0, 1, 2, 3, 2, 1
+	Cooldown:		.byte 0
 
 
 	Ball_X_LSB:			.byte 150, 190, 255, 220
@@ -41,17 +58,40 @@ GYPSY: {
 	Ball_Status:		.byte 0, 0, 0, 0
 	Ball_Falling:		.byte 1, 1, 1, 1
 	Ball_GoingRight:	.byte 0, 0, 0, 0
+	GameStatus:			.byte 0
 
+	ArmFrameOrder:		.byte 0, 2, 3, 2, 1
+
+
+	ScoreX:		.byte 9, 9, 26, 26
+	ScoreY:		.byte 3, 4, 3, 4
+
+	BirdX:		.byte 160
+	BirdDirection:	.byte 0
+	BirdFrame:	.byte 0
+	BirdTimer:	.byte 0
+	
+
+	ScoreAddresses:	.word SCREEN_RAM + 129, SCREEN_RAM + 169, SCREEN_RAM + 146, SCREEN_RAM + 186, SCREEN_RAM + 635
+	ColourAddresses:	.word COLOR_RAM + 129, COLOR_RAM + 169, COLOR_RAM + 146, COLOR_RAM + 186, COLOR_RAM + 635
+
+	ScoreOn:	.byte 1
+	FlashTimer:	.byte 0
+
+
+
+	.label FlashTime = 12
 	.label MaxYSpeed = 2
 	.label MaxYSpeed_SUB = 150
 
 
+	.label BirdY = 234
 	.label MinX = 46
 	.label MaxX = 251
-	.label MinBallX = 34
-	.label MaxBallX = 251
+	.label MinBallX = 13
+	.label MaxBallX = 249
 	.label MaxPlayerSpeed = 4
-	.label SpeedChangeTime = 4
+	.label SpeedChangeTime = 7
 	.label SpeedReduceTime = 2
 	.label MaxLeftSpeed = 251
 	.label MaxRightSpeed = 5
@@ -66,6 +106,7 @@ GYPSY: {
 	.label StartX_SUB = 50
 	.label MaxBallHeadDistance = 5
 	.label MaxFlickDistance = 18
+	.label Lives = 3
 
 	PlayerSpeed:		.byte 0
 	PlayerDirection:	.byte 0
@@ -77,12 +118,13 @@ GYPSY: {
 
 
 
-	FeedXPositions:		.byte 140, 142, 158, 160
+	FeedXPositions:		.byte 123, 125, 141, 143
 	FeedYPositions:		.byte 98, 100, 100, 98
 	StartStatus:		.byte 1, 2, 1, 2
 	StartRight:			.byte 1, 1, 0, 0
 
 	BallsInPlay:		.byte 0	
+	Credits:			.byte 0
 
 						//    0    1   2     3    4    5    6    7    8    9    10    11
 	Distance_To_X:		.fillword MaxBallHeadDistance, (i * 10) + 20
@@ -107,11 +149,28 @@ GYPSY: {
 		jsr SetupGameColours
 		jsr DRAW.GypsyScreen
 		jsr ColourText
-		jsr SetupSprites
+		//jsr SetupSprites
+
+
+		lda #GAME_STATUS_MENU
+		sta GameStatus
+
+		lda #Lives
+		sta LivesLeft
+		sta LivesLeft + 1
+		sta LivesLeft + 2
+		sta LivesLeft + 3
+
+		lda #1
+		sta Credits
+
+		jsr DrawCredits
 
 		jmp Loop
 
 	}
+
+
 
 
 
@@ -168,7 +227,7 @@ GYPSY: {
 
 		lda Ball_X_LSB, x
 		clc
-		adc #17
+		adc #18
 		bcc NoWrap
 
 		lda #255
@@ -196,6 +255,9 @@ GYPSY: {
 			lda #0
 			sta Ball_GoingRight, x
 
+			lda #FrameTime
+			sta ArmCounter + 1
+
 			pla
 
 			jmp Hit
@@ -215,6 +277,9 @@ GYPSY: {
 
 			lda #1
 			sta Ball_GoingRight, x
+
+			lda #FrameTime
+			sta ArmCounter
 
 			pla
 
@@ -242,7 +307,7 @@ GYPSY: {
 
 		lda Ball_X_LSB, x
 		clc
-		adc #17
+		adc #18
 		bcc NoWrap
 
 		lda #255
@@ -250,10 +315,9 @@ GYPSY: {
 		NoWrap:
 
 		sta ZP.Amount
-		ldx PosX_LSB
-	
-		.break
 
+		ldy PosX_LSB
+	
 		cmp PosX_LSB
 		bcc BallLeft
 
@@ -269,6 +333,7 @@ GYPSY: {
 
 		lda #0
 		sta Ball_GoingRight, x
+		sta Frames + 1
 
 		pla
 
@@ -288,6 +353,9 @@ GYPSY: {
 		lda #1
 		sta Ball_GoingRight, x
 
+		lda #0
+		sta Frames
+
 		pla
 
 		Hit:
@@ -303,6 +371,11 @@ GYPSY: {
 
 	HeadBall: {
 
+		asl
+		tay
+		lda Distance_To_X, y
+		sta Ball_X_Speed_SUB, x
+
 		lda #1
 		sta Ball_Y_Speed, x
 
@@ -311,9 +384,6 @@ GYPSY: {
 
 		lda #0
 		sta Ball_Falling, x
-
-		lda #60
-		sta Ball_X_Speed_SUB, x
 
 		lda #0
 		sta Ball_X_Speed, x
@@ -343,7 +413,73 @@ GYPSY: {
 		lda #0
 		sta Ball_Falling, x
 
+
+
 		Finish:
+
+
+		rts
+	}
+
+
+
+	SetupBird: {
+
+
+		lda #BirdY
+		sta VIC.SPRITE_7_Y
+
+		lda Ball_X_LSB, x
+		sta VIC.SPRITE_7_X
+
+		cmp #150
+		bcc GoLeft
+
+		GoRight:
+
+		lda #1
+		sta BirdDirection
+
+		GoLeft:
+
+		lda #0
+		sta BirdDirection
+
+		Pointer:
+
+
+		ldx BirdDirection
+		lda BirdPointers, x
+		sta SPRITE_POINTERS + 7
+
+		lda #0
+		sta BirdFrame
+
+		lda #FrameTime
+		sta BirdTimer
+
+		rts
+	}
+
+
+	BallLanded: {
+
+		lda #GAME_STATUS_DEAD
+		sta GameStatus
+
+		jsr SetupBird
+
+		lda #0
+		sta FlashTimer
+
+		lda #1
+		sta ScoreOn
+
+		jsr FlashScore
+
+
+
+
 
 
 		rts
@@ -384,40 +520,46 @@ GYPSY: {
 			Okay:
 
 
-			lda Ball_Y_SUB, x
-			clc
-			adc Ball_Y_Speed_SUB, x
-			sta Ball_Y_SUB, x
+				lda Ball_Y_SUB, x
+				clc
+				adc Ball_Y_Speed_SUB, x
+				sta Ball_Y_SUB, x
 
-			lda Ball_Y, x
-			adc #0
-			clc
-			adc Ball_Y_Speed, x
-			sta Ball_Y, x
+				lda Ball_Y, x
+				adc #0
+				clc
+				adc Ball_Y_Speed, x
+				sta Ball_Y, x
 
-			cmp #213
-			bcc NoHeader
+				cmp #213
+				bcc NoHeader
 
-			cmp #220
-			bcs NoHeader
+				cmp #220
+				bcs NoHeader
 
-			jsr CheckHeader
+				jsr CheckHeader
+				jmp Finish
 
 			NoHeader:
 
-			cmp #226
-			bcc NoBounce	
+				cmp #223
+				bcc NoBounce	
 
-			cmp #236
-			bcs NoBounce
+				cmp #231
+				bcs NoBounce
 
 			Bounce:
 
 			jsr CheckFlick
+			jmp Finish
 
 			NoBounce:
+				
+				cmp #240
+				bcc Finish
 
-			jmp Finish
+				jsr BallLanded
+				jmp Finish
 
 
 		Rising:
@@ -444,16 +586,16 @@ GYPSY: {
 
 			NotFalling:
 
-			lda Ball_Y_SUB, x
-			sec
-			sbc Ball_Y_Speed_SUB, x
-			sta Ball_Y_SUB, x
+				lda Ball_Y_SUB, x
+				sec
+				sbc Ball_Y_Speed_SUB, x
+				sta Ball_Y_SUB, x
 
-			lda Ball_Y, x
-			sbc #0
-			sec
-			sbc Ball_Y_Speed, x
-			sta Ball_Y, x
+				lda Ball_Y, x
+				sbc #0
+				sec
+				sbc Ball_Y_Speed, x
+				sta Ball_Y, x
 
 
 		Finish:
@@ -484,17 +626,17 @@ GYPSY: {
 			sta Ball_X_LSB, x
 
 
-			cmp #MaxX
+			cmp #MaxBallX
 			bcc NoBounce	
 
 			Bounce:
 
-			lda #0
-			sta Ball_GoingRight, x
+				lda #0
+				sta Ball_GoingRight, x
 
 			NoBounce:
 
-			jmp Finish
+				jmp Finish
 
 
 		Left:
@@ -511,7 +653,7 @@ GYPSY: {
 			sbc Ball_X_Speed, x
 			sta Ball_X_LSB, x
 
-			cmp #MinX
+			cmp #MinBallX
 			bcs Finish
 
 			lda #1
@@ -766,27 +908,21 @@ GYPSY: {
 		rts
 	}
 
-	RandomBallPos: {
 
-
-
-
-
-
-
-
-		rts
-	}
 
 	ColourText: {
 
-		lda #LIGHT_BLUE
+		
 		ldx #0
 
 		Loop:
-		
+			lda #LIGHT_BLUE
 			sta COLOR_RAM + 120, x
 			sta COLOR_RAM + 160, x
+
+			lda #GREEN
+			sta COLOR_RAM + 40, x
+			sta COLOR_RAM + 80, x
 
 			inx
 			cpx #32
@@ -806,6 +942,11 @@ GYPSY: {
 			sta COLOR_RAM + 392, x
 			sta COLOR_RAM + 432, x
 			sta COLOR_RAM + 472, x
+
+			lda #GREEN
+			sta COLOR_RAM + 552, x
+			sta COLOR_RAM + 592, x
+			sta COLOR_RAM + 632, x
 
 
 			lda #YELLOW
@@ -878,7 +1019,14 @@ GYPSY: {
 		sta SPRITE_POINTERS + 6
 
 
+		lda BirdPointers
+		sta SPRITE_POINTERS + 7
 
+		lda #0
+		sta VIC.SPRITE_7_Y
+
+		lda BirdX
+		sta VIC.SPRITE_7_X
 
 		jsr PositionHead
 		jsr PositionBody
@@ -1005,32 +1153,46 @@ GYPSY: {
 
 			stx ZP.X
 
-			lda Frames, x
-			tax
-			lda FrameOrder, x
+			cmp #2
+			bcc Arms
 
-			ldx ZP.X
-			clc
-			adc StartPointer, x
-			sta SPRITE_POINTERS + 1, x
+			Legs:
 
-			lda #PosY
-			clc
-			adc YOffsets, x
-			sta VIC.SPRITE_1_Y, y
+				lda Frames, x
+				tax
+				lda FrameOrder, x
+				jmp SetPointer
+
+			Arms:
+
+				lda Frames, x
+				tax
+				lda ArmFrameOrder, x
+
+			SetPointer:
+
+				ldx ZP.X
+				clc
+				adc StartPointer, x
+				sta SPRITE_POINTERS + 1, x
+
+				lda #PosY
+				clc
+				adc YOffsets, x
+				sta VIC.SPRITE_1_Y, y
 
 
-			lda PosX_LSB
-			clc
-			adc XOffsets, x
-			sec
-			sbc Lag
-			sta VIC.SPRITE_1_X, y
+				lda PosX_LSB
+				clc
+				adc XOffsets, x
+				sec
+				sbc Lag
+				sta VIC.SPRITE_1_X, y
 
-			inx
-			iny
-			iny
-			cpx #4
+				inx
+				iny
+				iny
+				cpx #4
 			bcc Loop
 
 		rts
@@ -1051,18 +1213,354 @@ GYPSY: {
 
 
 
+	UpdateArms: {
+
+
+		ldx #0
+
+		Loop:
+
+			lda ArmCounter, x
+			bmi EndLoop
+
+			beq Ready
+
+			dec ArmCounter, x
+			jmp EndLoop
+
+			Ready:
+
+			lda #FrameTime
+			sta ArmCounter, x
+
+			inc Frames, x
+			lda Frames, x
+			cmp #5
+			bcc EndLoop
+
+			lda #0
+			sta Frames, x
+
+			lda #255
+			sta ArmCounter, x
+
+			EndLoop:
+
+			inx
+			cpx #2
+			bcc Loop
+
+
+
+
+
+		rts
+	}	
+
+
+	DrawCredits: {
+
+		clc
+		adc #NumberStart
+		sta SCREEN_RAM + 54
+
+		lda #GREEN
+		sta COLOR_RAM + 54
+
+
+		rts
+	}
+
+
+
+	Menu: {
+
+		lda Cooldown
+		beq Ready
+
+		dec Cooldown
+		rts
+
+		Ready:
+
+		ldy #1
+		lda INPUT.JOY_UP_NOW, y
+		beq CheckStart
+
+		Up:
+
+			lda #ControlCooldown
+			sta Cooldown
+
+			inc Credits
+			lda Credits
+			cmp #10
+			bcc Okay
+
+			lda #9
+			sta Credits
+
+			Okay:
+
+			jsr DrawCredits
+
+		CheckStart:
+
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+		Fire:
+
+			lda #GAME_STATUS_PLAY
+			sta GameStatus
+
+			lda Credits
+			cmp #4
+			bcc UseAllCredits	
+
+			UseSomeCredits:
+
+				lda #4
+				sta NumPlayers
+
+				lda Credits
+				sec
+				sbc #4
+				sta Credits
+				jmp Start
+
+			UseAllCredits:
+
+				sta NumPlayers
+
+				lda #0
+				sta Credits
+
+			Start:
+
+				lda #0
+				sta CurrentPlayer
+		
+				jsr DrawCredits
+				jsr SetupSprites
+				jsr ClearArea
+
+
+		Finish:
+
+
+		rts
+	}	
+
+
+	GetScoreAddress: {
+
+		lda CurrentPlayer
+		asl
+		tax
+		lda ScoreAddresses, x
+		sta ZP.ScoresAddress
+
+		lda ScoreAddresses + 1, x
+		sta ZP.ScoresAddress + 1
+
+
+		rts
+	}
+
+	GetColourAddress: {
+
+
+		lda CurrentPlayer
+		asl
+		tax
+		lda ColourAddresses, x
+		sta ZP.ColourAddress
+
+		lda ColourAddresses + 1, x
+		sta ZP.ColourAddress + 1
+
+		rts
+
+
+
+	}
+
+
+	FlashScore: {
+
+		lda FlashTimer
+		beq Ready
+
+		dec FlashTimer
+		rts
+
+		Ready:
+
+		lda #FlashTime
+		sta FlashTimer
+	
+		jsr GetColourAddress
+
+		lda ScoreOn
+		beq TurnOn
+
+		TurnOff:
+
+			dec ScoreOn
+			lda #BLACK
+			jmp Draw
+
+
+		TurnOn:	
+
+			inc ScoreOn
+			lda #LIGHT_BLUE
+	
+		Draw:
+
+		ldy #0
+
+		Loop:
+
+			sta (ZP.ColourAddress), y
+
+			iny
+			cpy #6
+			bcc Loop
+
+
+		rts
+	}
+
+
+	Dead: {
+
+
+		MoveBird:
+
+		lda BirdDirection
+		beq GoingLeft
+
+		GoingRight:
+
+		lda BirdX
+		clc
+		adc #2
+		sta BirdX
+		jmp CheckFrame
+
+		GoingLeft:
+
+
+		lda BirdX
+		sec
+		sbc #2
+		sta BirdX
+
+		CheckFrame:
+
+		lda BirdTmer
+		beq Ready
+
+		dec BirdTimer
+		jmp CheckFire
+
+		Ready:
+
+		lda #FrameTime
+		sta BirdTimer
+
+		inc BirdFrame
+		lda BirdFrame
+		cmp #3
+		bcc Okay
+
+		lda #0
+		sta BirdFrame
+
+		Okay:
+
+		ldx BirdDirection
+		lda BirdPointers, x
+		clc
+		adc BirdFrame
+		sta SPRITE_POINTERS + 7
+
+		CheckFire:
+
+		rts
+	}
 
 	FrameCode: {
 
-		jsr Control
-		jsr UpdateLegs
-		jsr PositionHead
-		jsr PositionBody
+		lda GameStatus
+		cmp #GAME_STATUS_PLAY
+		bne NoPlay
 
-		jsr UpdateBalls
-		jsr PositionBalls
+		Play:
+
+			jsr Control
+			jsr UpdateLegs
+			jsr UpdateArms
+			jsr PositionHead
+			jsr PositionBody
+			jsr UpdateBalls
+			jsr PositionBalls
+			jsr FlashScore
+
+
+			jmp Loop
+
+
+		NoPlay:
+
+			cmp #GAME_STATUS_MENU
+			bne NotMenu	
+
+			jsr Menu
+			jmp Loop
+
+		NotMenu:
+
+			cmp #GAME_STATUS_DEAD
+			bne NotDead
+
+			jsr Dead
+			jmp Loop
+
+		NotDead:
+
+
 
 		jmp Loop
+	}	
+
+
+	ClearArea: {
+
+		ldx #0
+		lda #0
+
+		Loop:
+
+			sta SCREEN_RAM + 401, x
+			sta SCREEN_RAM + 521, x
+			sta SCREEN_RAM + 761, x
+
+			inx
+			cpx #30
+			bcc Loop
+		
+	
+
+		rts
+
+
+
+
 	}
 
 
