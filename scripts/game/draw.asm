@@ -725,6 +725,49 @@ DRAW: {
 	}
 
 
+
+	GypsyScreen: {
+
+		ldx #0
+		
+		Loop:
+
+			lda GYPSY_MAP + 0, x
+			sta SCREEN_RAM + 0, x
+
+			tay
+			lda GYPSY_COLORS, y
+			sta COLOR_RAM + 0, x
+
+			lda GYPSY_MAP  + 250, x
+			sta SCREEN_RAM + 250, x
+
+			tay
+			lda GYPSY_COLORS, y
+			sta COLOR_RAM + 250, x
+
+			lda GYPSY_MAP + 500, x
+			sta SCREEN_RAM + 500, x
+
+			tay
+			lda GYPSY_COLORS, y
+			sta COLOR_RAM + 500, x
+
+			lda GYPSY_MAP + 750, x
+			sta SCREEN_RAM + 750, x
+
+			tay
+			lda GYPSY_COLORS, y
+			sta COLOR_RAM + 750, x
+
+			inx
+			bne Loop
+
+
+		rts
+
+	}
+
 	MenuScreen: {
 
 		ldx #0

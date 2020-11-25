@@ -2,6 +2,9 @@
 * = $c400 "Sprites" //Start at frame #16
  	.import binary "../../assets/puyo - Sprites.bin"
 
+* = * "Gyspy Sprites"
+.import binary "../../assets/gyps - Sprites.bin"
+
  // * = $8000 "Game Map"
  //MAP: .import binary "../assets/blank - Map (20x13).bin"
 
@@ -45,6 +48,14 @@ TITLE_1P:	.import binary "../../assets/puyo - MapArea (8bpc, 10x2)_1P.bin"
 TITLE_2P:	.import binary "../../assets/puyo - MapArea (8bpc, 10x2)_2P.bin"
 TITLE_PR:	.import binary "../../assets/puyo - MapArea (8bpc, 10x2_PR).bin"
 
+
+* = $f800 "Gypsy Charset"
+
+GYPSY_CHARS:	.import binary "../../assets/gypsy - Chars.bin"
+
+* = $b000 "Gypsy Data"
+GYPSY_COLORS:	.import binary "../../assets/gypsy - CharAttribs.bin"
+GYPSY_MAP:		.import binary "../../assets/gypsy - Map (40x25).bin"
 		
 		
 * = $f000 "Charset"

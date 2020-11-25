@@ -60,7 +60,6 @@ PLAYER: {
 	CurrentRotation:	.byte 0, 0
 
 
-
 	Reset: {
 
 

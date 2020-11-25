@@ -48,6 +48,7 @@ MAIN: {
 
 	#import "/scripts/game/roundOver.asm"
 
+	#import "/scripts/game/gypsy.asm"
 	
 
 	* = $9d00
@@ -72,6 +73,7 @@ MAIN: {
 		jsr DetectMachine
 			
 
+		jmp GYPSY.Show
 
 		jmp TITLE.Show
 		// jmp SETTINGS.Show	
@@ -324,6 +326,7 @@ MAIN: {
 	}
 
 	#import "/scripts/game/assets.asm"
+
 
 
 

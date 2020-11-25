@@ -210,29 +210,49 @@ StopChannel0: {
 
 channels:	.byte 2, 0, 1, 1, 0, 0, 0, 0, 0, 0
 
-sfx_land:
-.import binary "../../Assets/sfx/low_noise_hit.sfx"
 
-sfx_bloop:
-.import binary "../../Assets/sfx/click_bloop.sfx"
-
-
-whoosh:
-.import binary "../../Assets/sfx/toggle.sfx"
-
-
-blip:
-.import binary "../../Assets/sfx/short_low_blip.sfx"
-
-
-hiss:
-.import binary "../../Assets/sfx/bear.snd"
+S0: .import binary "../../Assets/sfx/bear.snd"
+S2: .import binary "../../Assets/sfx/bonus.snd" 
+S3: .import binary "../../Assets/sfx/click_bloop.sfx"
+S4: .import binary "../../Assets/sfx/die_bleep.sfx" 
+S5: .import binary "../../Assets/sfx/double_high_tink.sfx"  
+S6: .import binary "../../Assets/sfx/eating.snd"  // clear
+S7: .import binary "../../Assets/sfx/error_dee_doo.sfx"  
+S8: .import binary "../../Assets/sfx/error_down_melodic.sfx"
+S9: .import binary "../../Assets/sfx/error.sfx"
+S10: .import binary "../../Assets/sfx/gun_shot_with_bass.sfx"   // land
+S11: .import binary "../../Assets/sfx/gun_shot.sfx"
+S12: .import binary "../../Assets/sfx/hammer_hit.sfx"  // land bass
+S13: .import binary "../../Assets/sfx/high_blip.sfx"  
+S14: .import binary "../../Assets/sfx/hit_hiss.sfx"
+S15: .import binary "../../Assets/sfx/igloo.snd" 
+S16: .import binary "../../Assets/sfx/jump.snd"
+S17: .import binary "../../Assets/sfx/landing.snd"
+S18: .import binary "../../Assets/sfx/long_click_flute.sfx"
+S19: .import binary "../../Assets/sfx/low_bang_up.sfx"   
+S20: .import binary "../../Assets/sfx/low_noise_hit.sfx"  //bassy
+S21: .import binary "../../Assets/sfx/low_to_high_bounce.sfx"
+S22: .import binary "../../Assets/sfx/noise_medium.sfx"
+S23: .import binary "../../Assets/sfx/noise_thud_high.sfx"  
+S24: .import binary "../../Assets/sfx/select_long.sfx" 
+S25: .import binary "../../Assets/sfx/select_low_high.sfx" 
+S26: .import binary "../../Assets/sfx/short_low_blip.sfx"
+S27: .import binary "../../Assets/sfx/short_med_alert.sfx"  
+S28: .import binary "../../Assets/sfx/soft_thud_step.sfx" 
+S29: .import binary "../../Assets/sfx/splash.snd"
+S30: .import binary "../../Assets/sfx/spring.sfx"
+S31: .import binary "../../Assets/sfx/toggle.sfx"
+S32: .import binary "../../Assets/sfx/very_low_jump.sfx"
+S33: .import binary "../../Assets/sfx/whoosh.sfx"
 
 
 wavetable_l:
-.byte  <whoosh, <sfx_land, <sfx_bloop, <blip, <hiss
+.byte  <S0, <S2, <S3, <S4, <S5, <S6, <S7, <S8, <S9, <S10, <S11, <S12, <S13, <S14, <S15, <S16, <S17, <S18, <S19, <S20, <S21, <S22, <S23, <S24, <S25, <S26, <S27, <S28, <S29, <S30, <S31, <S32, <S33
+
+
 wavetable_h:
-.byte  >whoosh, >sfx_land, >sfx_bloop, >blip, >hiss
+.byte  >S0, >S2, >S3, >S4, >S5, >S6, >S7, >S8, >S9, >S10, >S11, >S12, >S13, >S14, >S15, >S16, >S17, >S18, >S19, >S20, >S21, >S22, >S23, >S24, >S25, >S26, >S27, >S28, >S29, >S30, >S31, >S32, >S33
+
 
 
 

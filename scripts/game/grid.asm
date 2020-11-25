@@ -18,6 +18,7 @@ GRID: {
 	.label BeanLandedType = BeanFallingType - 1
 	.label BeanPoppedType = 25
 	.label LastPoppedFrame = 23
+	
 
 
 

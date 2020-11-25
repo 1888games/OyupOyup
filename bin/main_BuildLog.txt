@@ -13,24 +13,24 @@ Default-segment:
   $0801-$080d Basic
   $080d-$080c End Of Basic
   $080e-$080d Basic End
-  $080e-$0935 -Macros
-  $0936-$0ab8 IRQ
-  $0ab9-$0e4f Draw
-  $0e50-$0f19 -Input
-  $0f1a-$1039 Grid Data
-  $103a-$15cd CurrentType
-  $15ce-$1c7f Grid
-  $1c80-$1cda -Random
-  $1cdb-$1e22 Explosions
-  $1e23-$1e2f Rocks
-  $1e30-$24db Queue
-  $24dc-$252b Panel
-  $252c-$27b7 Queue Data
-  $27b8-$2e5f Player
-  $2e60-$34c2 Title
-  $34c3-$37f0 Menu
-  $37f1-$3a07 Grid Visuals
-  $3a08-$3d4a Scoring
+  $080e-$092e -Macros
+  $092f-$0ab1 IRQ
+  $0ab2-$0e82 Draw
+  $0e83-$0f4c -Input
+  $0f4d-$106c Grid Data
+  $106d-$1600 CurrentType
+  $1601-$1cb2 Grid
+  $1cb3-$1d0d -Random
+  $1d0e-$1e55 Explosions
+  $1e56-$1e62 Rocks
+  $1e63-$250e Queue
+  $250f-$255e Panel
+  $255f-$27ea Queue Data
+  $27eb-$2e92 Player
+  $2e93-$34f5 Title
+  $34f6-$3823 Menu
+  $3824-$3a3a Grid Visuals
+  $3a3b-$3d7d Scoring
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -47,7 +47,7 @@ Default-segment:
   $8aa0-$8f5b Win
   $9000-$9c63 sid
   $9d00-$9cff Unnamed
-  $9d00-$9e2b Main
+  $9d00-$9e2e Main
   $a000-$9fff Unnamed
   $a000-$a0b3 Opponent Data
   $a0b4-$a0fd AI
@@ -57,7 +57,11 @@ Default-segment:
   $a16a-$a3dd Lookups
   $a3de-$a612 Text
   $a613-$a968 Settings
+  $b000-$b414 Gypsy Data
   $c400-$d27f Sprites
+  $d280-$d7bf Gyspy Sprites
+  $e000-$e4f7 Gypsy Code
   $f000-$f7ff Charset
+  $f800-$f967 Gypsy Charset
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs
