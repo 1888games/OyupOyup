@@ -8,7 +8,7 @@
  // * = $8000 "Game Map"
  //MAP: .import binary "../assets/blank - Map (20x13).bin"
 
- * = $7a00 "Assets"
+ * = $7600 "Assets"
 
  * = * "Game Colours"
 CHAR_COLORS: .import binary "../../assets/puyo - CharAttribs.bin"
@@ -28,6 +28,10 @@ MENU_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [2,0].bin"
 
  * = * "Settings Map"
 SETTINGS_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [3,0].bin"
+
+ * = * "Instructions Map"
+INSTRUCTIONS_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [5,0].bin"
+
 
  * = * "Win"
 WIN_LEFT: .import binary "../../assets/puyo - MapArea (8bpc, 12x24).bin"
@@ -62,6 +66,7 @@ GYPSY_MAP:		.import binary "../../assets/gypsy - Map (40x25).bin"
 CHAR_SET:
 		.import binary "../../assets/puyo - Chars.bin"   //roll 12!
 
+* = $ffff "End Of Memory"
 
 
 .pc = sid.location "sid"
@@ -79,5 +84,11 @@ CHAR_SET:
 * = $6400 "Bitmap Color Data"
 
 
+
+
 BitmapColor:
+
+* = $C000 "Screen Ram"
+
+.fill 1000, 0 
 

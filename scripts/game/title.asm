@@ -26,6 +26,7 @@ TITLE: {
 		jsr CopyColourRAM
 		jsr SetupSprites
 
+
 		lda #DARK_GRAY
 		sta VIC.BORDER_COLOUR
 

@@ -539,6 +539,7 @@ CAMPAIGN: {
 
 		lda #1
 		sta Complete
+		sta MENU.Unlocked
 		dec CurrentLevel
 
 		jmp Finish

@@ -17,6 +17,7 @@ GYPSY: {
 	.label GAME_STATUS_MENU = 0
 	.label GAME_STATUS_PLAY = 1
 	.label GAME_STATUS_DEAD = 2
+	.label GAME_STATUS_NEXT = 3
 
 
 	.label PosY = 219
@@ -97,7 +98,7 @@ GYPSY: {
 	.label MaxRightSpeed = 5
 	.label MaxFallingSpeed = 4
 
-	.label GravityForce = 8
+	.label GravityForce = 10
 
 	.label BALL_STATUS_DEAD= 0
 	.label BALL_STATUS_OFF_SCREEN = 1
@@ -127,8 +128,8 @@ GYPSY: {
 	Credits:			.byte 0
 
 						//    0    1   2     3    4    5    6    7    8    9    10    11
-	Distance_To_X:		.fillword MaxBallHeadDistance, (i * 10) + 20
-						.fillword MaxFlickDistance - MaxBallHeadDistance, (i * 9) + 10
+	Distance_To_X:		.fillword MaxBallHeadDistance, (i * 10) + 10
+						.fillword MaxFlickDistance - MaxBallHeadDistance, (i * 8) + 5
 
 	//Distance_To_X:		.byte 000, 000, 000, 000, 000, 000, 000, 000, 000, 000
 
@@ -140,10 +141,22 @@ GYPSY: {
 
 			//Set VIC BANK 3, last two bits = 00
 
+		lda #3
+		jsr sid.init
 
 		lda #0
 		sta IRQ.Mode
 		sta PlayerSpeed
+		sta CurrentPlayer
+
+		sta VIC.SPRITE_0_Y
+		sta VIC.SPRITE_1_Y
+		sta VIC.SPRITE_2_Y
+		sta VIC.SPRITE_3_Y
+		sta VIC.SPRITE_4_Y
+		sta VIC.SPRITE_5_Y
+		sta VIC.SPRITE_6_Y
+		sta VIC.SPRITE_7_Y
 	
 		jsr SetupVIC
 		jsr SetupGameColours
@@ -164,6 +177,7 @@ GYPSY: {
 		lda #1
 		sta Credits
 
+		jsr DrawLives
 		jsr DrawCredits
 
 		jmp Loop
@@ -183,6 +197,30 @@ GYPSY: {
 		cpx #4
 		beq Finish
 
+		cpx #1
+		bcc MakeOne
+
+		dex
+		lda Ball_Status, x
+		inx
+
+		cmp #1
+		beq MakeTwo
+
+		MakeOne:
+
+		lda #1
+		sta Ball_Status, x
+		jmp Rest
+
+		MakeTwo:
+
+		lda #2
+		sta Ball_Status, x
+
+		Rest:
+
+
 		lda FeedXPositions, x
 		sta Ball_X_LSB, x
 
@@ -192,8 +230,7 @@ GYPSY: {
 		lda #1
 		sta Ball_Falling, x
 	
-		lda StartStatus, x
-		sta Ball_Status, x
+	
 
 		lda StartRight, x
 		sta Ball_GoingRight, x
@@ -207,8 +244,6 @@ GYPSY: {
 
 		lda #StartX_SUB
 		sta Ball_X_Speed_SUB, x
-
-
 
 
 		inc BallsInPlay
@@ -388,6 +423,10 @@ GYPSY: {
 		lda #0
 		sta Ball_X_Speed, x
 
+
+		ldx #0
+		sfxFromX()
+
 	
 
 		rts
@@ -407,13 +446,14 @@ GYPSY: {
 		lda #2
 		sta Ball_Y_Speed, x
 
-		lda #160
+		lda #210
 		sta Ball_Y_Speed_SUB, x
 
 		lda #0
 		sta Ball_Falling, x
 
-
+		ldx #3
+		sfxFromX()
 
 		Finish:
 
@@ -425,38 +465,50 @@ GYPSY: {
 
 	SetupBird: {
 
-
 		lda #BirdY
 		sta VIC.SPRITE_7_Y
-
-		lda Ball_X_LSB, x
-		sta VIC.SPRITE_7_X
 
 		cmp #150
 		bcc GoLeft
 
 		GoRight:
 
-		lda #1
-		sta BirdDirection
+			lda #0
+			sta BirdDirection
+
+			lda Ball_X_LSB, x
+			clc
+			adc #6
+			sta VIC.SPRITE_7_X
+			sta BirdX
+			jmp Pointer
 
 		GoLeft:
 
-		lda #0
-		sta BirdDirection
+			lda #1
+			sta BirdDirection
+
+			lda Ball_X_LSB, x
+			sec
+			sbc #4
+			sta VIC.SPRITE_7_X
+			sta BirdX
 
 		Pointer:
 
 
-		ldx BirdDirection
-		lda BirdPointers, x
-		sta SPRITE_POINTERS + 7
+			ldx BirdDirection
+			lda BirdPointers, x
+			sta SPRITE_POINTERS + 7
 
-		lda #0
-		sta BirdFrame
+			lda #YELLOW
+			sta VIC.SPRITE_COLOR_7
 
-		lda #FrameTime
-		sta BirdTimer
+			lda #0
+			sta BirdFrame
+
+			lda #FrameTime
+			sta BirdTimer
 
 		rts
 	}
@@ -467,19 +519,25 @@ GYPSY: {
 		lda #GAME_STATUS_DEAD
 		sta GameStatus
 
+		lda Ball_X_LSB, x
+		sta VIC.SPRITE_5_X
+
+		lda Ball_Y, x
+		sta VIC.SPRITE_5_Y
+
+		lda #YELLOW
+		sta VIC.SPRITE_COLOR_5
+
 		jsr SetupBird
 
 		lda #0
 		sta FlashTimer
+		sta VIC.SPRITE_6_Y
 
-		lda #1
+		lda #0
 		sta ScoreOn
 
 		jsr FlashScore
-
-
-
-
 
 
 		rts
@@ -600,6 +658,8 @@ GYPSY: {
 
 		Finish:
 
+		ldx ZP.X
+
 
 		rts
 	}
@@ -674,6 +734,8 @@ GYPSY: {
 
 		Loop:
 
+			stx ZP.X
+
 			lda Ball_Status, x
 			beq EndLoop
 
@@ -681,6 +743,8 @@ GYPSY: {
 			jsr UpdateHorizontal
 
 			EndLoop:
+
+				ldx ZP.X
 
 				inx
 				cpx #4
@@ -990,6 +1054,7 @@ GYPSY: {
 
 	SetupSprites: {
 
+
 		lda #HeadPointer
 		sta SPRITE_POINTERS
 
@@ -1024,6 +1089,11 @@ GYPSY: {
 
 		lda #0
 		sta VIC.SPRITE_7_Y
+		sta Ball_Status
+		sta Ball_Status + 1
+		sta Ball_Status + 2
+		sta Ball_Status + 3
+		sta BallsInPlay
 
 		lda BirdX
 		sta VIC.SPRITE_7_X
@@ -1032,14 +1102,14 @@ GYPSY: {
 		jsr PositionBody
 
 
+		jsr LaunchBall
+
 		rts
 
 
 	}
 
 	PositionBalls: {
-
-
 
 		ldx #0
 		ldy #0
@@ -1051,6 +1121,7 @@ GYPSY: {
 		Loop:	
 
 			stx ZP.X
+
 
 			lda Ball_Status, x
 			cmp #BALL_STATUS_DEAD
@@ -1066,6 +1137,9 @@ GYPSY: {
 
 			lda Ball_Y, x
 			sta VIC.SPRITE_5_Y, y
+
+			lda #WHITE
+			sta VIC.SPRITE_COLOR_5, x
 
 			iny
 			iny
@@ -1260,6 +1334,7 @@ GYPSY: {
 
 	DrawCredits: {
 
+		lda Credits
 		clc
 		adc #NumberStart
 		sta SCREEN_RAM + 54
@@ -1270,6 +1345,23 @@ GYPSY: {
 
 		rts
 	}
+
+
+
+	DrawLives: {
+
+		ldx CurrentPlayer
+		lda LivesLeft, x
+		clc
+		adc #NumberStart
+		sta SCREEN_RAM + 71
+
+		lda #GREEN
+		sta COLOR_RAM + 71
+
+		rts
+	}
+
 
 
 
@@ -1344,6 +1436,8 @@ GYPSY: {
 				sta CurrentPlayer
 		
 				jsr DrawCredits
+				jsr DrawLives
+
 				jsr SetupSprites
 				jsr ClearArea
 
@@ -1442,54 +1536,142 @@ GYPSY: {
 		MoveBird:
 
 		lda BirdDirection
-		beq GoingLeft
+		bne GoingLeft
 
 		GoingRight:
 
-		lda BirdX
-		clc
-		adc #2
-		sta BirdX
-		jmp CheckFrame
+			lda BirdX
+			clc
+			adc #1
+			sta BirdX
+
+			CheckIfDone:
+
+				cmp #254
+				bcc NotFinished
+
+				lda #0
+				sta VIC.SPRITE_7_Y
+
+				lda #GAME_STATUS_NEXT
+				sta GameStatus
+				jmp CheckFire
+
+				NotFinished:
+
+				jmp CheckFrame
 
 		GoingLeft:
 
+			lda BirdX
+			sec
+			sbc #1
+			sta BirdX
 
-		lda BirdX
-		sec
-		sbc #2
-		sta BirdX
+			CheckIfDone2:
+
+				cmp #5
+				bcs NotFinished2
+
+				lda #0
+				sta VIC.SPRITE_7_Y
+
+				lda #GAME_STATUS_NEXT
+				sta GameStatus
+				jmp CheckFire
+
+				NotFinished2:
+
+				jmp CheckFrame
+
 
 		CheckFrame:
 
-		lda BirdTmer
-		beq Ready
+			lda BirdX
+			sta VIC.SPRITE_7_X
 
-		dec BirdTimer
-		jmp CheckFire
+			lda BirdTimer
+			beq Ready
+
+			dec BirdTimer
+			jmp CheckFire
 
 		Ready:
 
-		lda #FrameTime
-		sta BirdTimer
+			lda #FrameTime
+			sta BirdTimer
 
-		inc BirdFrame
-		lda BirdFrame
-		cmp #3
-		bcc Okay
+			inc BirdFrame
+			lda BirdFrame
+			cmp #3
+			bcc Okay
 
-		lda #0
-		sta BirdFrame
+			lda #0
+			sta BirdFrame
 
 		Okay:
 
-		ldx BirdDirection
-		lda BirdPointers, x
-		clc
-		adc BirdFrame
-		sta SPRITE_POINTERS + 7
+			ldx BirdDirection
+			lda BirdPointers, x
+			clc
+			adc BirdFrame
+			sta SPRITE_POINTERS + 7
 
 		CheckFire:
+
+		jsr CheckContinueFire
+
+		rts
+	}
+
+
+	CheckContinueFire: {
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq Finish
+
+		NextPlayer:
+
+			ldx CurrentPlayer
+			dec LivesLeft, x
+
+			inx
+			inx
+			cpx NumPlayers
+			beq Okay
+			bcc Okay
+
+			ldx #0
+			stx CurrentPlayer
+			jmp Skip
+
+			Okay:
+
+			dex
+			stx CurrentPlayer
+
+			Skip:
+
+			lda #150
+			sta PosX_LSB	
+
+			lda #0
+			sta Lag
+			sta VIC.SPRITE_7_Y
+
+			lda #GAME_STATUS_PLAY
+			sta GameStatus
+
+			jsr DrawLives
+			jsr SetupSprites
+			jsr ClearArea
+
+
+		Finish:
+
+
+
 
 		rts
 	}
@@ -1508,6 +1690,14 @@ GYPSY: {
 			jsr PositionHead
 			jsr PositionBody
 			jsr UpdateBalls
+
+			lda GameStatus
+			cmp #GAME_STATUS_PLAY 
+			beq Okay
+			jmp Loop
+
+			Okay:
+
 			jsr PositionBalls
 			jsr FlashScore
 
@@ -1532,6 +1722,15 @@ GYPSY: {
 			jmp Loop
 
 		NotDead:
+
+			cmp #GAME_STATUS_NEXT
+			bne NotNext
+
+			jsr CheckContinueFire
+			jmp Loop
+
+
+		NotNext:
 
 
 

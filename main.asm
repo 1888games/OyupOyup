@@ -33,7 +33,7 @@ MAIN: {
 
 	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
-	#import "/scripts/game/scoring.asm"
+	
 
 
 
@@ -42,6 +42,8 @@ MAIN: {
 	#import "/scripts/game/opponents.asm"
 	#import "/scripts/game/text.asm"
 	#import "/scripts/game/settings.asm"
+	#import "/scripts/game/instructions.asm"
+	#import "/scripts/game/scoring.asm"
 	
 
 	* = $6900 "RoundOver"
@@ -51,7 +53,7 @@ MAIN: {
 	#import "/scripts/game/gypsy.asm"
 	
 
-	* = $9d00
+	* = $3e00
 
 
 
@@ -73,7 +75,7 @@ MAIN: {
 		jsr DetectMachine
 			
 
-		jmp GYPSY.Show
+		//jmp GYPSY.Show
 
 		jmp TITLE.Show
 		// jmp SETTINGS.Show	

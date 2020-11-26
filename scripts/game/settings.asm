@@ -25,12 +25,19 @@ SETTINGS: {
 	SettingColumns:		.byte 4, 35
 	TextColumns:		.byte 5, 31
 
+	.label UP = 0
+	.label DOWN = 1
+	.label LEFT = 2
+	.label RIGHT = 3
+	.label FIRE = 4
+
 	OptionCharType:	.byte 0, 0
 
 	DropSpeeds:		.byte 18, 16, 14, 12, 10, 8, 6, 4
 	DropSpeedsNTSC:	.byte 3,  3,  3,  2,  2,  2, 1, 1
 
-
+	CheatTracker:	.byte UP, FIRE, DOWN, FIRE, LEFT, FIRE, RIGHT, FIRE
+	CheatProgress: .byte 0
 
 
 	Show: {
@@ -224,6 +231,35 @@ SETTINGS: {
 	}
 
 
+	CheckCheat: {
+
+		sta ZP.Amount
+
+		ldx CheatProgress
+		lda CheatTracker, x
+		cmp ZP.Amount
+		bne NoCheat
+
+
+		inc CheatProgress
+		ldx CheatProgress
+		cpx #8
+		bcc Finish
+
+		lda #1
+		sta MENU.Unlocked
+		inc $d020
+		
+		NoCheat:
+
+		lda #0
+		sta CheatProgress
+
+		Finish:
+
+			rts
+	}
+
 	ControlUpdate: {
 
 		lda ControlTimer
@@ -252,6 +288,9 @@ SETTINGS: {
 
 			PressingDown:
 
+			lda #DOWN
+			jsr CheckCheat
+
 			lda #ControlCooldown
 			sta ControlTimer
 
@@ -275,6 +314,7 @@ SETTINGS: {
 
 
 
+
 		CheckUp:
 
 			ldy #1
@@ -291,6 +331,9 @@ SETTINGS: {
 			jmp Finish
 
 			PressingUp:
+
+			lda #UP
+			jsr CheckCheat
 
 			lda #ControlCooldown
 			sta ControlTimer
@@ -316,6 +359,9 @@ SETTINGS: {
 			ldy #1
 			lda INPUT.JOY_LEFT_NOW, y
 			beq CheckRight
+
+			lda #LEFT
+			jsr CheckCheat
 
 			lda #ControlCooldown
 			sta ControlTimer
@@ -351,6 +397,9 @@ SETTINGS: {
 			ldy #1
 			lda INPUT.JOY_RIGHT_NOW, y
 			beq Finish
+
+			lda #RIGHT
+			jsr CheckCheat
 
 			lda #ControlCooldown
 			sta ControlTimer
@@ -635,6 +684,13 @@ SETTINGS: {
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y
 		beq Finish
+
+		lda #FIRE
+		jsr CheckCheat
+
+		lda SelectedOption
+		cmp #5
+		bne Finish
 
 		jmp MENU.Show
 

@@ -1,11 +1,70 @@
 parsing
+flex pass 1
+flex pass 2
+flex pass 3
+Output pass
+Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 
-  CheckFrame:
+Memory Map
+----------
+Default-segment:
+  *$0002-$0032 Temp vars zero page
+  $0800-$0800 Upstart
+  $0801-$080d Basic
+  $080d-$080c End Of Basic
+  $080e-$080d Basic End
+  $080e-$092e -Macros
+  $092f-$0ab1 IRQ
+  $0ab2-$0ebc Draw
+  $0ebd-$0f86 -Input
+  $0f87-$10a6 Grid Data
+  $10a7-$163a CurrentType
+  $163b-$1cec Grid
+  $1ced-$1d47 -Random
+  $1d48-$1e8f Explosions
+  $1e90-$1e9c Rocks
+  $1e9d-$255c Queue
+  $255d-$25ac Panel
+  $25ad-$2838 Queue Data
+  $2839-$2ee0 Player
+  $2ee1-$3546 Title
+  $3547-$38b6 Menu
+  $38b7-$3acd Grid Visuals
+  $3e00-$3dff Unnamed
+  $3e00-$3f2b Main
+  $4000-$5f3f Bitmap Data
+  $6000-$63e7 Bitmap Screen RAM
+  $6400-$63ff Bitmap Color Data
+  $6400-$67e7 Bitmap Color RAM
+  $6800-$68bf ---Sprites Title
+  $6900-$68ff RoundOver
+  $6900-$7597 Round Over
+  $7600-$75ff Assets
+  $7600-$76ff Game Colours
+  $7700-$7ae7 Game Map
+  $7ae8-$7ecf Tower Map
+  $7ed0-$82b7 Menu Map
+  $82b8-$869f Settings Map
+  $86a0-$8a87 Instructions Map
+  $8a88-$8f43 Win
+  $9000-$9c63 sid
+  $a000-$9fff Unnamed
+  $a000-$a0b3 Opponent Data
+  $a0b4-$a0fd AI
+  $a0fe-$a11d Scores
+  $a11e-$a153 Lookup
+  $a154-$a169 Rotations
+  $a16a-$a3dd Lookups
+  $a3de-$a612 Text
+  $a613-$aa38 Settings
+  $aa39-$ad7b Scoring
+  $b000-$b414 Gypsy Data
+  $c000-$c3e7 Screen Ram
+  $c400-$d27f Sprites
+  $d280-$d87f Gyspy Sprites
+  $e000-$e878 Gypsy Code
+  $f000-$f7ff Charset
+  $f800-$f967 Gypsy Charset
+  $ffff-$fffe End Of Memory
 
-  lda BirdTmer
-      ^
-
-Error: Unknown symbol 'BirdTmer'
-at line 1465, column 7 in scripts\game\gypsy.asm
-
-
+Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

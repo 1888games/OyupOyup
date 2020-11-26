@@ -94,7 +94,7 @@ ROCKS: {
 	SecondsCounter:	.byte 0
 	GameSeconds:	.byte 0
 	FramesPerSecond:	.byte 50
-	RampUpTime:		.byte 90
+	RampUpTime:		.byte 60
 
 
 
@@ -1034,6 +1034,16 @@ ROCKS: {
 
 		inc RockLookupAdd
 
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_PRACTICE
+		bne Finish
+
+		lda PLAYER.CurrentAutoDropTime
+		cmp #5
+		bcc Finish
+
+		dec PLAYER.CurrentAutoDropTime
+		dec PLAYER.CurrentAutoDropTime
 
 		Finish:
 

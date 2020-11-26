@@ -9,7 +9,7 @@ MENU: {
 	Colours:		.byte LIGHT_BLUE, LIGHT_RED, LIGHT_GREEN, YELLOW, PURPLE
 	Pointers:		.byte 39, 40, 41, 42, 43
 	XPos:			.byte 124, 149, 174, 199, 224
-	YPos:			.byte 74, 74, 74, 74, 74
+	YPos:			.byte 65, 65, 65, 65, 65
 	XPos_MSB:		.byte 0, 0, 0, 0, 0
 	FrameTimer:		.fill 5, 0
 	FrameTime:		.byte 1, 1, 2, 1, 1
@@ -22,15 +22,15 @@ MENU: {
 
 	PreviousOption:	.byte 0
 	SelectedOption:	.byte 0
-	OptionColours:	.byte RED + 8, PURPLE + 8, GREEN +8, YELLOW + 8
+	OptionColours:	.byte RED + 8, PURPLE + 8, GREEN +8, YELLOW + 8, CYAN + 8, RED + 8
 	ControlTimer: .byte 0
 
-	SelectionRows:	.byte 9, 12, 15, 18
+	SelectionRows:	.byte 7, 10, 13, 16, 19, 22
 
 	SelectionColumns:	.byte 13, 25
 	OptionCharType:	.byte 0, 0
-	Active:		.byte 0
-
+	Active:			.byte 0
+	Unlocked:		.byte 0
 
 
 	Show: {
@@ -125,6 +125,12 @@ MENU: {
 			cmp #PLAY_MODE_2P
 			beq TwoPlayer
 
+			cmp #5
+			beq Gypsy
+
+			cmp #4
+			beq Instructions
+
 		Practice:
 
 			lda #0
@@ -190,6 +196,14 @@ MENU: {
 			jmp MAIN.StartGame
 
 
+		Gypsy:
+
+			jmp GYPSY.Show
+
+
+		Instructions:	
+			jmp INSTRUCT.Show
+
 		Scenario:
 
 			jsr CAMPAIGN.NewGame
@@ -238,8 +252,13 @@ MENU: {
 			jsr DeleteSelection
 			inc SelectedOption
 
+			lda #5
+			clc
+			adc Unlocked
+			sta ZP.Amount
+
 			lda SelectedOption
-			cmp #4
+			cmp ZP.Amount
 			bcc Okay
 
 			lda #0
@@ -477,20 +496,43 @@ MENU: {
 		Loop:	
 
 			lda OptionColours + 0
-			sta COLOR_RAM + 336, x
-			sta COLOR_RAM + 376, x
+			sta COLOR_RAM + 256, x
+			sta COLOR_RAM + 296, x
 
 			lda OptionColours + 1
-			sta COLOR_RAM + 456, x
-			sta COLOR_RAM + 496, x
+			sta COLOR_RAM + 376, x
+			sta COLOR_RAM + 416, x
 
 			lda OptionColours + 2
-			sta COLOR_RAM + 576, x
-			sta COLOR_RAM + 616, x
+			sta COLOR_RAM + 496, x
+			sta COLOR_RAM + 535, x
 
 			lda OptionColours + 3
-			sta COLOR_RAM + 696, x
+			sta COLOR_RAM + 616, x
+			sta COLOR_RAM + 656, x
+
+			lda OptionColours +4
 			sta COLOR_RAM + 736, x
+			sta COLOR_RAM + 776, x
+
+
+			lda Unlocked
+			beq Hide
+
+			lda #RED + 8
+			sta COLOR_RAM + 856, x
+			sta COLOR_RAM + 896, x
+			jmp Skip
+
+
+			Hide:
+
+			lda #BLACK
+			sta COLOR_RAM + 856, x
+			sta COLOR_RAM + 896, x
+
+			Skip:
+
 
 			inx
 			cpx #48
