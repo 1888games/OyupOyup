@@ -46,6 +46,9 @@ MENU: {
 		sta ControlTimer
 		sta VIC.SPRITE_ENABLE
 		sta IRQ.Mode
+		sta SCORING.PlayerOne
+		sta SCORING.PlayerOne + 1
+		sta SCORING.PlayerOne + 2
 
 		jsr MAIN.SetupVIC
 		jsr DRAW.HideSprites
@@ -327,7 +330,7 @@ MENU: {
 
 			lda #ControlCooldown
 			sta ControlTimer
-			
+
 			lda #0
 			sta HiScoreSeconds
 

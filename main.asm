@@ -75,6 +75,8 @@ MAIN: {
 			
 
 		//jmp GYPSY.Show
+
+		lda #0
 		jmp HI_SCORE.Show
 		jmp TITLE.Show
 		// jmp SETTINGS.Show	
@@ -245,6 +247,8 @@ MAIN: {
 	}
 
 
+
+
 	CheckSwitchMode: {
 
 		lda GameMode
@@ -265,11 +269,27 @@ MAIN: {
 
 		SwitchMenu:
 
-			lda #0
-			sta GameMode
-
 			lda #2
 			jsr ChangeTracks
+
+			jsr HI_SCORE.Check
+
+			lda GameMode
+			cmp #GAME_MODE_SWITCH_SCORE
+			bne NoHighScore
+
+			HiScore:
+
+				lda #0
+				sta GameMode
+
+				lda #1
+				jmp HI_SCORE.Show
+
+			NoHighScore:
+
+				lda #0
+				sta GameMode
 
 			jmp MENU.Show
 

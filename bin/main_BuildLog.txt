@@ -9,7 +9,7 @@ Memory Map
 ----------
 Default-segment:
   *$0002-$0032 Temp vars zero page
-  $0700-$0759 Hi score_Data
+  $0700-$0755 Hi score_Data
   $0800-$0800 Upstart
   $0801-$080d Basic
   $080d-$080c End Of Basic
@@ -29,17 +29,17 @@ Default-segment:
   $25e7-$2872 Queue Data
   $2873-$2f1a Player
   $2f1b-$3580 Title
-  $3581-$3923 Menu
-  $3924-$3b3a Grid Visuals
+  $3581-$392c Menu
+  $392d-$3b43 Grid Visuals
   $3e00-$3dff Unnamed
-  $3e00-$3f2e Main
+  $3e00-$3f44 Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff RoundOver
-  $6900-$7597 Round Over
+  $6900-$758c Round Over
   $7600-$75ff Assets
   $7600-$76ff Game Colours
   $7700-$7ae7 Game Map
@@ -58,8 +58,7 @@ Default-segment:
   $a16a-$a3dd Lookups
   $a3de-$a633 Text
   $a634-$aa59 Settings
-  $aa5a-$adc2 Scoring
-  $adc3-$af29 Hi score_Code
+  $aa5a-$adc6 Scoring
   $b000-$b414 Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win
@@ -69,6 +68,7 @@ Default-segment:
   $e000-$e878 Gypsy Code
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
+  $fa00-$fd48 Hi score_Code
   $ffff-$fffe End Of Memory
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

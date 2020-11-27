@@ -2,6 +2,10 @@ HI_SCORE:  {
 		
 	.label ScreenTime = 250
 	.label ColourTime = 5
+	.label SCORE_MODE_VIEW = 0
+	.label SCORE_MORE_ENTER = 1
+	.label InputCooldown = 5
+
 
 
 	ScreenTimer: 		.byte ScreenTime
@@ -20,16 +24,25 @@ HI_SCORE:  {
 	Scores:	.byte 0, 0, 0
 
 	TextIDs:	.byte 49, 50, 51
+	PlayerPosition:	.byte 0
+	InitialPosition:	.byte 0
+
+	Mode:		.byte 0
+	Cooldown:	.byte 0
 
 
-	* = * "Hi score_Code"
+
+
+	* = $fa00 "Hi score_Code"
 	Show: {
+
+		lda #1
+		sta Mode
 
 		jsr MAIN.SetupVIC
 
 		lda #0
 		sta VIC.SPRITE_ENABLE
-		sta Screen
 
 		lda #1
 		sta Colour
@@ -46,7 +59,6 @@ HI_SCORE:  {
 		jsr DRAW.HiScoreScreen
 	//	jsr ColourRows
 
-
 		lda #RED + 8
 		sta COLOR_RAM
 		sta COLOR_RAM + 39
@@ -55,13 +67,168 @@ HI_SCORE:  {
 
 		jsr PopulateTable
 
-		jmp HiScoreLoop
+		lda Mode
+		beq ViewMode
 
+		jmp ShowEnterMode
+
+		ViewMode:
+
+		lda #0
+		sta Screen
+
+		jmp HiScoreLoop
 
 
 	}
 
 
+	ShowEnterMode: {
+
+
+
+
+
+
+		jmp HiScoreLoop
+	}
+
+
+
+	Check: {
+
+
+		lda MENU.SelectedOption
+		sta Screen
+		cmp #PLAY_MODE_2P
+		bne Player1
+
+		ldx ROUND_OVER.Winner
+		beq Player1
+
+		Player2:
+
+			lda SCORING.PlayerTwo
+			sta Scores
+
+			lda SCORING.PlayerTwo + 1
+			sta Scores + 1
+
+			lda SCORING.PlayerTwo + 2
+			sta Scores + 2
+			jmp CheckScore
+
+		Player1:
+
+			lda SCORING.PlayerOne
+			sta Scores
+
+			lda SCORING.PlayerOne + 1
+			sta Scores + 1
+
+			lda SCORING.PlayerOne + 2
+			sta Scores + 2
+
+		CheckScore:
+
+		ldx Screen
+		lda StartIndexes, x
+		sta ZP.StartID
+
+		lda #255
+		sta ZP.Amount
+
+		Loop:
+
+			stx ZP.X
+
+			ldx ZP.StartID 
+			lda Scores + 2
+			cmp HiByte, x
+			bcc EndLoop
+
+			beq EqualsHigh
+
+			BiggerHigh:
+
+				stx ZP.Amount
+				jmp Done
+
+			EqualsHigh:
+
+				lda Scores + 1
+				cmp MedByte, x
+				bcc EndLoop
+
+				beq EqualsMed
+
+			BiggerMed:
+
+				stx ZP.Amount
+				jmp Done
+
+			EqualsMed:
+
+				lda Scores
+				cmp LowByte, x
+				bcc EndLoop
+
+				stx ZP.Amount
+				jmp Done
+
+			EndLoop:	
+
+				inc ZP.StartID
+
+				ldx ZP.X
+				inx
+				cpx #5
+				bcc Loop
+
+
+		Done:
+
+			lda ZP.Amount
+			bmi Finish
+
+			lda Scores + 2
+			sta HiByte, x
+
+			lda Scores + 1
+			sta MedByte, x
+
+			lda Scores
+			sta LowByte, x
+
+			lda #0
+			sta InitialPosition
+
+			lda #1
+			sta FirstInitials, x
+
+			lda #32
+			
+			sta SecondInitials, x
+			sta ThirdInitials, X
+
+			lda ZP.X
+			sta PlayerPosition
+
+			lda #GAME_MODE_SWITCH_SCORE
+			sta MAIN.GameMode
+
+
+		Finish:
+
+
+		rts
+
+
+
+
+
+
+	}
 
 	PopulateHeader: {
 
@@ -235,6 +402,8 @@ HI_SCORE:  {
 			bne WaitForRasterLine
 
 
+		lda Mode
+		bne Finish
 
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y
@@ -250,9 +419,152 @@ HI_SCORE:  {
 
 
 
+	EnterMode: {
+
+		lda Cooldown
+		beq Ready
+
+		dec Cooldown
+		jmp Finish
+
+		Ready:	
+
+		lda #InputCooldown
+		sta Cooldown
+
+		ldx Screen
+		lda StartIndexes, x
+		sta ZP.StartID
+
+
+		CheckRight:
+
+			ldy #1
+			lda INPUT.JOY_RIGHT_NOW, y
+			beq CheckLeft
+
+
+			ldx ZP.StartID
+			lda InitialPosition
+			beq First
+
+			cmp #1
+			beq Second
+
+		Third:
+
+			inc ThirdInitials, x
+			lda ThirdInitials, x
+			cmp #27
+			bcc Draw
+
+			lda #1
+			sta ThirdInitials, x
+			jmp Draw
+
+		Second:
+
+			inc SecondInitials, x
+			lda SecondInitials, x
+			cmp #27
+			bcc Draw
+
+			lda #1
+			sta SecondInitials, x
+			jmp Draw
+
+		First:
+
+			inc FirstInitials, x
+			lda FirstInitials, x
+			cmp #27
+			bcc Draw
+
+			lda #1
+			sta FirstInitials, x
+			jmp Draw
+
+		CheckLeft:
+			
+			lda INPUT.JOY_LEFT_NOW, y
+			beq Finish
+
+			ldx ZP.StartID
+			lda InitialPosition
+			beq First2
+
+			cmp #1
+			beq Second2
+
+		Third2:
+
+			dec ThirdInitials, x
+			lda ThirdInitials, x
+			bne Draw
+
+			lda #26
+			sta ThirdInitials, x
+			jmp Draw
+
+		Second2:
+
+			dec SecondInitials, x
+			lda SecondInitials, x
+			bne Draw
+		
+			lda #26
+			sta SecondInitials, x
+			jmp Draw
+
+		First2:
+
+			dec FirstInitials, x
+			lda FirstInitials, x
+			bne Draw
+		
+			lda #26
+			sta FirstInitials, x
+			jmp Draw
+
+
+		Draw:
+
+			jsr PopulateTable
+			jmp HiScoreLoop
+
+
+		Finish:
+
+			ldy #1
+			lda INPUT.FIRE_UP_THIS_FRAME, y
+			beq NoFire
+
+			inc InitialPosition
+			lda InitialPosition
+			cmp #3
+			bcc NoFire
+
+			lda #0
+			sta Mode
+
+			NoFire:
+
+
+			jmp HiScoreLoop
+
+	}
+
 	FrameCode: {
 
 		jsr ColourRows
+
+		lda Mode
+		beq ViewMode
+
+		jmp EnterMode
+
+
+		ViewMode:
 
 		lda ScreenTimer
 		beq Ready
@@ -277,6 +589,9 @@ HI_SCORE:  {
 		lda Screen
 		cmp #3
 		bcc Okay
+
+		lda #0
+		sta Screen
 
 		jmp MENU.Show
 
@@ -312,6 +627,39 @@ HI_SCORE:  {
 
 	}
 
+
+	One:
+
+	jsr NextColour
+	sta COLOR_RAM + 331, x
+	rts
+
+	Two:
+
+	jsr NextColour
+	sta COLOR_RAM + 451, x
+	rts
+
+	Three:
+
+	jsr NextColour
+	sta COLOR_RAM + 571, x
+	rts
+
+	Four:
+
+	jsr NextColour
+	sta COLOR_RAM + 691, x
+	rts
+
+	Five:
+
+	jsr NextColour
+	sta COLOR_RAM + 811, x
+	rts
+
+
+
 	ColourRows: {
 
 		lda ColourTimer
@@ -329,22 +677,67 @@ HI_SCORE:  {
 
 		ldx #0
 
-		Loop:
+		Loop:	
 
-			jsr NextColour
-			sta COLOR_RAM + 331, x
+			lda Mode
+			beq DrawAll
 
-			jsr NextColour
-			sta COLOR_RAM + 451, x
 
-			jsr NextColour
-			sta COLOR_RAM + 571, x
+			DrawOne:
 
-			jsr NextColour
-			sta COLOR_RAM + 691, x
+			lda PlayerPosition
+			bne Not1
 
-			jsr NextColour
-			sta COLOR_RAM + 811, x
+			jsr One
+			jmp EndLoop
+
+			Not1:
+
+			cmp #1
+			bne Not2
+
+			jsr Two
+			jmp EndLoop
+
+			Not2:
+
+			cmp #2
+			bne Not3
+
+			jsr Three
+			jmp EndLoop
+
+
+			Not3:
+
+			cmp #3
+			bne Not4
+
+			jsr Four
+			jmp EndLoop
+
+			Not4:
+
+			cmp #4
+			bne Not5	
+
+			jsr Four
+			jmp EndLoop
+
+			Not5:
+
+			jsr Five
+			jmp EndLoop
+
+			DrawAll:
+
+			jsr One
+			jsr Two
+			jsr Three
+			jsr Four
+			jsr Five
+
+			EndLoop:
 
 			inx
 			cpx #19
@@ -363,8 +756,12 @@ HI_SCORE:  {
 		SecondInitials:		.text "RRJEBKPHYAARNMN"
 		ThirdInitials:		.text "LPSVYRZAZMDMCHA"
 
-		HiByte:				.byte $10, $07, $04, $02, $01, $10, $07, $04, $02, $01, $10, $07, $05, $02, $01
-		MedByte:			.byte $45, $69, $82, $57, $50, $45, $69, $82, $57, $29, $52, $41, $11, $40, $58
+	//	HiByte:				.byte $10, $07, $04, $02, $01, $10, $07, $04, $02, $01, $10, $07, $05, $02, $01
+	//	MedByte:			.byte $45, $69, $82, $57, $50, $45, $69, $82, $57, $29, $52, $41, $11, $40, $58
+	//	LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $12
+
+		HiByte:				.fill 15, 0
+		MedByte:			.byte $15, $10, $06, $04, $02, $29, $52, $41, $11, $40, $58
 		LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $12
 
 
