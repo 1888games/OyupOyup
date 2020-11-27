@@ -2,7 +2,6 @@
 
 MAIN: {
 
-	
 
 	#import "/scripts/lookups/zeropage.asm"
 
@@ -48,9 +47,12 @@ MAIN: {
 	* = $6900 "RoundOver"
 
 	#import "/scripts/game/roundOver.asm"
-
 	#import "/scripts/game/gypsy.asm"
 	
+
+	* = $9d00 "Disk"
+		//#import "/scripts/game/disk.asm"
+		#import "/scripts/game/disk2.asm"
 
 	* = $3e00
 
@@ -64,7 +66,7 @@ MAIN: {
 	
 
 
-	//exomizer sfx sys -t 64 -x "inc $d020" -o oyup.prg main.prg
+	//exomizer sfx sys -t 64 -x "inc $d020 lda #$7B sta $d011" -o oyup.prg main.prg
 	Entry: {
 
 		jsr IRQ.DisableCIAInterrupts
@@ -72,12 +74,13 @@ MAIN: {
 		jsr set_sfx_routine
 		jsr IRQ.Setup
 		jsr DetectMachine
-			
 
-		//jmp GYPSY.Show
+		jsr DISK2.LOAD
+//	jsr DISK2.LOAD
+		//jsr DISK2.SAVE
 
-		lda #0
-		jmp HI_SCORE.Show
+		//lda #1
+		//jmp HI_SCORE.Show
 		jmp TITLE.Show
 		// jmp SETTINGS.Show	
 		//jmp MENU.Show
@@ -162,7 +165,7 @@ MAIN: {
 
 		// multicolour mode on
 		lda VIC.SCREEN_CONTROL_2
-		and #%11101111
+		and #%01101111
 		ora #%00010000
 		sta VIC.SCREEN_CONTROL_2
 
@@ -344,6 +347,18 @@ MAIN: {
 		ora #%00000101
 		sta PROCESSOR_PORT
 		rts
+	}
+
+
+
+	BankInKernal: {
+
+		lda PROCESSOR_PORT
+		and #%11111000
+		ora #%00000110
+		sta PROCESSOR_PORT
+		rts
+
 	}
 
 	#import "/scripts/game/assets.asm"

@@ -8,8 +8,8 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$0032 Temp vars zero page
-  $0700-$0755 Hi score_Data
+  *$0002-$0034 Temp vars zero page
+  $0700-$0759 Hi score_Data
   $0800-$0800 Upstart
   $0801-$080d Basic
   $080d-$080c End Of Basic
@@ -32,7 +32,7 @@ Default-segment:
   $3581-$392c Menu
   $392d-$3b43 Grid Visuals
   $3e00-$3dff Unnamed
-  $3e00-$3f44 Main
+  $3e00-$3f4b Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -49,6 +49,7 @@ Default-segment:
   $86a0-$8a87 Instructions Map
   $8a88-$8e6f Score Map
   $9000-$9c63 sid
+  $9d00-$9f29 Disk
   $a000-$9fff Unnamed
   $a000-$a0b3 Opponent Data
   $a0b4-$a0fd AI
@@ -58,7 +59,7 @@ Default-segment:
   $a16a-$a3dd Lookups
   $a3de-$a633 Text
   $a634-$aa59 Settings
-  $aa5a-$adc6 Scoring
+  $aa5a-$adcb Scoring
   $b000-$b414 Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win
@@ -68,7 +69,7 @@ Default-segment:
   $e000-$e878 Gypsy Code
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
-  $fa00-$fd48 Hi score_Code
+  $fa00-$fd4f Hi score_Code
   $ffff-$fffe End Of Memory
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

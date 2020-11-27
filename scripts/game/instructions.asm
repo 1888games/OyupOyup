@@ -22,7 +22,6 @@ INSTRUCT: {
 		sta VIC.BORDER_COLOUR
 
 
-
 		jsr DRAW.InstructionsScreen
 		jsr ColourRows
 

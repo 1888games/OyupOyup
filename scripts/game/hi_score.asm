@@ -30,13 +30,14 @@ HI_SCORE:  {
 	Mode:		.byte 0
 	Cooldown:	.byte 0
 
+	PositionLookup:	.byte 0, 3, 6, 9, 12
 
 
 
 	* = $fa00 "Hi score_Code"
 	Show: {
 
-		lda #1
+		//lda #1
 		sta Mode
 
 		jsr MAIN.SetupVIC
@@ -434,6 +435,9 @@ HI_SCORE:  {
 
 		ldx Screen
 		lda StartIndexes, x
+		ldy PlayerPosition
+		clc
+		adc PositionLookup, y
 		sta ZP.StartID
 
 
@@ -546,6 +550,13 @@ HI_SCORE:  {
 
 			lda #0
 			sta Mode
+
+		    sta $d404               // Sid silent 
+            sta $d404+7 
+            sta $d404+14 
+
+			jsr DISK2.SAVE	
+
 
 			NoFire:
 
@@ -718,16 +729,9 @@ HI_SCORE:  {
 
 			Not4:
 
-			cmp #4
-			bne Not5	
-
-			jsr Four
-			jmp EndLoop
-
-			Not5:
-
 			jsr Five
 			jmp EndLoop
+
 
 			DrawAll:
 
@@ -756,13 +760,16 @@ HI_SCORE:  {
 		SecondInitials:		.text "RRJEBKPHYAARNMN"
 		ThirdInitials:		.text "LPSVYRZAZMDMCHA"
 
-	//	HiByte:				.byte $10, $07, $04, $02, $01, $10, $07, $04, $02, $01, $10, $07, $05, $02, $01
-	//	MedByte:			.byte $45, $69, $82, $57, $50, $45, $69, $82, $57, $29, $52, $41, $11, $40, $58
-	//	LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $12
+		// HiByte:				.byte $10, $07, $04, $02, $01, $10, $07, $04, $02, $01, $10, $07, $05, $02, $01
+		// MedByte:			.byte $45, $69, $82, $57, $50, $45, $69, $82, $57, $29, $52, $41, $11, $40, $58
+		// LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $12
 
-		HiByte:				.fill 15, 0
-		MedByte:			.byte $15, $10, $06, $04, $02, $29, $52, $41, $11, $40, $58
-		LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $12
+		HiByte:				.byte $10, $06, $03, $01, $00, $02, $01, $01, $01, $00, $03, $02, $01, $01, $00
+		MedByte:			.byte $45, $64, $82, $57, $56, $45, $69, $39, $07, $68, $52, $41, $88, $32, $57
+		LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $16
+		
+
+		
 
 
 }
