@@ -32,7 +32,7 @@ Default-segment:
   $3581-$392c Menu
   $392d-$3b43 Grid Visuals
   $3e00-$3dff Unnamed
-  $3e00-$3f4b Main
+  $3e00-$3f55 Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -69,7 +69,7 @@ Default-segment:
   $e000-$e878 Gypsy Code
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
-  $fa00-$fd4f Hi score_Code
+  $fa00-$fd4c Hi score_Code
   $ffff-$fffe End Of Memory
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

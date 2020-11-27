@@ -435,11 +435,9 @@ HI_SCORE:  {
 
 		ldx Screen
 		lda StartIndexes, x
-		ldy PlayerPosition
 		clc
-		adc PositionLookup, y
+		adc PlayerPosition
 		sta ZP.StartID
-
 
 		CheckRight:
 
@@ -555,7 +553,7 @@ HI_SCORE:  {
             sta $d404+7 
             sta $d404+14 
 
-			jsr DISK2.SAVE	
+			jsr DISK.SAVE	
 
 
 			NoFire:

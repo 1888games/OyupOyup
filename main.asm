@@ -75,9 +75,12 @@ MAIN: {
 		jsr IRQ.Setup
 		jsr DetectMachine
 
-		jsr DISK2.LOAD
+		jsr DISK.LOAD
 //	jsr DISK2.LOAD
 		//jsr DISK2.SAVE
+
+		///lda #3
+		//sta HI_SCORE.PlayerPosition
 
 		//lda #1
 		//jmp HI_SCORE.Show
