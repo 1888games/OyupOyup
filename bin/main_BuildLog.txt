@@ -9,29 +9,30 @@ Memory Map
 ----------
 Default-segment:
   *$0002-$0032 Temp vars zero page
+  $0700-$0759 Hi score_Data
   $0800-$0800 Upstart
   $0801-$080d Basic
   $080d-$080c End Of Basic
   $080e-$080d Basic End
   $080e-$092e -Macros
   $092f-$0ab1 IRQ
-  $0ab2-$0ebc Draw
-  $0ebd-$0f86 -Input
-  $0f87-$10a6 Grid Data
-  $10a7-$163a CurrentType
-  $163b-$1cec Grid
-  $1ced-$1d47 -Random
-  $1d48-$1e8f Explosions
-  $1e90-$1e9c Rocks
-  $1e9d-$255c Queue
-  $255d-$25ac Panel
-  $25ad-$2838 Queue Data
-  $2839-$2ee0 Player
-  $2ee1-$3546 Title
-  $3547-$38b6 Menu
-  $38b7-$3acd Grid Visuals
+  $0ab2-$0ef6 Draw
+  $0ef7-$0fc0 -Input
+  $0fc1-$10e0 Grid Data
+  $10e1-$1674 CurrentType
+  $1675-$1d26 Grid
+  $1d27-$1d81 -Random
+  $1d82-$1ec9 Explosions
+  $1eca-$1ed6 Rocks
+  $1ed7-$2596 Queue
+  $2597-$25e6 Panel
+  $25e7-$2872 Queue Data
+  $2873-$2f1a Player
+  $2f1b-$3580 Title
+  $3581-$3923 Menu
+  $3924-$3b3a Grid Visuals
   $3e00-$3dff Unnamed
-  $3e00-$3f2b Main
+  $3e00-$3f2e Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -46,7 +47,7 @@ Default-segment:
   $7ed0-$82b7 Menu Map
   $82b8-$869f Settings Map
   $86a0-$8a87 Instructions Map
-  $8a88-$8f43 Win
+  $8a88-$8e6f Score Map
   $9000-$9c63 sid
   $a000-$9fff Unnamed
   $a000-$a0b3 Opponent Data
@@ -55,10 +56,13 @@ Default-segment:
   $a11e-$a153 Lookup
   $a154-$a169 Rotations
   $a16a-$a3dd Lookups
-  $a3de-$a612 Text
-  $a613-$aa38 Settings
-  $aa39-$ad7b Scoring
+  $a3de-$a633 Text
+  $a634-$aa59 Settings
+  $aa5a-$adc2 Scoring
+  $adc3-$af29 Hi score_Code
   $b000-$b414 Gypsy Data
+  $b800-$b7ff Unnamed
+  $b800-$bcbb Win
   $c000-$c3e7 Screen Ram
   $c400-$d27f Sprites
   $d280-$d87f Gyspy Sprites

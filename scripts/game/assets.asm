@@ -32,7 +32,12 @@ SETTINGS_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [3,0].bin
  * = * "Instructions Map"
 INSTRUCTIONS_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [5,0].bin"
 
+ * = * "Score Map"
+SCORE_MAP: .import binary "../../assets/puyo - SubMap (8bpc, 40x25) [6,0].bin"
 
+
+	
+*= $b800
  * = * "Win"
 WIN_LEFT: .import binary "../../assets/puyo - MapArea (8bpc, 12x24).bin"
 

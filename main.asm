@@ -33,8 +33,6 @@ MAIN: {
 
 	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
-	
-
 
 
 
@@ -44,6 +42,7 @@ MAIN: {
 	#import "/scripts/game/settings.asm"
 	#import "/scripts/game/instructions.asm"
 	#import "/scripts/game/scoring.asm"
+	#import "/scripts/game/hi_score.asm"
 	
 
 	* = $6900 "RoundOver"
@@ -76,7 +75,7 @@ MAIN: {
 			
 
 		//jmp GYPSY.Show
-
+		jmp HI_SCORE.Show
 		jmp TITLE.Show
 		// jmp SETTINGS.Show	
 		//jmp MENU.Show

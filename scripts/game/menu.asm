@@ -5,6 +5,7 @@ MENU: {
 	.label LogoStartPointer = 39
 	.label MaxYOffset = 13
 	.label ControlCooldown = 3
+	.label HiScoreSecondsShow = 10
 
 	Colours:		.byte LIGHT_BLUE, LIGHT_RED, LIGHT_GREEN, YELLOW, PURPLE
 	Pointers:		.byte 39, 40, 41, 42, 43
@@ -31,6 +32,10 @@ MENU: {
 	OptionCharType:	.byte 0, 0
 	Active:			.byte 0
 	Unlocked:		.byte 0
+
+	HiScoreSeconds:	.byte 0
+	HiScoreTimer:	.byte 50
+
 
 
 	Show: {
@@ -99,8 +104,40 @@ MENU: {
 
 		jsr SpriteUpdate
 		jsr ControlUpdate
+		jsr UpdateHiScore
 
 		jmp MenuLoop
+
+	}
+
+
+	UpdateHiScore: {
+
+		lda HiScoreTimer
+		beq Ready
+
+		dec HiScoreTimer
+		jmp NotYet
+
+		Ready:
+
+		lda ROCKS.FramesPerSecond
+		sta HiScoreTimer
+
+		inc HiScoreSeconds
+		lda HiScoreSeconds
+		cmp #HiScoreSecondsShow
+		bcc NotYet
+
+		lda #0
+		sta HiScoreSeconds
+
+		jmp HI_SCORE.Show
+
+		NotYet:
+
+		rts
+
 
 	}
 
@@ -249,6 +286,9 @@ MENU: {
 			lda #ControlCooldown
 			sta ControlTimer
 
+			lda #0
+			sta HiScoreSeconds
+
 			jsr DeleteSelection
 			inc SelectedOption
 
@@ -287,6 +327,9 @@ MENU: {
 
 			lda #ControlCooldown
 			sta ControlTimer
+			
+			lda #0
+			sta HiScoreSeconds
 
 			jsr DeleteSelection
 			dec SelectedOption
