@@ -16,7 +16,7 @@ DISK: {
 .label K_save            = $ffd8 
 
 .label file_start = $0700
-.label file_end = $0760
+.label file_end = $075E
 
 
 // ************************************************************** 
@@ -27,7 +27,7 @@ DISK: {
 
 
             .label file_start = $0700    // example addresses
-            .label file_end   = $0760
+            .label file_end   = $075E
 
             lda #0
             sta $02a1 
@@ -44,6 +44,9 @@ DISK: {
     		cli
 
             jsr DELETE
+
+            lda #0
+            sta $02a1 
 
             lda #fname_end-fname
             ldx #<fname
@@ -136,20 +139,13 @@ DISK: {
     error:
             // Akkumulator contains BASIC error code
 
-            .break
+         //  .break
 
             lda #2               // Logical 
             jsr K_close 
             jsr K_clrchn 
 
-    		jsr MAIN.BankOutKernalandBasic
-    		jsr IRQ.Setup
-
-    		lda #255
-    		sta VIC.SPRITE_ENABLE
-
-    		lda #%00000001
-    		sta IRQ.INTERRUPT_CONTROL
+    	
 
           //	.break
           	nop

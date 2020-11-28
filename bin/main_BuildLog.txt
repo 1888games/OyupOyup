@@ -9,30 +9,30 @@ Memory Map
 ----------
 Default-segment:
   *$0002-$0034 Temp vars zero page
-  $0700-$0759 Hi score_Data
+  $0700-$075d Hi score_Data
   $0800-$0800 Upstart
   $0801-$080d Basic
   $080d-$080c End Of Basic
   $080e-$080d Basic End
-  $080e-$092e -Macros
-  $092f-$0ab1 IRQ
-  $0ab2-$0ef6 Draw
-  $0ef7-$0fc0 -Input
-  $0fc1-$10e0 Grid Data
-  $10e1-$1674 CurrentType
-  $1675-$1d26 Grid
-  $1d27-$1d81 -Random
-  $1d82-$1ec9 Explosions
-  $1eca-$1ed6 Rocks
-  $1ed7-$2596 Queue
-  $2597-$25e6 Panel
-  $25e7-$2872 Queue Data
-  $2873-$2f1a Player
-  $2f1b-$3580 Title
-  $3581-$392c Menu
-  $392d-$3b43 Grid Visuals
+  $080e-$0955 -Macros
+  $0956-$0ad8 IRQ
+  $0ad9-$0f1d Draw
+  $0f1e-$0fe7 -Input
+  $0fe8-$1107 Grid Data
+  $1108-$169b CurrentType
+  $169c-$1d4d Grid
+  $1d4e-$1da8 -Random
+  $1da9-$1ef0 Explosions
+  $1ef1-$1efd Rocks
+  $1efe-$25bd Queue
+  $25be-$260d Panel
+  $260e-$2899 Queue Data
+  $289a-$2f41 Player
+  $2f42-$35ad Title
+  $35ae-$396e Menu
+  $396f-$3b85 Grid Visuals
   $3e00-$3dff Unnamed
-  $3e00-$3f55 Main
+  $3e00-$3f4b Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -49,7 +49,7 @@ Default-segment:
   $86a0-$8a87 Instructions Map
   $8a88-$8e6f Score Map
   $9000-$9c63 sid
-  $9d00-$9f29 Disk
+  $9d00-$9e2c Disk
   $a000-$9fff Unnamed
   $a000-$a0b3 Opponent Data
   $a0b4-$a0fd AI
@@ -60,13 +60,13 @@ Default-segment:
   $a3de-$a633 Text
   $a634-$aa59 Settings
   $aa5a-$adcb Scoring
-  $b000-$b414 Gypsy Data
+  $b000-$b45c Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win
   $c000-$c3e7 Screen Ram
   $c400-$d27f Sprites
   $d280-$d87f Gyspy Sprites
-  $e000-$e878 Gypsy Code
+  $e000-$eac0 Gypsy Code
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
   $fa00-$fd4c Hi score_Code

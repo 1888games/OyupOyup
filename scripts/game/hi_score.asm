@@ -352,6 +352,8 @@ HI_SCORE:  {
 	}
 
 
+
+
 	DrawScore: {
 
 		ldy #5	// screen offset, right most digit
@@ -766,7 +768,8 @@ HI_SCORE:  {
 		MedByte:			.byte $45, $64, $82, $57, $56, $45, $69, $39, $07, $68, $52, $41, $88, $32, $57
 		LowByte:			.byte $23, $12, $70, $63, $78, $91, $52, $46, $02, $08, $99, $31, $47, $28, $16
 		
-
+		Gypsy:				.byte $00, $00, $00
+		Unlocked:			.byte $00
 		
 
 

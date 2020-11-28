@@ -65,6 +65,8 @@ GYPSY_CHARS:	.import binary "../../assets/gypsy - Chars.bin"
 * = $b000 "Gypsy Data"
 GYPSY_COLORS:	.import binary "../../assets/gypsy - CharAttribs.bin"
 GYPSY_MAP:		.import binary "../../assets/gypsy - Map (40x25).bin"
+GYPSY_MORE_EGGS:		.import binary "../../assets/more_eggs.bin"
+GYPSY_INSERT:		.import binary "../../assets/insert_coin.bin"
 		
 		
 * = $f000 "Charset"

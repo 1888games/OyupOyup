@@ -75,6 +75,9 @@ MAIN: {
 		jsr IRQ.Setup
 		jsr DetectMachine
 
+	//	.break
+		//jsr DISK.SAVE
+	
 		jsr DISK.LOAD
 //	jsr DISK2.LOAD
 		//jsr DISK2.SAVE
@@ -82,7 +85,9 @@ MAIN: {
 		///lda #3
 		//sta HI_SCORE.PlayerPosition
 
-		//lda #1
+		//lda #17
+
+		//jmp GYPSY.Show
 		//jmp HI_SCORE.Show
 		jmp TITLE.Show
 		// jmp SETTINGS.Show	

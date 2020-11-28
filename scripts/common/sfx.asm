@@ -206,7 +206,7 @@ StopChannel0: {
 .label SFX_BLOOP = 2
 .label SFX_MOVE = 3
 .label SFX_ROTATE = 4
-
+.label SFX_CHICK = 5
 
 channels:	.byte 2, 0, 1, 1, 0, 0, 0, 0, 0, 0
 
@@ -222,17 +222,21 @@ whoosh:
 
 
 blip:
-.import binary "../../Assets/sfx/short_low_blip.sfx"
+//.import binary "../../Assets/sfx/short_low_blip.sfx"
+ .import binary "../../Assets/sfx/bonus.snd" 
 
 
 hiss:
 .import binary "../../Assets/sfx/bear.snd"
 
+chick:
+.import binary ".../../Assets/sfx/double_high_tink.sfx"
+
 
 wavetable_l:
-.byte  <whoosh, <sfx_land, <sfx_bloop, <blip, <hiss
+.byte  <whoosh, <sfx_land, <sfx_bloop, <blip, <hiss, <chick
 wavetable_h:
-.byte  >whoosh, >sfx_land, >sfx_bloop, >blip, >hiss
+.byte  >whoosh, >sfx_land, >sfx_bloop, >blip, >hiss, >chick
 
 
 

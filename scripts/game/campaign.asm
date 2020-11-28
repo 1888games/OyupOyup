@@ -540,7 +540,10 @@ CAMPAIGN: {
 		lda #1
 		sta Complete
 		sta MENU.Unlocked
+		sta HI_SCORE.Unlocked
 		dec CurrentLevel
+
+		jsr DISK.SAVE
 
 		jmp Finish
 

@@ -11,29 +11,55 @@ GYPSY: {
 	.label BallPointer = 91
 	.label ControlCooldown = 10
 	.label NumberStart = 35
-
-
-
 	.label GAME_STATUS_MENU = 0
 	.label GAME_STATUS_PLAY = 1
 	.label GAME_STATUS_DEAD = 2
 	.label GAME_STATUS_NEXT = 3
-
-
+	.label GAME_STATUS_OVER = 4
+	.label FlashTime = 12
+	.label MaxYSpeed = 2
+	.label MaxYSpeed_SUB = 150
+	.label BirdY = 234
+	.label MinX = 46
+	.label MaxX = 251
+	.label MinBallX = 13
+	.label MaxBallX = 249
+	.label MaxPlayerSpeed = 4
+	.label SpeedChangeTime = 7
+	.label SpeedReduceTime = 1
+	.label MaxLeftSpeed = 252
+	.label MaxRightSpeed = 4
+	.label MaxFallingSpeed = 4
+	.label GravityForce = 10
+	.label BALL_STATUS_DEAD= 0
+	.label BALL_STATUS_OFF_SCREEN = 1
+	.label BALL_STATUS_ON_SCREEN = 2
+	.label StartX_SUB = 50
+	.label MaxBallHeadDistance = 5
+	.label MaxFlickDistance = 18
+	.label Lives = 3
 	.label PosY = 219
-
-	PosX_LSB: .byte 150
-	PosX_MSB: .byte 0	
+	.label FlashBigTime = 24
 
 
-	LivesLeft:	.byte 3, 3, 3, 3
-	NumPlayers:	.byte 1
+	PosX_LSB: 		.byte 150
+	PosX_MSB: 		.byte 0	
+
+	LivesLeft:		.byte 1, 3, 3, 3
+	NumPlayers:		.byte 1
 	CurrentPlayer:	.byte 0
 
-
-	Lag:	.byte 0
+	Lag:			.byte 0
 	BirdPointers:	.byte 92, 95
 
+	Scores:			.byte 0, 0, 0 
+	ScoreHigh:	.byte 0, 0, 0, 0
+	ScoreMed:	.byte 0, 0, 0, 0
+	ScoreLow:	.byte 0, 0, 0, 0
+	ExtendedPlay:	.byte 0, 0, 0, 0
+	FlashText:	.byte 0
+	FlashBigTimer:	.byte 0
+	FlashTextOn:	.byte 0
 
 	YOffsets:		.byte -6, -6, 15, 15
 	Frames:			.byte 0, 0, 0, 3
@@ -45,7 +71,6 @@ GYPSY: {
 
 	FrameOrder:		.byte 0, 1, 2, 3, 2, 1
 	Cooldown:		.byte 0
-
 
 	Ball_X_LSB:			.byte 150, 190, 255, 220
 	Ball_X_MSB:			.byte 0, 0, 0, 0
@@ -64,50 +89,24 @@ GYPSY: {
 	ArmFrameOrder:		.byte 0, 2, 3, 2, 1
 
 
-	ScoreX:		.byte 9, 9, 26, 26
-	ScoreY:		.byte 3, 4, 3, 4
-
+	
 	BirdX:		.byte 160
 	BirdDirection:	.byte 0
 	BirdFrame:	.byte 0
 	BirdTimer:	.byte 0
 	
 
-	ScoreAddresses:	.word SCREEN_RAM + 129, SCREEN_RAM + 169, SCREEN_RAM + 146, SCREEN_RAM + 186, SCREEN_RAM + 635
-	ColourAddresses:	.word COLOR_RAM + 129, COLOR_RAM + 169, COLOR_RAM + 146, COLOR_RAM + 186, COLOR_RAM + 635
+	ScoreAddresses:	.word SCREEN_RAM + 129, SCREEN_RAM + 169, SCREEN_RAM + 146, SCREEN_RAM + 186, SCREEN_RAM + 593
+	ColourAddresses:	.word COLOR_RAM + 129, COLOR_RAM + 169, COLOR_RAM + 146, COLOR_RAM + 186, COLOR_RAM + 593
 
 	ScoreOn:	.byte 1
 	FlashTimer:	.byte 0
 
 
 
-	.label FlashTime = 12
-	.label MaxYSpeed = 2
-	.label MaxYSpeed_SUB = 150
 
-
-	.label BirdY = 234
-	.label MinX = 46
-	.label MaxX = 251
-	.label MinBallX = 13
-	.label MaxBallX = 249
-	.label MaxPlayerSpeed = 4
-	.label SpeedChangeTime = 7
-	.label SpeedReduceTime = 2
-	.label MaxLeftSpeed = 251
-	.label MaxRightSpeed = 5
-	.label MaxFallingSpeed = 4
-
-	.label GravityForce = 10
-
-	.label BALL_STATUS_DEAD= 0
-	.label BALL_STATUS_OFF_SCREEN = 1
-	.label BALL_STATUS_ON_SCREEN = 2
-
-	.label StartX_SUB = 50
-	.label MaxBallHeadDistance = 5
-	.label MaxFlickDistance = 18
-	.label Lives = 3
+	ScoreLookupLow:		.byte $5, $50, $00, $00
+	ScoreLookupHigh:		.byte $0, $00, $01, $02
 
 	PlayerSpeed:		.byte 0
 	PlayerDirection:	.byte 0
@@ -129,7 +128,7 @@ GYPSY: {
 
 						//    0    1   2     3    4    5    6    7    8    9    10    11
 	Distance_To_X:		.fillword MaxBallHeadDistance, (i * 10) + 10
-						.fillword MaxFlickDistance - MaxBallHeadDistance, (i * 8) + 5
+						.fillword MaxFlickDistance - MaxBallHeadDistance, (i * 9) + 5
 
 	//Distance_To_X:		.byte 000, 000, 000, 000, 000, 000, 000, 000, 000, 000
 
@@ -148,6 +147,9 @@ GYPSY: {
 		sta IRQ.Mode
 		sta PlayerSpeed
 		sta CurrentPlayer
+		sta PlayerDirection
+		sta Lag
+		sta BallsInPlay
 
 		sta VIC.SPRITE_0_Y
 		sta VIC.SPRITE_1_Y
@@ -165,6 +167,7 @@ GYPSY: {
 		//jsr SetupSprites
 
 
+
 		lda #GAME_STATUS_MENU
 		sta GameStatus
 
@@ -174,11 +177,31 @@ GYPSY: {
 		sta LivesLeft + 2
 		sta LivesLeft + 3
 
+		ldx #0
+		lda #0
+
+		Loop2:
+
+			sta ScoreHigh, x
+			sta ScoreMed, x
+			sta ScoreLow, x
+			sta ExtendedPlay, x
+			sta Ball_Status, x
+
+			inx
+			cpx #4
+			bcc Loop2
+
+
+
 		lda #1
 		sta Credits
+		sta FlashTextOn
 
 		jsr DrawLives
 		jsr DrawCredits
+
+		jsr DrawHighScore
 
 		jmp Loop
 
@@ -187,7 +210,197 @@ GYPSY: {
 
 
 
+	Score: {
 
+		ldy CurrentPlayer
+
+		ldx BallsInPlay
+		dex
+		sed
+
+		lda ScoreLow, y
+		clc
+		adc ScoreLookupLow, x
+		sta ScoreLow, y
+
+		lda ScoreMed, y
+		adc #0
+		clc
+		adc ScoreLookupHigh, x
+		sta ScoreMed, y
+
+		lda ScoreHigh, y
+		adc #0
+		sta ScoreHigh, y
+
+		cld
+
+		lda ExtendedPlay, y
+		bne AlreadyAchieved
+
+		lda ScoreMed, y
+		cmp #$50
+		bcc AlreadyAchieved
+
+		lda #1
+		sta ExtendedPlay, y
+
+		AlreadyAchieved:
+	
+		ldx CurrentPlayer
+		jsr DrawScore
+
+		ldy CurrentPlayer
+
+		lda ScoreHigh, y
+		cmp HI_SCORE.Gypsy + 2
+		bcc NotHigh
+		beq CheckMed
+
+		jmp Transfer
+
+		CheckMed:
+
+		lda ScoreMed, y
+		cmp HI_SCORE.Gypsy + 1
+		bcc NotHigh
+		beq CheckLow
+
+		jmp Transfer
+
+		CheckLow:
+
+			lda ScoreLow, y
+			cmp HI_SCORE.Gypsy
+			bcc NotHigh
+		
+		Transfer:
+
+			lda ScoreHigh, y
+			sta HI_SCORE.Gypsy + 2
+
+			lda ScoreMed, y
+			sta HI_SCORE.Gypsy + 1
+
+			lda ScoreLow, y
+			sta HI_SCORE.Gypsy
+
+			jsr DrawHighScore
+
+
+		NotHigh:
+
+
+		rts
+	}	
+
+
+
+	DrawHighScore: {	
+
+		lda #4
+		asl
+		tax
+		lda ScoreAddresses, x
+		sta ZP.ScoresAddress
+
+		lda ScoreAddresses + 1, x
+		sta ZP.ScoresAddress + 1
+
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+		
+		ScoreLoop:
+
+			lda HI_SCORE.Gypsy,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+
+			clc
+			adc #NumberStart
+			sta (ZP.ScoresAddress), y
+
+
+			dey
+			rts
+
+		}
+
+
+
+		rts
+	}
+
+
+	DrawScore: {	
+
+		jsr GetScoreAddress
+
+		ldx CurrentPlayer
+
+		lda ScoreHigh, x
+		sta Scores + 2
+
+		lda ScoreMed, x
+		sta Scores + 1
+
+		lda ScoreLow, x
+		sta Scores
+
+		ldy #5	// screen offset, right most digit
+		ldx #ZERO	// score byte index
+		
+		ScoreLoop:
+
+			lda Scores,x
+			pha
+			and #$0f	// keep lower nibble
+			jsr PlotDigit
+			pla
+			lsr
+			lsr
+			lsr	
+			lsr // shift right to get higher lower nibble
+			jsr PlotDigit
+			inx 
+			cpx #3
+			bne ScoreLoop
+
+			rts
+
+		PlotDigit: {
+
+
+			clc
+			adc #NumberStart
+			sta (ZP.ScoresAddress), y
+
+
+			dey
+			rts
+
+		}
+
+
+
+		rts
+	}
 
 
 
@@ -195,7 +408,14 @@ GYPSY: {
 
 		ldx BallsInPlay
 		cpx #4
-		beq Finish
+		bcc BallsLeft
+
+		rts
+
+		BallsLeft:
+
+		lda #1
+		sta FlashTextOn
 
 		cpx #1
 		bcc MakeOne
@@ -230,7 +450,7 @@ GYPSY: {
 		lda #1
 		sta Ball_Falling, x
 	
-	
+		sfx(SFX_BLOOP)
 
 		lda StartRight, x
 		sta Ball_GoingRight, x
@@ -247,6 +467,13 @@ GYPSY: {
 
 
 		inc BallsInPlay
+
+		lda BallsInPlay
+		cmp #4
+		bcc Finish
+
+		lda #0
+		sta FlashTextOn
 
 
 		Finish:
@@ -455,6 +682,8 @@ GYPSY: {
 		ldx #3
 		sfxFromX()
 
+		jsr Score
+
 		Finish:
 
 
@@ -516,6 +745,8 @@ GYPSY: {
 
 	BallLanded: {
 
+		sfx(SFX_LAND)
+
 		lda #GAME_STATUS_DEAD
 		sta GameStatus
 
@@ -537,8 +768,16 @@ GYPSY: {
 		lda #0
 		sta ScoreOn
 
+		inc FlashTextOn
+
 		jsr FlashScore
 
+
+		ldx CurrentPlayer
+		dec LivesLeft, x
+		
+		jsr DrawLives
+		inc LivesLeft, x
 
 		rts
 	}
@@ -1280,6 +1519,7 @@ GYPSY: {
 		lda MAIN.PerformFrameCodeFlag
 		beq Loop
 
+
 		dec MAIN.PerformFrameCodeFlag
 		jmp FrameCode
 
@@ -1394,6 +1634,8 @@ GYPSY: {
 
 			Okay:
 
+			sfx(SFX_ROTATE)
+
 			jsr DrawCredits
 
 		CheckStart:
@@ -1441,6 +1683,8 @@ GYPSY: {
 				jsr SetupSprites
 				jsr ClearArea
 
+				jsr DisplayEggText
+
 
 		Finish:
 
@@ -1480,6 +1724,132 @@ GYPSY: {
 
 
 
+	}
+
+
+	DisplayEggText: {
+
+
+		ldy #0
+
+		Loop:
+			
+			lda GYPSY_MORE_EGGS, y
+			sta SCREEN_RAM + 753, y
+
+			lda GYPSY_MORE_EGGS + 6, y
+			sta SCREEN_RAM + 793, y
+
+			lda GYPSY_MORE_EGGS + 12, y
+			sta SCREEN_RAM + 833, y
+
+			lda GYPSY_MORE_EGGS + 18, y
+			sta SCREEN_RAM + 873, y
+
+			lda GYPSY_MORE_EGGS + 24, y
+			sta SCREEN_RAM + 913, y
+
+			lda GYPSY_MORE_EGGS + 30, y
+			sta SCREEN_RAM + 953, y
+
+			iny
+			cpy #6
+			bcc Loop
+
+
+
+		rts
+	}
+
+	DisplayCoinText: {
+
+
+		ldy #0
+
+		Loop:
+			
+			lda GYPSY_INSERT, y
+			sta SCREEN_RAM + 753, y
+
+			lda GYPSY_INSERT + 6, y
+			sta SCREEN_RAM + 793, y
+
+			lda GYPSY_INSERT + 12, y
+			sta SCREEN_RAM + 833, y
+
+			lda GYPSY_INSERT + 18, y
+			sta SCREEN_RAM + 873, y
+
+			lda GYPSY_INSERT + 24, y
+			sta SCREEN_RAM + 913, y
+
+			lda GYPSY_INSERT + 30, y
+			sta SCREEN_RAM + 953, y
+
+			iny
+			cpy #6
+			bcc Loop
+
+
+
+		rts
+	}
+
+
+	FlashBigText: {
+
+		lda FlashBigTimer
+		beq Ready
+
+		dec FlashBigTimer
+		rts
+
+		Ready:
+
+		lda #FlashBigTime
+		sta FlashBigTimer
+	
+		lda FlashText
+		beq TurnOn
+
+		TurnOff:
+
+			lda FlashTextOn
+			bne Okay
+
+			rts
+
+			Okay:
+
+			dec FlashText
+			lda #BLACK
+			jmp Draw
+
+
+		TurnOn:	
+
+			inc FlashText
+			lda #YELLOW
+	
+		Draw:
+
+		ldy #0
+
+		Loop:
+			
+			sta COLOR_RAM + 753, y
+			sta COLOR_RAM + 793, y
+			sta COLOR_RAM + 833, y
+			sta COLOR_RAM + 873, y
+			sta COLOR_RAM + 913, y
+			sta COLOR_RAM + 953, y
+
+			iny
+			cpy #6
+			bcc Loop
+
+
+		rts
 	}
 
 
@@ -1534,7 +1904,7 @@ GYPSY: {
 
 
 		MoveBird:
-
+		
 		lda BirdDirection
 		bne GoingLeft
 
@@ -1609,6 +1979,10 @@ GYPSY: {
 			lda #0
 			sta BirdFrame
 
+			ldx #SFX_CHICK
+			sfxFromX()
+
+
 		Okay:
 
 			ldx BirdDirection
@@ -1634,6 +2008,16 @@ GYPSY: {
 		NextPlayer:
 
 			ldx CurrentPlayer
+			lda ExtendedPlay, x
+			cmp #1
+			bne NotExtend
+
+			lda #2
+			sta ExtendedPlay, x
+			jmp Skip
+
+			NotExtend:
+
 			dec LivesLeft, x
 
 			inx
@@ -1644,8 +2028,18 @@ GYPSY: {
 
 			ldx #0
 			stx CurrentPlayer
-			jmp Skip
 
+			lda LivesLeft, x
+			bne Skip
+
+			lda #GAME_STATUS_OVER
+			sta GameStatus
+
+			jsr DrawLives
+
+			jmp Finish
+
+			
 			Okay:
 
 			dex
@@ -1678,6 +2072,8 @@ GYPSY: {
 
 	FrameCode: {
 
+		jsr FlashBigText
+
 		lda GameStatus
 		cmp #GAME_STATUS_PLAY
 		bne NoPlay
@@ -1691,6 +2087,7 @@ GYPSY: {
 			jsr PositionBody
 			jsr UpdateBalls
 
+
 			lda GameStatus
 			cmp #GAME_STATUS_PLAY 
 			beq Okay
@@ -1700,6 +2097,7 @@ GYPSY: {
 
 			jsr PositionBalls
 			jsr FlashScore
+
 
 
 			jmp Loop
@@ -1732,6 +2130,9 @@ GYPSY: {
 
 		NotNext:
 
+			jsr DISK.SAVE	
+			jmp MENU.Show
+
 
 
 		jmp Loop
@@ -1747,7 +2148,9 @@ GYPSY: {
 
 			sta SCREEN_RAM + 401, x
 			sta SCREEN_RAM + 521, x
-			sta SCREEN_RAM + 761, x
+			sta SCREEN_RAM + 801, x
+			sta SCREEN_RAM + 641, x
+			sta SCREEN_RAM + 681, x
 
 			inx
 			cpx #30

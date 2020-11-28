@@ -50,6 +50,9 @@ MENU: {
 		sta SCORING.PlayerOne + 1
 		sta SCORING.PlayerOne + 2
 
+		lda HI_SCORE.Unlocked
+		sta Unlocked
+
 		jsr MAIN.SetupVIC
 		jsr DRAW.HideSprites
 
@@ -101,6 +104,7 @@ MENU: {
 		lda INPUT.FIRE_UP_THIS_FRAME, y
 		beq Finish
 
+		sfx(SFX_CHICK)
 		jmp DecidePath
 
 		Finish:

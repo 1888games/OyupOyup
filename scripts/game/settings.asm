@@ -249,7 +249,7 @@ SETTINGS: {
 		lda #1
 		sta MENU.Unlocked
 		inc $d020
-		
+
 		NoCheat:
 
 		lda #0

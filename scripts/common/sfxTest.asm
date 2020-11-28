@@ -208,6 +208,7 @@ StopChannel0: {
 .label SFX_ROTATE = 4
 
 
+
 channels:	.byte 2, 0, 1, 1, 0, 0, 0, 0, 0, 0
 
 
@@ -215,16 +216,16 @@ S0: .import binary "../../Assets/sfx/bear.snd"
 S2: .import binary "../../Assets/sfx/bonus.snd" 
 S3: .import binary "../../Assets/sfx/click_bloop.sfx"
 S4: .import binary "../../Assets/sfx/die_bleep.sfx" 
-S5: .import binary "../../Assets/sfx/double_high_tink.sfx"  
+S5: .import binary "../../Assets/sfx/double_high_tink.sfx"   // chick?
 S6: .import binary "../../Assets/sfx/eating.snd"  // clear
 S7: .import binary "../../Assets/sfx/error_dee_doo.sfx"  
 S8: .import binary "../../Assets/sfx/error_down_melodic.sfx"
 S9: .import binary "../../Assets/sfx/error.sfx"
-S10: .import binary "../../Assets/sfx/gun_shot_with_bass.sfx"   // land
+S10: .import binary "../../Assets/sfx/gun_shot_with_bass.sfx"   // land  egg?
 S11: .import binary "../../Assets/sfx/gun_shot.sfx"
 S12: .import binary "../../Assets/sfx/hammer_hit.sfx"  // land bass
-S13: .import binary "../../Assets/sfx/high_blip.sfx"  
-S14: .import binary "../../Assets/sfx/hit_hiss.sfx"
+S13: .import binary "../../Assets/sfx/high_blip.sfx"    // chick?
+S14: .import binary "../../Assets/sfx/hit_hiss.sfx"  // lang egg
 S15: .import binary "../../Assets/sfx/igloo.snd" 
 S16: .import binary "../../Assets/sfx/jump.snd"
 S17: .import binary "../../Assets/sfx/landing.snd"
