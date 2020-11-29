@@ -277,7 +277,7 @@ PLAYER: {
 			// cmp #251
 			// bcs Rotate
 
-			 cmp #200
+			 cmp #150
 			 bcc Finish
 
 			 jsr RANDOM.Get

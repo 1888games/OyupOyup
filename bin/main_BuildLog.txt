@@ -14,52 +14,52 @@ Default-segment:
   $0801-$080d Basic
   $080d-$080c End Of Basic
   $080e-$080d Basic End
-  $080e-$0955 -Macros
-  $0956-$0ad8 IRQ
-  $0ad9-$0f1d Draw
-  $0f1e-$0fe7 -Input
-  $0fe8-$1107 Grid Data
-  $1108-$169b CurrentType
-  $169c-$1d4d Grid
-  $1d4e-$1da8 -Random
-  $1da9-$1ef0 Explosions
-  $1ef1-$1efd Rocks
-  $1efe-$25bd Queue
-  $25be-$260d Panel
-  $260e-$2899 Queue Data
-  $289a-$2f41 Player
-  $2f42-$35ad Title
-  $35ae-$396e Menu
-  $396f-$3b85 Grid Visuals
+  $080e-$0950 -Macros
+  $0951-$0ad3 IRQ
+  $0ad4-$0f18 Draw
+  $0f19-$0fe2 -Input
+  $0fe3-$1102 Grid Data
+  $1103-$1696 CurrentType
+  $1697-$1d4f Grid
+  $1d50-$1daa -Random
+  $1dab-$1ef2 Explosions
+  $1ef3-$1eff Rocks
+  $1f00-$25bf Queue
+  $25c0-$260f Panel
+  $2610-$289b Queue Data
+  $289c-$2f43 Player
+  $2f44-$35d3 Title
+  $35d4-$3994 Menu
+  $3995-$3bab Grid Visuals
   $3e00-$3dff Unnamed
-  $3e00-$3f4b Main
+  $3e00-$3f4e Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff RoundOver
-  $6900-$758c Round Over
-  $7600-$75ff Assets
-  $7600-$76ff Game Colours
-  $7700-$7ae7 Game Map
-  $7ae8-$7ecf Tower Map
-  $7ed0-$82b7 Menu Map
-  $82b8-$869f Settings Map
-  $86a0-$8a87 Instructions Map
-  $8a88-$8e6f Score Map
+  $6900-$765e Round Over
+  $7700-$76ff Assets
+  $7700-$77ff Game Colours
+  $7800-$7be7 Game Map
+  $7be8-$7fcf Tower Map
+  $7fd0-$83b7 Menu Map
+  $83b8-$879f Settings Map
+  $87a0-$8b87 Instructions Map
+  $8b88-$8f6f Score Map
   $9000-$9c63 sid
   $9d00-$9e2c Disk
   $a000-$9fff Unnamed
   $a000-$a0b3 Opponent Data
-  $a0b4-$a0fd AI
-  $a0fe-$a11d Scores
-  $a11e-$a153 Lookup
-  $a154-$a169 Rotations
-  $a16a-$a3dd Lookups
-  $a3de-$a633 Text
-  $a634-$aa59 Settings
-  $aa5a-$adcb Scoring
+  $a0b4-$a113 AI
+  $a114-$a133 Scores
+  $a134-$a16a Lookup
+  $a16b-$a180 Rotations
+  $a181-$a424 Lookups
+  $a425-$a685 Text
+  $a686-$aaab Settings
+  $aaac-$ae1d Scoring
   $b000-$b45c Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win
@@ -69,7 +69,7 @@ Default-segment:
   $e000-$eac0 Gypsy Code
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
-  $fa00-$fd4c Hi score_Code
+  $fa00-$fd68 Hi score_Code
   $ffff-$fffe End Of Memory
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

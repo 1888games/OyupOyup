@@ -51,14 +51,19 @@ OPPONENTS: {
 
 	Bean1_Slots:		.byte 072, 073, 074, 075, 076, 077, 078, 079, 080, 081, 082, 083, 072, 073, 074, 075, 076, 073, 074, 075, 076, 077
 	Bean2_Slots:		.byte 078, 079, 080, 081, 082, 083, 072, 073, 074, 075, 076, 077, 073, 074, 075, 076, 077, 072, 073, 074, 075, 076
-	BaseScore:			.byte 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 004, 004, 004, 004, 004, 004, 004, 004, 004, 004
+	BaseScore:			.byte 002, 002, 000, 002, 002, 002, 002, 002, 000, 002, 002, 002, 005, 003, 003, 005, 005, 005, 003, 003, 005, 005
+	Warning:			.byte 000, 000, 001, 000, 000, 000, 000, 000, 001, 000, 000, 000, 000, 003, 002, 000, 000, 000, 002, 003, 000, 000
+
 
 	* = * "Scores"
 	Scores:				.fill 32, 0
 
+
 	* = * "Lookup"
 
 	Lookup:				.fill 32, 0
+
+	RowsFreeColumn3:	.byte 0
 
 	XMove:				.byte 001, 002, 003, 004, 005, 006, 001, 002, 003, 004, 005, 006, 002, 003, 004, 005, 006, 001, 002, 003, 004, 005
 	//XMove:				.byte 254, 255, 000, 001, 002, 003, 254, 255, 000, 001, 002, 003, 255, 000, 001, 002, 003, 254, 255, 000, 001, 002
@@ -87,6 +92,7 @@ OPPONENTS: {
 		lda #0
 		sta CurrentIteration
 		sta WorstScore
+		sta RowsFreeColumn3
 
 		lda #1
 		sta Active
@@ -177,6 +183,14 @@ OPPONENTS: {
 					clc
 					adc Scores, x
 					sta Scores, x
+
+					lda Warning, x
+					beq CheckRight
+					cmp #3
+					bcs CheckRight
+
+					tya
+					sta RowsFreeColumn3
 
 				CheckRight:
 
@@ -303,6 +317,14 @@ OPPONENTS: {
 					adc Scores, x
 					sta Scores, x
 
+					lda Warning, x
+					beq CheckRight2
+					cmp #2
+					beq CheckRight2
+
+					tya
+					sta RowsFreeColumn3
+
 				CheckRight2:
 
 					ldx PlaceSlotIDs + 1
@@ -414,6 +436,15 @@ OPPONENTS: {
 			lda #0
 			sta CurrentIteration
 
+			// lda RowsFreeColumn3
+			// cmp #4
+			// bcs Okay
+
+			// .break
+			// nop
+
+			Okay:
+
 			jsr CalculateMove
 
 		Finish:
@@ -448,29 +479,42 @@ OPPONENTS: {
 
 		GotMove:
 
-
 		lda Lookup, x
 		tax
 
 		lda Scores, x
 		bne Valid
 
-		ldx #0
+		jmp ChooseBest
 
 		Valid:
 
-		lda XMove, x
-		sta PLAYER.TargetMove
-
-		lda Rotation, x
-		sta PLAYER.TargetRotation
-
+		lda RowsFreeColumn3
 		cmp #4
-		bcc Okay
+		bcs NoDanger
 
-		.break
-		nop
+		lda Warning, x
+		beq NoDanger
 
+		ChooseBest:
+
+			ldx #0
+			lda Lookup, x
+			tax
+
+		NoDanger:
+
+			lda XMove, x
+			sta PLAYER.TargetMove
+
+			lda Rotation, x
+			sta PLAYER.TargetRotation
+
+			cmp #4
+			bcc Okay
+
+			.break
+			nop
 
 		Okay:
 

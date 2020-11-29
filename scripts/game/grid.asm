@@ -1514,15 +1514,11 @@ GRID: {
 						adc #3
 						sta ScreenShakeTimer
 
-						ldx ZP.CurrentSlot
-						lda RocksAdjacent, x
-						ora #DOWN
-						sta RocksAdjacent, x
-
 						sfx(SFX_LAND)
 
 						AlreadyLanded:
 
+						
 						jmp Draw
 
 				NotAnimating:
@@ -1531,9 +1527,23 @@ GRID: {
 					cmp #LastRowID
 					beq CheckUp
 
+				CheckIfMatchBelow:
+
 					lda PlayerOne, x
 					cmp ZP.BeanColour
+					beq MatchBelow
+
+				CheckIfRockBelow:
+				
+					cmp #WHITE
 					bne CheckUp
+
+					ldx ZP.CurrentSlot
+					lda RocksAdjacent, x
+					ora #DOWN
+					sta RocksAdjacent, x
+					jmp CheckUp
+
 
 				MatchBelow:
 

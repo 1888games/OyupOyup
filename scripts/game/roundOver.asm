@@ -41,6 +41,8 @@ ROUND_OVER: {
 
 	GameOverDirection:	.byte 0
 	OverallWinner:	.byte 0
+	ContinueSeconds:	.byte 7
+
 
 
 	GameOverStartX:		.byte 45, 66, 87, 108
@@ -76,6 +78,9 @@ ROUND_OVER: {
 
 		lda #0
 		sta Stage
+
+		lda #5
+		sta ContinueSeconds
 
 		lda ROCKS.Opponent, y
 		sta Winner
@@ -237,7 +242,6 @@ ROUND_OVER: {
 		cmp #7
 		beq SpritesLeft
 
-
 		jmp Finish
 
 
@@ -364,6 +368,23 @@ ROUND_OVER: {
 
 		lda #7
 		sta Stage
+
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_SCENARIO
+		bne NotYet
+
+		lda CAMPAIGN.Continue
+		beq NotYet
+
+		lda CAMPAIGN.CurrentLevel
+		beq NotYet
+
+		lda ROCKS.FramesPerSecond
+		sta FrameTimer
+
+		sfx(SFX_CHICK)
+
+		jsr DrawContinue
 
 		NotYet:
 
@@ -584,8 +605,113 @@ ROUND_OVER: {
 	}
 
 
+
+	HandleContinue: {
+
+		ldy #1
+		lda INPUT.FIRE_UP_THIS_FRAME, y
+		beq NoFire
+
+		Restart:
+
+			jsr CAMPAIGN.Continue
+			lda #GAME_MODE_SWITCH_CAMPAIGN
+			sta MAIN.GameMode
+			rts
+
+		NoFire:
+
+			lda FlashTimer
+			beq ReduceSeconds
+
+			dec FlashTimer
+			rts
+
+		ReduceSeconds:
+
+			lda ROCKS.FramesPerSecond
+			sta FlashTimer
+
+			dec ContinueSeconds
+			lda ContinueSeconds
+			beq Timeout
+
+
+			sfx(SFX_CHICK)
+
+			jsr DrawContinue
+			rts
+
+		Timeout:
+
+		lda #0
+		sta CAMPAIGN.Continues
+		jsr DrawContinue
+		sfx(SFX_ROTATE)
+
+
+		rts
+	}
+
+	DrawContinue: {
+
+		lda #12
+		sta ZP.TextRow
+
+		lda #4
+		sta ZP.TextColumn
+
+		ldx #WHITE
+
+		lda #52
+
+		jsr TEXT.Draw
+
+		lda ContinueSeconds
+		jsr TEXT.ByteToDigits
+
+		lda #6
+		sta ZP.TextColumn
+
+		lda #14
+		sta ZP.TextRow
+
+		ldy #YELLOW+ 8
+		ldx #3
+		lda #0
+
+		jsr TEXT.DrawTallDigits
+
+		lda #42
+		sta SCREEN_RAM + 607
+		sta SCREEN_RAM + 608
+		sta SCREEN_RAM + 609
+
+		lda #YELLOW +8
+		sta COLOR_RAM +607
+		sta COLOR_RAM +608
+		sta COLOR_RAM + 609
+
+
+
+		rts
+	}
+
 	ExitGameOver: {
 
+		lda MENU.SelectedOption
+		cmp #PLAY_MODE_SCENARIO
+		bne NoContinue
+
+		lda CAMPAIGN.CurrentLevel
+		beq NoContinue
+
+		lda CAMPAIGN.Continues
+		beq NoContinue
+
+		jmp HandleContinue
+
+		NoContinue:
 
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y

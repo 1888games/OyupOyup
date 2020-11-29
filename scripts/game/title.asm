@@ -153,7 +153,7 @@ TITLE: {
 		WaitForRasterLine:
 
 			lda VIC.RASTER_LINE
-			cmp #175
+			cmp #173
 			bne WaitForRasterLine
 
 		lda #0

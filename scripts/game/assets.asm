@@ -8,7 +8,7 @@
  // * = $8000 "Game Map"
  //MAP: .import binary "../assets/blank - Map (20x13).bin"
 
- * = $7600 "Assets"
+ * = $7700 "Assets"
 
  * = * "Game Colours"
 CHAR_COLORS: .import binary "../../assets/puyo - CharAttribs.bin"

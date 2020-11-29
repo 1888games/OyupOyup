@@ -50,42 +50,16 @@ Error - CRT header invalid.
 CART: 'bin/main.prg' is not a valid CRT file.
 AUTOSTART: Loading PRG file `bin/main.prg' with direct RAM injection.
 AUTOSTART: Resetting the machine to autostart '*'
-VIC-II: VSP Bug: safe channels are: 12345. Emulation of memory corruption is disabled.
+VIC-II: VSP Bug: safe channels are: 024567. Emulation of memory corruption is disabled.
 AUTOSTART: `bin/main.prg' recognized as program/p00 file.
 Main CPU: starting at ($FFFC).
 Main CPU: RESET.
 Sound: Opened device `dx', speed 44100Hz, fragment size fms, buffer size 75ms
 reSID: MOS6581, filter on, sampling rate 44100Hz - fast
 Unit 8: RESET.
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-AUTOSTART: Injecting program data at $0700 (size $f64d)
+AUTOSTART: Injecting program data at $0700 (size $f669)
 AUTOSTART: Ready
 AUTOSTART: Starting program.
 AUTOSTART: Restoring FileSystemDevice8 to 0.
 AUTOSTART: Restoring FSDevice8ConvertP00 to 1.
 AUTOSTART: Done.
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Sound buffer overflow (cycle based)
-Sound: Warning - Buffer overflow warning repeated 25 times, will now be ignored

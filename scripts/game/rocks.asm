@@ -922,9 +922,6 @@ ROCKS: {
 
 	CalculateChainRocks: {
 
-		clc
-		adc RockLookupAdd
-
 		cmp #6
 		bcc Okay
 
@@ -941,6 +938,8 @@ ROCKS: {
 		lda PendingCount, x
 		clc
 		adc ChainLookup, y
+		clc
+		adc RockLookupAdd
 		sta PendingCount, x
 
 		lda Opponent, x
@@ -975,9 +974,7 @@ ROCKS: {
 		CalculateTableLookup:
 
 			pla
-			clc
-			adc RockLookupAdd
-
+			
 			cmp #6
 			bcc Okay
 
@@ -995,6 +992,8 @@ ROCKS: {
 			lda PendingCount, x
 			clc
 			adc ComboLookup, y
+			clc
+			adc RockLookupAdd
 			sta PendingCount, x
 
 			lda Opponent, x

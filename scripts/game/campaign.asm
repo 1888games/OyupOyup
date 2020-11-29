@@ -29,6 +29,7 @@ CAMPAIGN: {
 	CloudTimes:	.byte 3, 2, 1, 2, 3, 1
 
 	Complete:	.byte 0
+	Continues:	.byte 0
 
 
 	BeanTimer:	.byte 3
@@ -80,6 +81,9 @@ CAMPAIGN: {
 
 		lda #53
 		sta PlayerPointers
+
+		lda #2
+		sta Continues
 
 		lda #YELLOW
 		sta PlayerColours
@@ -141,7 +145,7 @@ CAMPAIGN: {
 			lda #15
 			sta RandomTimer
 
-			lda SETTINGS.BeanColours
+			lda #5
 			sta PANEL.MaxColours
 			sta PANEL.MaxColours + 1
 
@@ -157,6 +161,30 @@ CAMPAIGN: {
 	LevelUp: {
 
 
+
+
+		rts
+	}
+
+
+	Continue: {
+
+		dec Continues
+
+		ldx CurrentLevel
+		dex 
+
+		lda Levels, x
+		sta SCORING.PlayerOne + 2
+
+		lda Levels + 1, x
+		sta SCORING.PlayerOne + 1
+
+		lda Levels + 2, x
+		sta SCORING.PlayerOne
+
+		lda #0
+		sta Matches
 
 
 		rts

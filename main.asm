@@ -77,8 +77,12 @@ MAIN: {
 
 	//	.break
 		//jsr DISK.SAVE
-	
+		
+		jsr SetupVIC
 		jsr DISK.LOAD
+
+
+
 //	jsr DISK2.LOAD
 		//jsr DISK2.SAVE
 
@@ -163,7 +167,7 @@ MAIN: {
 	}
 
 
-	SetupVIC: {
+	SetupVIC: {  
 
 		//Set VIC BANK 3, last two bits = 00
 		lda VIC.BANK_SELECT

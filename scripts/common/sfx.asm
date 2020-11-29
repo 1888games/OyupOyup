@@ -222,8 +222,8 @@ whoosh:
 
 
 blip:
-//.import binary "../../Assets/sfx/short_low_blip.sfx"
- .import binary "../../Assets/sfx/bonus.snd" 
+.import binary "../../Assets/sfx/short_low_blip.sfx"
+// .import binary "../../Assets/sfx/bonus.snd" 
 
 
 hiss:

@@ -543,23 +543,43 @@ HI_SCORE:  {
 			lda INPUT.FIRE_UP_THIS_FRAME, y
 			beq NoFire
 
+			ldx ZP.StartID
+
 			inc InitialPosition
 			lda InitialPosition
 			cmp #3
-			bcc NoFire
+			beq Fire
 
-			lda #0
-			sta Mode
+			cmp #2
+			bne Second3
 
-		    sta $d404               // Sid silent 
-            sta $d404+7 
-            sta $d404+14 
+			Third3:
 
-			jsr DISK.SAVE	
+				lda #1
+				sta ThirdInitials, x
+				jsr PopulateTable
+				jmp NoFire
+
+			Second3:
+
+				lda #1
+				sta SecondInitials, x
+				jsr PopulateTable
+				jmp NoFire
+
+			Fire:
+
+				lda #0
+				sta Mode
+
+			    sta $d404               // Sid silent 
+	            sta $d404+7 
+	            sta $d404+14 
+
+				jsr DISK.SAVE	
 
 
 			NoFire:
-
 
 			jmp HiScoreLoop
 
