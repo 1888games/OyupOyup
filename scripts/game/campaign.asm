@@ -88,6 +88,19 @@ CAMPAIGN: {
 		lda #YELLOW
 		sta PlayerColours
 
+		lda Levels
+		sta NextLevel + 2
+		sta Remaining + 2
+
+
+		lda Levels + 1
+		sta NextLevel + 1
+		sta Remaining + 1
+
+		lda Levels + 2
+		sta NextLevel
+		sta Remaining
+
 		rts
 	}
 
@@ -173,6 +186,10 @@ CAMPAIGN: {
 
 		ldx CurrentLevel
 		dex 
+		txa
+		asl
+		asl
+		tax
 
 		lda Levels, x
 		sta SCORING.PlayerOne + 2

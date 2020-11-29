@@ -182,8 +182,8 @@ INPUT: {
 		beq CheckJoystick
 
 		lda #0
-		sta INPUT.FIRE_UP_THIS_FRAME, y
-		jmp Finish
+		//sta INPUT.FIRE_UP_THIS_FRAME, y
+		//jmp Finish
 
 		CheckJoystick:
 

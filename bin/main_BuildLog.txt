@@ -17,20 +17,20 @@ Default-segment:
   $080e-$0950 -Macros
   $0951-$0ad3 IRQ
   $0ad4-$0f18 Draw
-  $0f19-$0fe2 -Input
-  $0fe3-$1102 Grid Data
-  $1103-$1696 CurrentType
-  $1697-$1d4f Grid
-  $1d50-$1daa -Random
-  $1dab-$1ef2 Explosions
-  $1ef3-$1eff Rocks
-  $1f00-$25bf Queue
-  $25c0-$260f Panel
-  $2610-$289b Queue Data
-  $289c-$2f43 Player
-  $2f44-$35d3 Title
-  $35d4-$3994 Menu
-  $3995-$3bab Grid Visuals
+  $0f19-$0fdc -Input
+  $0fdd-$10fc Grid Data
+  $10fd-$1690 CurrentType
+  $1691-$1d49 Grid
+  $1d4a-$1da4 -Random
+  $1da5-$1eec Explosions
+  $1eed-$1ef9 Rocks
+  $1efa-$25b9 Queue
+  $25ba-$2609 Panel
+  $260a-$2895 Queue Data
+  $2896-$2f3d Player
+  $2f3e-$35cd Title
+  $35ce-$398e Menu
+  $398f-$3ba5 Grid Visuals
   $3e00-$3dff Unnamed
   $3e00-$3f4e Main
   $4000-$5f3f Bitmap Data
