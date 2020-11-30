@@ -25,7 +25,7 @@ OPPONENTS: {
 
 	.label SkillAdd = 0
 
-	Speed:		.fill 48, random() * 255
+	Speed:		.fill 48, 20 + random() * 235
 
 
 												  			// 180 - 205
@@ -489,6 +489,9 @@ OPPONENTS: {
 
 		Valid:
 
+		lda #0
+		sta PLAYER.CPUDanger
+
 		lda RowsFreeColumn3
 		cmp #4
 		bcs NoDanger
@@ -501,6 +504,9 @@ OPPONENTS: {
 			ldx #0
 			lda Lookup, x
 			tax
+
+			lda #1
+			sta PLAYER.CPUDanger
 
 		NoDanger:
 

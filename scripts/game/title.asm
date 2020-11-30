@@ -14,6 +14,7 @@ TITLE: {
 	Direction:		.byte 0,        0,      1,      0,      1,   0,     1,      0
 
 	FrameTimer:	.fill 8, 0
+	DoneFrame: .byte 0
 
 
 	Show: {	
@@ -150,14 +151,12 @@ TITLE: {
 
 	TitleLoop: {
 
-		WaitForRasterLine:
-
-			lda VIC.RASTER_LINE
-			cmp #173
-			bne WaitForRasterLine
+		lda MAIN.PerformFrameCodeFlag
+		beq TitleLoop
 
 		lda #0
 		sta cooldown
+		sta MAIN.PerformFrameCodeFlag
 
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y
@@ -175,6 +174,10 @@ TITLE: {
 		
 		
 	}
+
+
+
+
 
 
 

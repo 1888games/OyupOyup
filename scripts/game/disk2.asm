@@ -95,13 +95,14 @@ DISK: {
 
 
     		jsr MAIN.BankOutKernalandBasic
-    		jsr IRQ.Setup
-
+    
     		lda #255
     		sta VIC.SPRITE_ENABLE
 
     		lda #%00000001
     		sta IRQ.INTERRUPT_CONTROL
+
+            jsr IRQ.Setup
 
           //	.break
           	nop
@@ -195,13 +196,14 @@ DISK: {
             jsr K_clrchn 
 
     		jsr MAIN.BankOutKernalandBasic
-    		jsr IRQ.Setup
 
     		lda #255
     		sta VIC.SPRITE_ENABLE
 
     		lda #%00000001
     		sta IRQ.INTERRUPT_CONTROL
+
+             jsr IRQ.Setup
 
             rts
     error:
@@ -211,13 +213,15 @@ DISK: {
             jsr K_clrchn 
 
     		jsr MAIN.BankOutKernalandBasic
-    		jsr IRQ.Setup
-
+    	
     		lda #255
     		sta VIC.SPRITE_ENABLE
 
     		lda #%00000001
     		sta IRQ.INTERRUPT_CONTROL
+
+            jsr IRQ.Setup
+
             // Accumulator contains BASIC error code
 
             // most likely errors:

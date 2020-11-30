@@ -25,6 +25,7 @@ MAIN: {
 	#import "/scripts/common/rnd.asm"
 	#import "/scripts/game/explosions.asm"
 	#import "/scripts/game/rocks.asm"
+	#import "/scripts/game/combo.asm"
 	#import "/scripts/game/panel.asm"
 	#import "/scripts/game/player.asm"
 	#import "/scripts/game/title.asm"
@@ -208,7 +209,7 @@ MAIN: {
 
 		lda #WHITE
 		sta VIC.SPRITE_MULTICOLOR_2
-
+  
 		lda #0
 		sta VIC.SPRITE_0_Y
 		sta VIC.SPRITE_1_Y

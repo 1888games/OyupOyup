@@ -865,7 +865,7 @@ GRID: {
 				cmp #PLAY_MODE_PRACTICE
 				beq Finish
 
-						jsr ROCKS.StartTransfer
+						jsr ROCKS.DecideWhereToSendFlare
 
 				jmp Finish
 
@@ -873,7 +873,7 @@ GRID: {
 
 				ldy CurrentSide
 
-				jsr ROCKS.TransferToQueue
+				jsr ROCKS.TransferCountToQueue
 
 				ldx CurrentSide
 

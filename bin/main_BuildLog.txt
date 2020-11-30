@@ -24,13 +24,13 @@ Default-segment:
   $1d4a-$1da4 -Random
   $1da5-$1eec Explosions
   $1eed-$1ef9 Rocks
-  $1efa-$25b9 Queue
-  $25ba-$2609 Panel
-  $260a-$2895 Queue Data
-  $2896-$2f3d Player
-  $2f3e-$35cd Title
-  $35ce-$398e Menu
-  $398f-$3ba5 Grid Visuals
+  $1efa-$25c4 Queue
+  $25c5-$2614 Panel
+  $2615-$28a0 Queue Data
+  $28a1-$2f5a Player
+  $2f5b-$360b Title
+  $360c-$39cc Menu
+  $39cd-$3be3 Grid Visuals
   $3e00-$3dff Unnamed
   $3e00-$3f4e Main
   $4000-$5f3f Bitmap Data
@@ -56,10 +56,10 @@ Default-segment:
   $a114-$a133 Scores
   $a134-$a16a Lookup
   $a16b-$a180 Rotations
-  $a181-$a424 Lookups
-  $a425-$a685 Text
-  $a686-$aaab Settings
-  $aaac-$ae1d Scoring
+  $a181-$a42e Lookups
+  $a42f-$a68f Text
+  $a690-$aab5 Settings
+  $aab6-$ae27 Scoring
   $b000-$b45c Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win

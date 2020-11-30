@@ -59,6 +59,8 @@ PLAYER: {
 	CurrentMove:		.byte 0, 0
 	CurrentRotation:	.byte 0, 0
 
+	CPUDanger: .byte 0
+
 
 	Reset: {
 
@@ -277,7 +279,7 @@ PLAYER: {
 			// cmp #251
 			// bcs Rotate
 
-			 cmp #150
+			 cmp #140
 			 bcc Finish
 
 			 jsr RANDOM.Get
@@ -1433,8 +1435,24 @@ PLAYER: {
 		lda #PLAYER.PLAYER_STATUS_NORMAL
 		sta PLAYER.Status, y
 
+		cpy #0
+		beq Skip
+
+		lda CPUDanger
+		beq NoDanger
+
+		.break
+
+		lda #0
+		sta InitialAICooldown
+		jmp Skip
+
+		NoDanger:
+
 		lda #InitialAICooldownTime
 		sta InitialAICooldown
+
+		Skip:
 
 		lda #GRID_MODE_NORMAL
 		sta GRID.Mode, y

@@ -1,8 +1,6 @@
 ROCKS: {
 
-
 	* = * "Rocks"
-
 
 	.label FullCharID = 106
 	.label SingleCharID = 105
@@ -10,17 +8,13 @@ ROCKS: {
 	.label Stage1Time = 20
 	.label Stage2Time = 40
 	.label FrameTime = 6
-
-
 	.label ComboStartPointer = 44
 	.label ComboEndPointer  = 52
 	.label BlobStartPointer = 16
 	.label BlobEndPointer = 19
-
 	.label Stage2Speed = 8
 	.label Stage2Speed_Y = 6
 	
-
 
 	Count:			.byte 0, 0
 	PendingCount:	.byte 0, 0
@@ -46,8 +40,8 @@ ROCKS: {
 	StageTimer:		.byte 0, 0
 	FrameTimer:		.byte 0, 0
 	FrameDirection:	.byte 1, 1
-
-	StageTimes:		.byte 20, 40
+	LastColumn:		.byte 255, 255
+	StageTimes:		.byte 20
 
 	TargetXPos_MSB:	.byte 0, 0
 	TargetXPos_LSB:	.byte 0, 0
@@ -59,6 +53,8 @@ ROCKS: {
 	GridOffset:		.byte 0, 66
 
 	DropTimeout:	.byte 0
+
+
 	ClearColumn:	.byte 6, 30
 
 		
@@ -70,35 +66,38 @@ ROCKS: {
 	BackgroundColourOrder:	.byte PURPLE, YELLOW, CYAN, GREEN, PURPLE, YELLOW, CYAN, GREEN, PURPLE, YELLOW, CYAN, GREEN
 	BackgroundCharIDs:		.byte 34, 35, 38, 39
 
-	DropColumns:	.byte 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5
-	QueueOrder:		.byte 2, 3, 1, 4, 0, 5
+	DropColumns:			.byte 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5
+	QueueOrder:				.byte 2, 3, 1, 4, 0, 5
 
-	ColumnAdd:		.byte 2, 26
-	QueueOffset:	.byte 0, 6
-	Opponent:		.byte 1, 0
-	Colours:		.byte RED, BLUE
-	Colours2:		.byte LIGHT_RED, LIGHT_BLUE
-	TargetColumns:	.byte 7, 32
+	ColumnAdd:				.byte 2, 26
+	QueueOffset:			.byte 0, 6
+	Opponent:				.byte 1, 0
+	Colours:				.byte RED, BLUE
+	Colours2:				.byte LIGHT_RED, LIGHT_BLUE
+	TargetColumns:			.byte 7, 32
 
-	BaseLookup:		.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
-	ChainLookup:	.byte 0, 3, 10, 27, 68, 90		// 1 - 6
-	ComboLookup:	.byte 5, 14, 26, 41, 59 		// 1 - 6
+	BaseLookup:				.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
+	ChainLookup:			.byte 0, 3, 10, 27, 68, 90		// 1 - 6
+	ComboLookup:			.byte 5, 14, 26, 41, 59 		// 1 - 6
 
+	BaseScore:				.byte 5, 18, 28, 40, 54, 70, 88, 108, 130   //4-12
 
-	BaseScore:		.byte 5, 18, 28, 40, 54, 70, 88, 108, 130   //4-12
-	ChainScore:		.byte 24, 48, 96, 192, 255
-	ComboScore:		.byte 36, 72, 144, 216, 255
-
-	RockLookupAdd:	.byte 0
-	SecondsTimer:	.byte 0
-	SecondsCounter:	.byte 0
-	GameSeconds:	.byte 0
-	FramesPerSecond:	.byte 50
-	RampUpTime:		.byte 60
-
+	RockLookupAdd:			.byte 0
+	SecondsTimer:			.byte 0
+	SecondsCounter:			.byte 0
+	GameSeconds:			.byte 0
+	FramesPerSecond:		.byte 50
+	RampUpTime:				.byte 60
 
 
 	Reset: {
+
+		lda FramesPerSecond
+		sta SecondsTimer
+		sta LastColumn
+		sta LastColumn + 1
+
+
 
 		lda #0
 		sta Count + 0
@@ -109,14 +108,8 @@ ROCKS: {
 		sta FullCount
 		sta PendingCount
 		sta PendingCount + 1
-
-		lda FramesPerSecond
-		sta SecondsTimer
-
-		lda #0
 		sta GameSeconds
 		sta SecondsCounter
-		sta SecondsTimer
 		sta RockLookupAdd
 		sta DropTimeout
 		sta ComboTimer 
@@ -129,7 +122,6 @@ ROCKS: {
 		sta Mode + 1
 
 		ldx #0
-		lda #0
 
 		Loop:
 
@@ -143,26 +135,30 @@ ROCKS: {
 
 
 
-	StartTransfer: {
+	DecideWhereToSendFlare: {
 
-		lda #BlobStartPointer
-		sta SPRITE_POINTERS + 2, x
-		sta Frame, x
+		SetupSprite:
 
-		lda StageTimes
-		sta StageTimer, x
+			lda #BlobStartPointer
+			sta SPRITE_POINTERS + 2, x
+			sta Frame, x
 
-		lda #FrameTime
-		sta FrameTimer, x
+			lda StageTimes
+			sta StageTimer, x
 
-		lda #1
-		sta FrameDirection, x
+			lda #FrameTime
+			sta FrameTimer, x
 
-		lda Colours, x
-		sta VIC.SPRITE_COLOR_2, x
+			lda #1
+			sta FrameDirection, x
 
-		lda Count, x
-		beq HeadForOpponent
+			lda Colours, x
+			sta VIC.SPRITE_COLOR_2, x
+
+		CheckWhetherPlayerHasImminentRocks:
+
+			lda Count, x
+			beq HeadForOpponent
 
 		HeadForOwn:
 
@@ -224,7 +220,8 @@ ROCKS: {
 
 
 
-	TransferToQueue: {
+	TransferCountToQueue: {
+
 
 		ldy GRID.CurrentSide
 
@@ -244,6 +241,9 @@ ROCKS: {
 
 		AreRocks:
 
+		//.break
+
+
 			lda #1
 			sta Mode, y
 
@@ -260,9 +260,6 @@ ROCKS: {
 			sbc #6
 			bpl FullRow
 
-			lda #10
-			sta ZP.Amount
-
 			lda Count, y
 			tay
 
@@ -272,13 +269,11 @@ ROCKS: {
 				and #%00000111
 				cmp #6
 				bcs PartialLoop
-				cmp ZP.Amount
+				cmp LastColumn, y
 				beq PartialLoop
 
-				clc
-				adc ZP.Offset
-				sta ZP.Amount
-			
+				sta LastColumn, y
+
 				ldx GRID.CurrentSide
 				dec Count, x
 
@@ -318,7 +313,9 @@ ROCKS: {
 
 
 	
-	Delete: {
+	Delete: {	
+
+		ldx ZP.SlotID
 
 		lda #0
 		sta Frame, x
@@ -446,85 +443,132 @@ ROCKS: {
 
 		Arrived:
 
-			ldx ZP.X
+
+			stx ZP.SlotID
+			jsr FlareArrived
+
+
+		NotArrived:
+
+
+
+		rts
+	}
+
+
+
+
+	ClearFromOwnCount: {
+
+		lda Opponent, x
+		tay
+
+		lda Count, x
+		cmp PendingCount, y
+		bcc ClearAll
+
+		ClearPartial:
 
 			lda Count, x
-			beq ClearOpponent
+			sec
+			sbc PendingCount, y
+			sta Count, x
+
+			lda #0
+			sta PendingCount, y
+
+			dec GRID.NumberMoving, x
+
+			jsr Delete
+			rts
+
+		ClearAll:
+
+			lda PendingCount, y
+			sec
+			sbc Count, x
+			sta PendingCount, y
+
+			lda #0
+			sta Count, x
+
+			lda PendingCount, y
+			bne StillRocksLeft
+
+			jsr Delete
+			rts
+
+			StillRocksLeft:
+
+				lda Opponent, x
+				tax
+
+				lda TargetColumns, x
+				tay
+
+				lda Opponent, x
+				tax
+
+				lda EXPLOSIONS.XPosLSB, y
+				sta TargetXPos_LSB, x
+
+				lda EXPLOSIONS.XPosMSB, y
+				sta TargetXPos_MSB, x
+				rts
+
+
+
+
+		rts
+	}
+
+
+	FlareArrived: {
+
+		//.break
+
+		ldx ZP.X
+		beq Player1
+
+		Player2:
+
+			lda TargetXPos_MSB, x
+			bne ClearOwn
+		
+			jmp AddToOpponent
+
+		Player1:
+
+			lda TargetXPos_MSB, x
+			beq ClearOwn
+		
+
+			jmp AddToOpponent
+
+
+		ClearOwn:
+
+			jmp ClearFromOwnCount
+
+
+		AddToOpponent:
+
+			jsr Delete
+
+			ldx ZP.X
 
 			lda Opponent, x
 			tay
 
-			ClearOwn:
+			lda Count, y
+			clc
+			adc PendingCount, y
+			sta Count, y
 
-				lda Count, x
-				cmp PendingCount, y
-				bcc ClearAll
+			lda #0
+			sta PendingCount, y
 
-				ClearPartial:
-
-					lda Count, x
-					sec
-					sbc PendingCount, y
-					sta Count, x
-
-					lda #0
-					sta PendingCount, y
-
-					dec GRID.NumberMoving, x
-
-					jsr Delete
-					rts
-
-				ClearAll:
-
-					lda PendingCount, y
-					sec
-					sbc Count, x
-					sta PendingCount, y
-
-					lda #0
-					sta Count, x
-
-					lda Opponent, x
-					tax
-
-					lda TargetColumns, x
-					tay
-
-					lda Opponent, x
-					tax
-
-					lda EXPLOSIONS.XPosLSB, y
-					sta TargetXPos_LSB, x
-
-					lda EXPLOSIONS.XPosMSB, y
-					sta TargetXPos_MSB, x
-					rts
-
-			ClearOpponent:
-
-				jsr Delete
-
-				ldx ZP.X
-
-				lda Opponent, x
-				tax
-
-				lda Count, x
-				clc
-				adc PendingCount, x
-				sta Count, x
-
-				lda #0
-				sta PendingCount, x
-
-				lda Opponent, x
-				tax
-				dec GRID.NumberMoving, x
-
-
-
-		NotArrived:
+			dec GRID.NumberMoving, x
 
 
 
@@ -543,21 +587,18 @@ ROCKS: {
 		sta ZP.Column
 
 		lda Opponent, x
-		tax
+		tay
 
-		lda PendingCount, x
+		lda PendingCount, y
 		clc
 		adc #30
-		sta PendingCount, x
-
-		lda Opponent, x
-		tax
+		sta PendingCount, y
 
 		lda #67
 		sta ComboFrame, x
 
 		jsr StartCombo
-		jsr ROCKS.StartTransfer
+		jsr ROCKS.DecideWhereToSendFlare
 
 		ldx #0
 		sfxFromX()
@@ -1124,8 +1165,13 @@ ROCKS: {
 		lda #0
 		sta ZP.Okay
 
+		ldy ZP.Player
 		lda QueueOffset, y
 		tax
+		clc
+		adc #6
+		sta ZP.EndID
+
 
 		Loop:
 
@@ -1167,13 +1213,8 @@ ROCKS: {
 				ldx ZP.Column
 
 				inx
-				cpx #6
-				beq Finish
-
-				cpx #12
-				beq Finish
-
-				jmp Loop
+				cpx ZP.EndID
+				bcc Loop
 
 
 		Finish:

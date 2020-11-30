@@ -94,6 +94,7 @@ IRQ: {
 
 	PerformEveryFrame: {
 
+
 		lda ROCKS.FramesPerSecond
 		cmp #50
 		beq Okay
