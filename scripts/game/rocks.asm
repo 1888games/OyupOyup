@@ -53,9 +53,10 @@ ROCKS: {
 	GridOffset:		.byte 0, 66
 
 	DropTimeout:	.byte 0
+	OnWayToUs:		.byte 0, 0
 
 
-	ClearColumn:	.byte 6, 30
+	ClearColumn:	.byte 6, 34
 
 		
 	SpriteLookup:	.byte 0, 2, 4, 6, 8, 10, 12, 14
@@ -120,6 +121,8 @@ ROCKS: {
 		sta Stage + 1
 		sta Mode
 		sta Mode + 1
+		sta OnWayToUs
+		sta OnWayToUs + 1
 
 		ldx #0
 
@@ -173,11 +176,19 @@ ROCKS: {
 
 			lda EXPLOSIONS.XPosMSB, y
 			sta TargetXPos_MSB, x
+
+			lda #1
+			sta OnWayToUs, x 
+
 			jmp GetInitialPosition
 
 		HeadForOpponent:
 
 			ldy #0
+
+			lda #0
+			sta OnWayToUs, x 
+
 			lda EXPLOSIONS.YPos, y
 			sta TargetYPos, x
 
@@ -222,7 +233,6 @@ ROCKS: {
 
 	TransferCountToQueue: {
 
-
 		ldy GRID.CurrentSide
 
 		lda Count, y
@@ -234,6 +244,7 @@ ROCKS: {
 			sta PLAYER.Status, y
 
 			jsr PANEL.KickOff
+
 
 			lda #0
 			sta Mode, y
@@ -265,21 +276,31 @@ ROCKS: {
 
 			PartialLoop:
 
+				sty ZP.Amount	
+
+				ldy GRID.CurrentSide
+
+				Random:
+
 				jsr RANDOM.Get
 				and #%00000111
 				cmp #6
-				bcs PartialLoop
+				bcs Random
 				cmp LastColumn, y
-				beq PartialLoop
+				beq Random
 
 				sta LastColumn, y
+
+				clc
+				adc ZP.Offset
 
 				ldx GRID.CurrentSide
 				dec Count, x
 
 				tax
 				inc Queue, x
-	
+				
+				ldy ZP.Amount
 				dey
 				bne PartialLoop
 
@@ -463,6 +484,8 @@ ROCKS: {
 		lda Opponent, x
 		tay
 
+	//	.break
+
 		lda Count, x
 		cmp PendingCount, y
 		bcc ClearAll
@@ -478,6 +501,9 @@ ROCKS: {
 			sta PendingCount, y
 
 			dec GRID.NumberMoving, x
+
+			lda #0
+			sta OnWayToUs, x 
 
 			jsr Delete
 			rts
@@ -496,6 +522,10 @@ ROCKS: {
 			bne StillRocksLeft
 
 			jsr Delete
+
+			lda #0
+			sta OnWayToUs, x 
+
 			rts
 
 			StillRocksLeft:
@@ -577,6 +607,8 @@ ROCKS: {
 
 
 	GridCleared: {
+
+	//	.break
 
 		// x = player
 
@@ -1225,7 +1257,7 @@ ROCKS: {
 			lda DropTimeout
 			bne NotDone
 
-			lda #90
+			lda #150
 			sta DropTimeout
 
 			jmp NotDone
@@ -1244,6 +1276,7 @@ ROCKS: {
 			cmp #PLAYER.PLAYER_STATUS_END
 			beq NotDone
 
+			
 			jsr PANEL.KickOff
 		
 

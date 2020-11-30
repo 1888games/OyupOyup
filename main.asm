@@ -209,7 +209,7 @@ MAIN: {
 
 		lda #WHITE
 		sta VIC.SPRITE_MULTICOLOR_2
-  
+
 		lda #0
 		sta VIC.SPRITE_0_Y
 		sta VIC.SPRITE_1_Y

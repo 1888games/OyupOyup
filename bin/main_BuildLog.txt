@@ -19,18 +19,18 @@ Default-segment:
   $0ad4-$0f18 Draw
   $0f19-$0fdc -Input
   $0fdd-$10fc Grid Data
-  $10fd-$1690 CurrentType
-  $1691-$1d49 Grid
-  $1d4a-$1da4 -Random
-  $1da5-$1eec Explosions
-  $1eed-$1ef9 Rocks
-  $1efa-$25c4 Queue
-  $25c5-$2614 Panel
-  $2615-$28a0 Queue Data
-  $28a1-$2f5a Player
-  $2f5b-$360b Title
-  $360c-$39cc Menu
-  $39cd-$3be3 Grid Visuals
+  $10fd-$1692 CurrentType
+  $1693-$1d61 Grid
+  $1d62-$1dbc -Random
+  $1dbd-$1f04 Explosions
+  $1f05-$1f11 Rocks
+  $1f12-$2602 Queue
+  $2603-$2652 Panel
+  $2653-$28d7 Queue Data
+  $28d8-$2f91 Player
+  $2f92-$3642 Title
+  $3643-$3a03 Menu
+  $3a04-$3c1a Grid Visuals
   $3e00-$3dff Unnamed
   $3e00-$3f4e Main
   $4000-$5f3f Bitmap Data

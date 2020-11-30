@@ -158,16 +158,12 @@ PANEL: {
 
 		NotCPU:
 
-			lda FirstKickOff, y
-			beq Finish
-
-			lda #1
-			sta GRID.GridClear, y
 			
 		Finish:
 
 		lda #1
 		sta FirstKickOff, y
+		sta GRID.GridClearAllowed, y
 
 
 
@@ -497,6 +493,7 @@ PANEL: {
 
 		tay
 		lda Colours, y
+
 
 		ldy MasterQueuePosition
 		sta QueueValues, y

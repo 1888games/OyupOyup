@@ -1441,9 +1441,7 @@ PLAYER: {
 		lda CPUDanger
 		beq NoDanger
 
-		.break
-
-		lda #0
+		lda #10
 		sta InitialAICooldown
 		jmp Skip
 

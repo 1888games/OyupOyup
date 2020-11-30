@@ -62,6 +62,7 @@ GRID: {
 	CurrentSide:		.byte 0
 	InitialDrawDone:	.byte 0
 	GridClear:			.byte 255, 255
+	GridClearAllowed:	.byte 0, 0
 	BeanCount:			.byte 0, 0
 
 	CheckTimer:			.byte 0, 0
@@ -109,6 +110,8 @@ GRID: {
 		sta Combo + 1
 		sta GridClear
 		sta GridClear + 1
+		sta GridClearAllowed
+		sta GridClearAllowed + 1
 		sta BeanCount
 		sta BeanCount + 1
 
@@ -127,6 +130,7 @@ GRID: {
 
 		lda #1
 		sta Active + 1
+
 
 		NoSecondPlayer:
 		
@@ -444,6 +448,10 @@ GRID: {
 		beq AlreadyPopped
 		sta ZP.PreviousBeanColour
 
+		lda CurrentType, x
+		cmp #BeanPoppedType
+		beq AlreadyPopped
+
 		lda #BeanPoppedType
 		sta CurrentType, x
 
@@ -594,7 +602,7 @@ GRID: {
 		sta NumberPopped
 
 		ldx CurrentSide
-		bne NoStop
+		//bne NoStop
 
 	//	inc $d020
 	
@@ -603,14 +611,14 @@ GRID: {
 		// .break
 		// nop
 
-		lda ErrorCheck
-		beq NoStop
+		// lda ErrorCheck
+		// beq NoStop
 
-		.break
-		nop
+		// .break
+		// nop
 
-		lda #0
-		sta ErrorCheck
+		// lda #0
+		// sta ErrorCheck
 
 
 		
@@ -790,6 +798,7 @@ GRID: {
 
 			ItemsInQueue:
 
+				ldx ZP.SlotID
 				jmp CellLoop
 
 			NextCell:
@@ -873,18 +882,33 @@ GRID: {
 
 				ldy CurrentSide
 
-				jsr ROCKS.TransferCountToQueue
+				lda GRID.GridClearAllowed, y
+				beq NoCheck
 
-				ldx CurrentSide
+				lda #1
+				sta GridClear, y
 
 				lda #0
-				sta Combo, x
-				sta Active, x
+				sta GridClearAllowed, y
+
+				NoCheck:
+
+					lda ROCKS.OnWayToUs, y
+					bne Finish
+
+				Transfer:
 
 
+					jsr ROCKS.TransferCountToQueue
 
-				jsr SCORING.ResetMultipliers
-				jsr SCORING.DrawPlayer
+					ldx CurrentSide
+
+					lda #0
+					sta Combo, x
+					sta Active, x
+
+					jsr SCORING.ResetMultipliers
+					jsr SCORING.DrawPlayer
 
 				
 		Finish:
@@ -1018,6 +1042,8 @@ GRID: {
 		//jsr RANDOM.Get
 		//and #%00000111
 		//sta BeanCount, x
+
+		//.break
 
 		lda BeanCount, x
 		bne Finish

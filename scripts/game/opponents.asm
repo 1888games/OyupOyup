@@ -519,7 +519,7 @@ OPPONENTS: {
 			cmp #4
 			bcc Okay
 
-			.break
+		//	.break
 			nop
 
 		Okay:
