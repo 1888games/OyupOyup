@@ -1223,7 +1223,11 @@ PLAYER: {
 			pha
 			tax
 			lda GRID.PlayerOne, x
-			beq Finish
+			bne Skip
+
+			jmp Finish
+
+		Skip:
 
 			pla
 
@@ -1238,6 +1242,28 @@ PLAYER: {
 			lda GridPosition, y
 			sta ZP.GridPosition
 			tax
+
+			lda ZP.Player
+			beq Player1_
+
+			Player2_:
+
+			cpx #72
+			bcs NotRoundOver_
+
+				jsr LostRound
+				rts
+
+			Player1_:
+
+			cpx #180
+			bcc NotRoundOver_
+
+				jsr LostRound
+				rts
+
+			NotRoundOver_:
+
 			lda Beans, y
 			sta GRID.PlayerOne, x
 
@@ -1276,10 +1302,34 @@ PLAYER: {
 
 			sec
 			sbc #6
+		
 
 			Okay:
 
 			tax
+
+			lda ZP.Player
+			beq Player1
+
+			Player2:
+
+			cpx #72
+			bcs NotRoundOver
+
+				jsr LostRound
+				rts
+
+			Player1:
+
+			cpx #180
+			bcc NotRoundOver
+
+				jsr LostRound
+				rts
+
+			NotRoundOver:
+
+
 			lda Beans, y
 			sta GRID.PlayerOne, x
 

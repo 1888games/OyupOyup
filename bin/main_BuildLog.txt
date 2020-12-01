@@ -27,10 +27,10 @@ Default-segment:
   $1f12-$2602 Queue
   $2603-$2652 Panel
   $2653-$28d7 Queue Data
-  $28d8-$2f91 Player
-  $2f92-$3642 Title
-  $3643-$3a03 Menu
-  $3a04-$3c1a Grid Visuals
+  $28d8-$2fbc Player
+  $2fbd-$366d Title
+  $366e-$3a2e Menu
+  $3a2f-$3c45 Grid Visuals
   $3e00-$3dff Unnamed
   $3e00-$3f4e Main
   $4000-$5f3f Bitmap Data
