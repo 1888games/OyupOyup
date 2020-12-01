@@ -48,6 +48,8 @@ ZP: {
 	LookupAddress:		.word $00
 	CurrentSlotID:		.byte $00
 	FileStart:			.word $00
+	PoppedBean:			.byte $00
+	PoppedBeanNum:		.byte $00
 
 
 	

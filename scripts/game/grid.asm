@@ -83,6 +83,7 @@ GRID: {
 	NumberPopped:		.byte 0
 	Combo:				.byte 0, 0
 	ErrorCheck:			.byte 0
+	StartLayers:		.byte 0, 0
 
 
 
@@ -244,11 +245,19 @@ GRID: {
 
 		lda MENU.SelectedOption
 		cmp #PLAY_MODE_SCENARIO
-		beq Finish
+		beq Skip
+
+		lda SETTINGS.RockLayers
+		sta StartLayers
+
+		lda SETTINGS.RockLayers + 1
+		sta StartLayers + 1
+
+		Skip:
 
 		Player1:
 
-			lda SETTINGS.RockLayers
+			lda StartLayers
 			beq Player2
 
 			ldy #11
@@ -285,7 +294,7 @@ GRID: {
 		lda Active + 1
 		beq Finish
 
-		lda SETTINGS.RockLayers + 1
+		lda StartLayers + 1
 		beq Finish
 
 		ldy #11
@@ -452,9 +461,6 @@ GRID: {
 		cmp #BeanPoppedType
 		beq AlreadyPopped
 
-		lda #BeanPoppedType
-		sta CurrentType, x
-
 		CheckIfRock:
 
 			lda ZP.PreviousBeanColour
@@ -463,17 +469,23 @@ GRID: {
 
 		IsRock:
 
+		//	.break
+
 			lda #0
 			sta PlayerOne, x
 
 			jsr GRID_VISUALS.ClearSquare
 
-			jmp NoExplosion
+			jmp NoRockCheck
 
 		NotRock:
 
+			lda #BeanPoppedType
+			sta CurrentType, x
+
 			OnlyOneExplosionPerSet:
 
+			ldy ZP.PoppedBeanNum
 			cpy #1
 			bne NoExplosion
 
@@ -500,10 +512,6 @@ GRID: {
 
 		NoExplosion:
 
-			lda ZP.PreviousBeanColour
-			cmp #WHITE
-			beq NoRockCheck
-
 			jsr CheckRocks
 
 		NoRockCheck:
@@ -521,7 +529,7 @@ GRID: {
 		
 	CheckRocks: {
 
-		ldx ZP.TempX
+		ldx ZP.PoppedBean
 		lda RocksAdjacent, x
 		sta ZP.Adjacency
 		beq Finish
@@ -533,7 +541,7 @@ GRID: {
 
 			RockDown:
 
-				lda ZP.TempX
+				lda ZP.PoppedBean
 				clc
 				adc #6
 				tax
@@ -548,7 +556,7 @@ GRID: {
 
 			RockUp:
 
-				lda ZP.TempX
+				lda ZP.PoppedBean
 				sec
 				sbc #6
 				tax
@@ -563,7 +571,7 @@ GRID: {
 
 			RockLeft:
 
-				ldx ZP.TempX
+				ldx ZP.PoppedBean
 				dex
 
 				jsr PopBean
@@ -578,7 +586,7 @@ GRID: {
 
 			RockRight:
 
-				ldx ZP.TempX
+				ldx ZP.PoppedBean
 				inx
 
 				jsr PopBean
@@ -953,18 +961,20 @@ GRID: {
 			dey
 
 		Loop:
-			sty ZP.TempY
+			sty ZP.PoppedBeanNum
 
 			lda Matched, y
 			tax
-			stx ZP.TempX
+			stx ZP.PoppedBean
+
+			//.break
 
 			jsr PopBean
 
-			ldx ZP.TempX
+			ldx ZP.PoppedBean
 			jsr GRID_VISUALS.DrawBean
 
-			ldy ZP.TempY
+			ldy ZP.PoppedBeanNum
 			dey
 			bpl Loop
 
@@ -1454,6 +1464,22 @@ GRID: {
 				inc BeanCount, x
 				ldx ZP.CurrentSlot
 
+			CheckWhetherPopped:
+
+				lda PreviousType, x
+				bmi NotPopped
+				cmp #32
+				beq NotPopped
+				cmp #BeanFallingType
+				bcc NotPopped
+				beq NotPopped
+
+			Popped:
+			
+				jmp SolidBelow
+
+			NotPopped:
+
 				jsr CheckLeftBean
 
 			CheckDown:
@@ -1473,6 +1499,7 @@ GRID: {
 
 					lda PlayerOne, x
 					bne SolidBelow
+
 
 					jmp MoveBeanDown
 

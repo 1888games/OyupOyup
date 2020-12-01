@@ -1,11 +1,19 @@
 MENU: {
 
 
+	* = $eb00 "Menu" 
 
 	.label LogoStartPointer = 39
 	.label MaxYOffset = 13
 	.label ControlCooldown = 3
 	.label HiScoreSecondsShow = 10
+
+
+	Diff_Colours:	.byte 3, 4, 5, 6
+	Diff_Speed:		.byte 1, 2, 3, 4
+	Diff_Layers:	.byte 0, 0, 0, 2
+	Diff_Continues:	.byte 3, 2, 1, 0
+	Difficulty:		.byte 1
 
 	Colours:		.byte LIGHT_BLUE, LIGHT_RED, LIGHT_GREEN, YELLOW, PURPLE
 	Pointers:		.byte 39, 40, 41, 42, 43
@@ -14,12 +22,10 @@ MENU: {
 	XPos_MSB:		.byte 0, 0, 0, 0, 0
 	FrameTimer:		.fill 5, 0
 	FrameTime:		.byte 1, 1, 2, 1, 1
-
-	* = * "Menu"
+	Mode:			.byte 0
 
 	YOffset:		.byte 3, 12, 5, 7, 0
 	Direction:		.byte -1, 1, 1, -1, 1
-
 
 	PreviousOption:	.byte 0
 	SelectedOption:	.byte 0
@@ -35,12 +41,14 @@ MENU: {
 
 	HiScoreSeconds:	.byte 0
 	HiScoreTimer:	.byte 50
+	MaxRows:		.byte 5, 4
 
 
 
 	Show: {
 
 		lda #0
+		sta Mode
 		sta SelectedOption
 		sta PreviousOption
 		sta ControlTimer
@@ -49,6 +57,8 @@ MENU: {
 		sta SCORING.PlayerOne
 		sta SCORING.PlayerOne + 1
 		sta SCORING.PlayerOne + 2
+		sta VIC.SPRITE_DOUBLE_X
+		sta VIC.SPRITE_DOUBLE_Y
 
 		lda HI_SCORE.Unlocked
 		sta Unlocked
@@ -58,10 +68,6 @@ MENU: {
 
 		lda #BLACK
 		sta VIC.BACKGROUND_COLOUR
-
-		lda #0
-		sta VIC.SPRITE_DOUBLE_X
-		sta VIC.SPRITE_DOUBLE_Y
 
 		lda #CYAN
 		sta VIC.BORDER_COLOUR
@@ -79,12 +85,141 @@ MENU: {
 
 		lda #1
 		sta Active
+		sta Difficulty
 
 		
 		jmp MenuLoop
 
 	}
 
+
+
+	ShowDifficulty: {
+
+
+
+		ldx #0
+		ldy #0
+		sty Unlocked
+
+		lda #1
+		sta Mode
+
+		lda #<DIFF_MAP
+		sta ZP.LookupAddress
+
+		lda #>DIFF_MAP
+		sta ZP.LookupAddress + 1
+
+		lda #<SCREEN_RAM + 292
+		sta ZP.ScreenAddress
+
+		lda #>SCREEN_RAM + 292
+		sta ZP.ScreenAddress + 1
+
+		lda #<COLOR_RAM + 292
+		sta ZP.ColourAddress
+
+		lda #>COLOR_RAM + 292
+		sta ZP.ColourAddress + 1
+
+		Loop:
+
+			lda (ZP.LookupAddress), y
+			sta (ZP.ScreenAddress), y
+			
+			cpx #12
+			bcc NoColour
+
+			lda #WHITE
+			sta (ZP.ColourAddress), y
+
+
+
+			NoColour:
+
+			iny
+			cpy #16
+			bcc Loop
+
+			inx
+			cpx #17
+			bcs Done
+
+			lda ZP.LookupAddress
+			clc
+			adc #16
+			sta ZP.LookupAddress
+
+			lda ZP.LookupAddress + 1
+			adc #0
+			sta ZP.LookupAddress + 1
+
+			lda ZP.ScreenAddress
+			clc
+			adc #40
+			sta ZP.ScreenAddress
+
+			lda ZP.ScreenAddress + 1
+			adc #0
+			sta ZP.ScreenAddress + 1
+
+			lda ZP.ColourAddress
+			clc
+			adc #40
+			sta ZP.ColourAddress
+
+			lda ZP.ColourAddress + 1
+			adc #0
+			sta ZP.ColourAddress + 1
+
+			ldy #0
+			jmp Loop
+
+
+		Done:
+
+		lda #1
+		sta SelectedOption
+
+		jsr DrawSelection
+		jsr UpdateDifficultyLevels
+
+		
+
+
+		rts
+	}
+
+
+	UpdateDifficultyLevels: {
+
+		ldx SelectedOption
+
+		lda Diff_Colours, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 787
+
+		lda Diff_Speed, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 827
+
+		lda Diff_Layers, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 867
+
+
+		lda Diff_Continues, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 907
+
+
+		rts
+	}
 
 
 	MenuLoop: {
@@ -120,6 +255,13 @@ MENU: {
 
 	UpdateHiScore: {
 
+		lda Mode
+		beq Okay
+
+		rts
+
+		Okay:
+
 		lda HiScoreTimer
 		beq Ready
 
@@ -150,7 +292,49 @@ MENU: {
 
 
 
+	DifficultyScreen: {
+
+		ldx SelectedOption
+		lda Diff_Colours, x
+		sta PANEL.MaxColours
+		sta PANEL.MaxColours + 1
+
+		lda Diff_Speed, x
+		tay
+		dey
+		sty CAMPAIGN.DropSpeed
+		lda SETTINGS.DropSpeeds, y
+		sta PLAYER.CurrentAutoDropTime
+		sta PLAYER.CurrentAutoDropTime + 1
+
+		lda Diff_Layers, x
+		sta GRID.StartLayers
+
+		lda Diff_Continues, x
+		sta CAMPAIGN.Continues
+
+		lda #0
+		sta GRID.StartLayers + 1
+		sta SelectedOption
+
+		jsr CAMPAIGN.NewGame
+		jmp CAMPAIGN.Show
+
+		jmp MenuLoop
+
+	}
+
+
+
 	DecidePath: {
+
+		lda Mode
+		beq MenuScreen
+
+		jmp DifficultyScreen
+
+		MenuScreen:
+
 
 		lda SelectedOption
 		bne NoScenario
@@ -250,8 +434,10 @@ MENU: {
 
 		Scenario:
 
-			jsr CAMPAIGN.NewGame
-			jmp CAMPAIGN.Show
+			jsr ShowDifficulty
+		//	jsr CAMPAIGN.NewGame
+			//jmp CAMPAIGN.Show
+			jmp MenuLoop
 
 
 		Options:
@@ -299,7 +485,8 @@ MENU: {
 			jsr DeleteSelection
 			inc SelectedOption
 
-			lda #5
+			ldx Mode
+			lda MaxRows, x
 			clc
 			adc Unlocked
 			sta ZP.Amount
@@ -533,6 +720,14 @@ MENU: {
 			lda ZP.BeanColour
 			jsr DRAW.ColorCharacter
 
+
+		lda Mode
+		beq Finish
+
+		jsr UpdateDifficultyLevels
+
+
+		Finish:
 
 
 		rts

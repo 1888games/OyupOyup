@@ -8,7 +8,7 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$0034 Temp vars zero page
+  *$0002-$0036 Temp vars zero page
   $0700-$075d Hi score_Data
   $0800-$0800 Upstart
   $0801-$080d Basic
@@ -17,29 +17,29 @@ Default-segment:
   $080e-$0950 -Macros
   $0951-$0ad3 IRQ
   $0ad4-$0f18 Draw
-  $0f19-$0fdc -Input
-  $0fdd-$10fc Grid Data
-  $10fd-$1692 CurrentType
-  $1693-$1d61 Grid
-  $1d62-$1dbc -Random
-  $1dbd-$1f04 Explosions
-  $1f05-$1f11 Rocks
-  $1f12-$2602 Queue
-  $2603-$2652 Panel
-  $2653-$28d7 Queue Data
-  $28d8-$2fbc Player
-  $2fbd-$366d Title
-  $366e-$3a2e Menu
-  $3a2f-$3c45 Grid Visuals
+  $0f19-$0fe2 -Input
+  $0fe3-$1102 Grid Data
+  $1103-$169a CurrentType
+  $169b-$1d83 Grid
+  $1d84-$1dde -Random
+  $1ddf-$1f26 Explosions
+  $1f27-$1f33 Rocks
+  $1f34-$2624 Queue
+  $2625-$2674 Panel
+  $2675-$28f9 Queue Data
+  $28fa-$2fde Player
+  $2fdf-$3665 Title
+  $3700-$3916 Grid Visuals
+  $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
-  $3e00-$3f4e Main
+  $3e00-$3f53 Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff RoundOver
-  $6900-$765e Round Over
+  $6900-$7664 Round Over
   $7700-$76ff Assets
   $7700-$77ff Game Colours
   $7800-$7be7 Game Map
@@ -58,8 +58,8 @@ Default-segment:
   $a16b-$a180 Rotations
   $a181-$a42e Lookups
   $a42f-$a68f Text
-  $a690-$aab5 Settings
-  $aab6-$ae27 Scoring
+  $a690-$aab7 Settings
+  $aab8-$ae29 Scoring
   $b000-$b45c Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win
@@ -67,6 +67,7 @@ Default-segment:
   $c400-$d27f Sprites
   $d280-$d87f Gyspy Sprites
   $e000-$eac0 Gypsy Code
+  $eb00-$efe9 Menu
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
   $fa00-$fd68 Hi score_Code

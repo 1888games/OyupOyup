@@ -55,10 +55,9 @@ MAIN: {
 		//#import "/scripts/game/disk.asm"
 		#import "/scripts/game/disk2.asm"
 
+
+
 	* = $3e00
-
-
-
 	* = * "Main"
 
 	GameActive: 			.byte 0
@@ -82,6 +81,8 @@ MAIN: {
 		jsr SetupVIC
 		jsr DISK.LOAD
 
+		lda #1
+		jmp MENU.Show
 
 
 //	jsr DISK2.LOAD
@@ -379,4 +380,4 @@ MAIN: {
 
 
 
-}
+}  

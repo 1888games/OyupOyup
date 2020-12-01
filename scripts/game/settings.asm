@@ -15,7 +15,7 @@ SETTINGS: {
 	.label ControlCooldown = 10
 
 	Min:			.byte 1, 0, 3, 1, 0
-	Max:			.byte 8, 6, 6, 5, 47
+	Max:			.byte 9, 6, 6, 5, 47
 
 	OptionColours:	.byte YELLOW + 8 ,  GREEN +8, CYAN + 8, PURPLE + 8,BLUE + 8, RED+ 8 
 
@@ -25,6 +25,7 @@ SETTINGS: {
 	SettingColumns:		.byte 4, 35
 	TextColumns:		.byte 5, 31
 
+
 	.label UP = 0
 	.label DOWN = 1
 	.label LEFT = 2
@@ -33,8 +34,8 @@ SETTINGS: {
 
 	OptionCharType:	.byte 0, 0
 
-	DropSpeeds:		.byte 18, 16, 14, 12, 10, 8, 6, 4
-	DropSpeedsNTSC:	.byte 3,  3,  3,  2,  2,  2, 1, 1
+	DropSpeeds:		.byte 24, 21, 18, 15, 12, 10, 8, 6, 4
+	DropSpeedsNTSC:	.byte 3,  3,  3,  3,  2,  2, 1, 1, 1
 
 	CheatTracker:	.byte UP, FIRE, DOWN, FIRE, LEFT, FIRE, RIGHT, FIRE
 	CheatProgress: .byte 0

@@ -53,6 +53,7 @@ CAMPAIGN: {
 	RandomChoices:	.byte 20
 	RandomTimer:	.byte 20
 	RandomTimes:	.byte 35, 25, 20, 15, 10, 5, 3
+	DropSpeed:		.byte 1
 
 
 
@@ -76,14 +77,8 @@ CAMPAIGN: {
 		lda #0
 		sta Complete
 
-		lda SETTINGS.DropSpeeds
-		sta PLAYER.CurrentAutoDropTime
-
 		lda #53
 		sta PlayerPointers
-
-		lda #2
-		sta Continues
 
 		lda #YELLOW
 		sta PlayerColours
@@ -158,12 +153,18 @@ CAMPAIGN: {
 			lda #15
 			sta RandomTimer
 
-			lda #5
-			sta PANEL.MaxColours
-			sta PANEL.MaxColours + 1
+			lda CurrentLevel
+			clc
+			adc DropSpeed
+			cmp #10
+			bcc Okay
 
-			ldx CurrentLevel
-			lda SETTINGS.DropSpeeds
+			lda #9
+
+			Okay:
+
+			tax
+			lda SETTINGS.DropSpeeds, x
 			sta PLAYER.CurrentAutoDropTime
 			sta PLAYER.CurrentAutoDropTime + 1
 

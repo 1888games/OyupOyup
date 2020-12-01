@@ -655,6 +655,13 @@ ROUND_OVER: {
 
 	DrawContinue: {
 
+		lda CAMPAIGN.Continues
+		bne Okay
+
+		rts
+
+		Okay:
+
 		lda #12
 		sta ZP.TextRow
 
