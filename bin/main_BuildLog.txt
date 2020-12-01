@@ -32,7 +32,7 @@ Default-segment:
   $3700-$3916 Grid Visuals
   $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
-  $3e00-$3f53 Main
+  $3e00-$3f4e Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data

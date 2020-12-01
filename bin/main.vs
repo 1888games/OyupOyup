@@ -74,7 +74,7 @@ al C:8 .BLACK_MULTI
 al C:e095 .SpeedChangeTimer
 al C:16 .TotalIterations
 al C:e577 .NotReadyRight
-al C:3eef .SwitchMenu
+al C:3eea .SwitchMenu
 al C:74b7 .PlayerTwoLevelUp
 al C:26a1 .Offsets
 al C:efea .GRID_VISUALS
@@ -95,7 +95,7 @@ al C:293a .ControlPorts
 al C:c7f .TowerScreen
 al C:6deb .AddScoreToRemaining
 al C:a .GravityForce
-al C:3eeb .NotCampaign
+al C:3ee6 .NotCampaign
 al C:951 .MemoryAddresses
 al C:2759 .AlreadyAtY
 al C:1f66 .SpriteLookup
@@ -118,14 +118,14 @@ al C:3033 .SetupSprites__0
 al C:ef41 .SetupSprites__1
 al C:a71f .SetupSprites__2
 al C:e674 .SetupSprites__3
-al C:3e88 .SetupSprites__4
+al C:3e83 .SetupSprites__4
 al C:197e .MatchToDown
 al C:e002 .LivesLeft
 al C:eca7 .DifficultyScreen
 al C:3820 .ClearSquare
 al C:3099 .SetupVIC__0
 al C:e5fe .SetupVIC__1
-al C:3e70 .SetupVIC__2
+al C:3e6b .SetupVIC__2
 al C:e01a .ExtendedPlay
 al C:1cae .Animating
 al C:1f27 .ROCKS
@@ -138,7 +138,7 @@ al C:ffd5 .K_load
 al C:a70d .SetSpeedsNTSC
 al C:ef33 .Hide
 al C:a0fe .Warning
-al C:3f4b .BankInKernal
+al C:3f46 .BankInKernal
 al C:b80 .Draw__0
 al C:cce .Draw__1
 al C:1d51 .Draw__2
@@ -175,7 +175,7 @@ al C:6e05 .TryTen
 al C:80f .PlaySfx
 al C:efd6 .Make255
 al C:fcde .NextColour
-al C:3e23 .DetectMachine
+al C:3e1e .DetectMachine
 al C:e00e .ScoreHigh
 al C:fd02 .Four
 al C:286b .AddToQueue
@@ -396,7 +396,7 @@ al C:5 .GAME_MODE_SWITCH_MENU
 al C:1cf7 .NotAnimating
 al C:21c5 .SetTarget
 al C:fb12 .Names
-al C:3f1c .NotGame
+al C:3f17 .NotGame
 al C:aad0 .CurrentBeans
 al C:1a .PlayerTwoStartColumn
 al C:ab00 .ChainPower2P
@@ -521,7 +521,7 @@ al C:825 .music_on
 al C:fe3 .PlayerOne__0
 al C:a794 .PlayerOne__1
 al C:aac1 .PlayerOne__2
-al C:3e41 .PAL
+al C:3e3c .PAL
 al C:c38 .ColorCharacter
 al C:1d77 .Right_Down_Up
 al C:18 .FlashBigTime
@@ -787,7 +787,7 @@ al C:e753 .Finish__103
 al C:e867 .Finish__104
 al C:ea2a .Finish__105
 al C:eac0 .Finish__106
-al C:3e41 .Finish__107
+al C:3e3c .Finish__107
 al C:c .Rows__0
 al C:314b .Rows__1
 al C:ae02 .Rows__2
@@ -1073,7 +1073,7 @@ al C:7649 .ShowRest
 al C:1d85 .Get
 al C:a4c4 .Na09
 al C:e669 .SetupGameColours__0
-al C:3ebc .SetupGameColours__1
+al C:3eb7 .SetupGameColours__1
 al C:a9b8 .SettingsColours
 al C:a4b0 .Na05
 al C:a4b5 .Na06
@@ -1257,7 +1257,7 @@ al C:1746 .UpdateLeftSide
 al C:6d4e .DrawContinue
 al C:25d6 .DrawLoop
 al C:ea64 .NotMenu__0
-al C:3f10 .NotMenu__1
+al C:3f0b .NotMenu__1
 al C:1b84 .CheckLeftBean
 al C:1b72 .IfMinusCantBe
 al C:d02e .SPRITE_COLOR_7
@@ -1343,7 +1343,7 @@ al C:12b3 .PlayerLookup
 al C:2d8b .DeleteBeans
 al C:e7f1 .Menu
 al C:9d00 .SAVE
-al C:3efe .HiScore
+al C:3ef9 .HiScore
 al C:a213 .SaveFreeRows
 al C:6c23 .NoWinner__0
 al C:712f .NoWinner__1
@@ -1412,7 +1412,7 @@ al C:22 .Player
 al C:6c30 .Explosion
 al C:2 .MaxSprites
 al C:ba40 .WIN_BOTTOM
-al C:3f42 .BankOutKernalandBasic
+al C:3f3d .BankOutKernalandBasic
 al C:a6d5 .CheatProgress
 al C:7207 .RandomExplosion
 al C:824 .Skip__0
@@ -1544,7 +1544,7 @@ al C:e888 .DisplayEggText
 al C:2c85 .DownToUp
 al C:fb41 .Score__0
 al C:e154 .Score__1
-al C:3e36 .NTSC
+al C:3e31 .NTSC
 al C:21f0 .ClearFromOwnCount
 al C:2 .GRID_MODE_CHECK
 al C:1fda .RampUpTime
@@ -1656,7 +1656,7 @@ al C:e908 .Loop__70
 al C:e945 .Loop__71
 al C:ea85 .Loop__72
 al C:eaa7 .Loop__73
-al C:3ed1 .Loop__74
+al C:3ecc .Loop__74
 al C:17f4 .DummyBeans
 al C:eb35 .YOffset
 al C:1fd8 .GameSeconds
@@ -1688,7 +1688,7 @@ al C:b .CYAN_MULTI
 al C:e5f7 .ClampLeft
 al C:fca2 .FrameCode__0
 al C:ea2b .FrameCode__1
-al C:3f1f .FrameCode__2
+al C:3f1a .FrameCode__2
 al C:1769 .StartingRocks
 al C:a3ab .Valid
 al C:2 .ZP
@@ -1715,7 +1715,7 @@ al C:ef92 .MSB__5
 al C:e70a .MSB__6
 al C:e740 .MSB__7
 al C:a39 .Paused__0
-al C:3f3f .Paused__1
+al C:3f3a .Paused__1
 al C:1 .PROCESSOR_PORT
 al C:5 .ColourAddress
 al C:2d41 .GetColour__0
@@ -1762,7 +1762,7 @@ al C:19 .GridPosition__0
 al C:28fe .GridPosition__1
 al C:0 .CharacterSetStart__0
 al C:ce .CharacterSetStart__1
-al C:3e42 .StartGame
+al C:3e3d .StartGame
 al C:a2f6 .CheckLeft2
 al C:a .PointsPerBean
 al C:6c73 .Flash
@@ -2009,7 +2009,7 @@ al C:3666 .MENU
 al C:1f62 .OnWayToUs
 al C:1 .SpeedReduceTime
 al C:ae25 .PositionLookup
-al C:3ee3 .SwitchCampaign
+al C:3ede .SwitchCampaign
 al C:aace .CurrentMultiplier
 al C:6c07 .TwoPlayerUpdate
 al C:32b6 .Make73
@@ -2121,7 +2121,7 @@ al C:9d89 .DELETE
 al C:1ab4 .NotChecking
 al C:18a8 .NoRockCheck
 al C:6b59 .UpdateSprites
-al C:3edc .CheckSwitchMode
+al C:3ed7 .CheckSwitchMode
 al C:971 .NMI
 al C:16fa .NoSecondPlayer
 al C:1ddf .EXPLOSIONS
@@ -2148,9 +2148,9 @@ al C:e2b6 .NoWrap__0
 al C:e305 .NoWrap__1
 al C:e5e8 .NoWrap__2
 al C:18b1 .CheckRocks
-al C:3e23 .w0
+al C:3e1e .w0
 al C:d007 .SPRITE_3_Y
-al C:3e26 .w1
+al C:3e21 .w1
 al C:d006 .SPRITE_3_X
 al C:182c .StartCheck
 al C:972 .Setup
@@ -2306,7 +2306,7 @@ al C:adfc .Screen
 al C:6b7e .NoFrameUpdate
 al C:e260 .Rest
 al C:d015 .SPRITE_ENABLE
-al C:3f08 .NoHighScore
+al C:3f03 .NoHighScore
 al C:2 .Colours__0
 al C:1fb2 .Colours__1
 al C:2627 .Colours__2

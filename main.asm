@@ -81,8 +81,8 @@ MAIN: {
 		jsr SetupVIC
 		jsr DISK.LOAD
 
-		lda #1
-		jmp MENU.Show
+		//lda #1
+		//jmp MENU.Show
 
 
 //	jsr DISK2.LOAD
@@ -246,7 +246,7 @@ MAIN: {
 		sta VIC.EXTENDED_BG_COLOR_2
 
 
-
+ 
 		rts
 
 	
