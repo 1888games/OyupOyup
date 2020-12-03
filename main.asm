@@ -95,7 +95,7 @@ MAIN: {
 
 		//jmp GYPSY.Show
 		//jmp HI_SCORE.Show
-		jmp TITLE.Show
+	//	jmp TITLE.Show
 		// jmp SETTINGS.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
@@ -152,15 +152,14 @@ MAIN: {
 		jsr SetupVIC
 		jsr SetupSprites
 
-		jsr DRAW.GameScreen
-		 	
+		jsr DRAW.GameScreen	
 		jsr EXPLOSIONS.Reset
-		jsr GRID.Reset
 		jsr PANEL.Reset
 		jsr PLAYER.Reset
 		jsr ROCKS.Reset
 		jsr SCORING.Reset
 		jsr ROUND_OVER.Reset
+		jsr GRID.Reset
 
 
 		jmp Loop

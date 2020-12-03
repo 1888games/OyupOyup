@@ -125,12 +125,19 @@ GRID: {
 		sta MAIN.GameActive
 		sta Active
 
+		lda #STATE_SETUP_NEW_BEANS
+		sta PLAYER.State
+
 		lda MENU.SelectedOption
 		cmp #PLAY_MODE_PRACTICE
 		beq NoSecondPlayer
 
 		lda #1
 		sta Active + 1
+
+
+		lda #STATE_SETUP_NEW_BEANS
+		sta PLAYER.State + 1
 
 
 		NoSecondPlayer:
@@ -143,11 +150,8 @@ GRID: {
 		jsr DRAW.GameOpponentName
 		jsr DRAW.GameTitle
 
-		
 
-		
-		
-
+	
 
 		rts
 	}
@@ -418,8 +422,8 @@ GRID: {
 
 	StartCheck: {
 
-		lda #GRID_MODE_WAIT_CHECK
-		sta Mode, x
+		lda #STATE_AWAIT_CHECK_MATCHES
+		sta PLAYER.State, x
 
 		lda BottomRightIDs, x
 		sta CheckProgress, x
@@ -862,6 +866,9 @@ GRID: {
 
 				ldx CurrentSide
 
+				lda #STATE_DELIVER_ROCKS
+				sta PLAYER.State, x
+
 				lda #PLAYER.PLAYER_STATUS_WAIT
 				sta PLAYER.Status, x
 
@@ -870,13 +877,6 @@ GRID: {
 
 				jsr SCORING.CalculateMultiplier
 
-				// jsr StartCheck
-
-				// lda #CheckTime
-				// asl
-				// asl
-				// asl
-				// sta CheckTimer, x
 
 				lda MENU.SelectedOption
 				cmp #PLAY_MODE_PRACTICE
@@ -913,7 +913,7 @@ GRID: {
 
 					lda #0
 					sta Combo, x
-					sta Active, x
+					//sta Active, x
 
 					jsr SCORING.ResetMultipliers
 					jsr SCORING.DrawPlayer
@@ -996,8 +996,8 @@ GRID: {
 
 	UpdateReadyToCheck: {
 
-		lda Mode, x
-		cmp #GRID_MODE_WAIT_CHECK
+		lda PLAYER.State, x
+		cmp #STATE_AWAIT_CHECK_MATCHES
 		bne Finish
 
 		WaitingForCheck:
@@ -1010,18 +1010,15 @@ GRID: {
 
 		ReadyToCheck:
 
-			lda #GRID_MODE_CHECK
-			sta Mode, x
+			lda #STATE_CHECK_MATCHES
+			sta PLAYER.State, x
 
-
-		Finish:
-
-			cmp #GRID_MODE_CHECK
-			bne NotChecking
+			.break
 
 			jmp Scan
 
-		NotChecking:
+		Finish:
+
 
 
 		rts
@@ -1086,13 +1083,6 @@ GRID: {
 
 		NoClearCheck:
 
-		lda Mode, x
-		cmp #GRID_MODE_WAIT_CHECK
-		beq StillMoving
-
-		cmp #GRID_MODE_CHECK
-		beq StillMoving
-
 		lda NumberMoving, x
 		bne StillMoving
 
@@ -1108,9 +1098,6 @@ GRID: {
 				rts
 
 			NotGameOver:
-
-				lda #PLAYER.PLAYER_STATUS_WAIT
-				sta PLAYER.Status, x
 
 				jsr StartCheck
 
@@ -1136,6 +1123,10 @@ GRID: {
 		beq Finish
 
 		jsr UpdateReadyToCheck
+
+		lda PLAYER.State, x
+		cmp #STATE_AWAIT_FALL
+		bne EndLoop
 
 		NormalMode:
 

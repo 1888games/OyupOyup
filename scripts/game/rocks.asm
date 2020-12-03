@@ -137,6 +137,56 @@ ROCKS: {
 	}
 
 
+	FrameUpdate: {
+
+		jsr UpdateTime
+		jsr UpdateCombo
+		jsr UpdateOrb
+
+		ldx #0
+
+		Loop:	
+
+			stx ZP.Player
+
+			lda PLAYER.State, x
+			cmp #STATE_AWAIT_FALL
+			bne NoDrop
+
+			Drop:	
+
+				cmp #2
+				beq EndLoop
+
+				ldy ZP.Player
+				jsr TryQueue
+				ldx ZP.Player
+
+			NoDrop:
+
+				lda Count, x
+				cmp PreviousCount, x
+				beq EndLoop
+
+				jsr Draw
+
+				ldx ZP.Player
+
+				lda Count, x
+				sta PreviousCount, x
+
+			EndLoop:
+
+				inx	
+				cpx #2
+				bcc Loop
+
+
+		rts
+	}
+
+
+
 
 	DecideWhereToSendFlare: {
 
@@ -243,17 +293,14 @@ ROCKS: {
 			lda #1
 			sta PLAYER.Status, y
 
-			jsr PANEL.KickOff
-
+			lda #STATE_SETUP_NEW_BEANS
+			sta PLAYER.State, y
 
 			lda #0
 			sta Mode, y
 			rts
 
 		AreRocks:
-
-		//.break
-
 
 			lda #1
 			sta Mode, y
@@ -323,7 +370,11 @@ ROCKS: {
 				jmp Loop
 
 
+
 		Finish:
+
+			lda #STATE_AWAIT_FALL
+			sta PLAYER.State, y
 
 			ldx GRID.CurrentSide
 			lda #0
@@ -580,7 +631,6 @@ ROCKS: {
 
 			jmp ClearFromOwnCount
 
-
 		AddToOpponent:
 
 			jsr Delete
@@ -597,9 +647,6 @@ ROCKS: {
 
 			lda #0
 			sta PendingCount, y
-
-			dec GRID.NumberMoving, x
-
 
 
 		rts
@@ -1123,77 +1170,10 @@ ROCKS: {
 		rts
 	}
 
-	FrameUpdate: {
-
-		jsr UpdateTime
-		jsr UpdateCombo
-		jsr UpdateOrb
-
-		ldx #0
-
-		Loop:	
-
-			stx ZP.Player
-
-			lda FailsafeTimer, x
-			beq Okay
-
-
-
-
-			Okay:
-
-			lda Mode, x
-			beq NoDrop
-
-			Drop:	
-
-				cmp #2
-				beq EndLoop
-
-				ldy ZP.Player
-				jsr TryQueue
-				ldx ZP.Player
-
-			NoDrop:
-
-				lda Count, x
-				cmp PreviousCount, x
-				beq EndLoop
-
-				jsr Draw
-
-				ldx ZP.Player
-
-				lda Count, x
-				sta PreviousCount, x
-
-			EndLoop:
-
-				inx	
-				cpx #2
-				bcc Loop
-
-
-		rts
-	}
-
 
 	TryQueue: {
 
-		lda DropTimeout
-		beq Okay2
-
-		dec DropTimeout
-		lda DropTimeout
-		bne Okay2
-
-		sty ZP.Player
-		jsr PLAYER.LostRound
-		rts
-
-		Okay2:
-
+	
 		lda #0
 		sta ZP.Okay
 
@@ -1254,40 +1234,40 @@ ROCKS: {
 			lda ZP.Okay
 			beq Done
 
-			lda DropTimeout
-			bne NotDone
+			// lda DropTimeout
+			// bne NotDone
 
-			lda #150
-			sta DropTimeout
+			// lda #90
+			// sta DropTimeout
 
 			jmp NotDone
 
 		Done:
 
-			lda #0
-			sta DropTimeout
+			// lda #0
+			// sta DropTimeout
 
-			//.break
-			ldy ZP.Player
-			lda #0
-			sta Mode, y
+			// //.break
+			// ldy ZP.Player
+			// lda #0
+			// sta Mode, y
 
-			lda PLAYER.Status, y
-			cmp #PLAYER.PLAYER_STATUS_END
-			beq NotDone
+			// lda PLAYER.Status, y
+			// cmp #PLAYER.PLAYER_STATUS_END
+			// beq NotDone
 
 			
-			jsr PANEL.KickOff
+			//jsr PANEL.KickOff
 		
 
 		NotDone:
 
-			ldy ZP.Player
-			lda #GRID_MODE_NORMAL
-			sta GRID.Mode, y
+			// ldy ZP.Player
+			// lda #GRID_MODE_NORMAL
+			// sta GRID.Mode, y
 
-			lda #1
-			sta GRID.Active, y
+			// lda #1
+			// sta GRID.Active, y
 
 
 

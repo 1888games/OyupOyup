@@ -44,6 +44,8 @@ PANEL: {
 	FrameTimer:	.byte 0, 0
 	Offsets:	.byte 0, 4
 
+	FailSafe:	.byte 255, 255
+
 
 
 	Reset: {
@@ -61,6 +63,9 @@ PANEL: {
 		sta FirstKickOff
 		sta FirstKickOff + 1
 
+		lda #255
+		sta FailSafe
+		sta FailSafe + 1
 
 		jsr FillQueue
 		jsr StartMove
@@ -114,24 +119,23 @@ PANEL: {
 
 			stx ZP.Player
 
-			lda Mode, x
-			beq EndLoop
+			lda PLAYER.State, x
+			cmp #STATE_SETUP_NEW_BEANS
+			bne NotNew	
 
+			jsr KickOff
+			jmp EndLoop
+
+			NotNew:
+
+			cmp #STATE_NEW_BEANS
+			bne EndLoop
+		
 			jsr MoveBeans
-
 
 			ldx ZP.Player
 
 			EndLoop:
-
-			//jsr RANDOM.Get
-			//cmp #1
-			//bcs NoForce
-
-			//lda #1
-			//sta Mode, x
-
-			NoForce:
 
 			inx
 			cpx #2
@@ -145,27 +149,24 @@ PANEL: {
 
 	KickOff: {
 
-		lda #1
-		sta Mode, y
+		lda #STATE_NEW_BEANS
+		sta PLAYER.State, x
 
 		cpy #0
 		beq NotCPU
 
-		lda PLAYER.CPU, y
+		lda PLAYER.CPU, x
 		beq NotCPU
 
 		jsr OPPONENTS.SetActive
 
 		NotCPU:
 
-			
 		Finish:
 
 		lda #1
-		sta FirstKickOff, y
-		sta GRID.GridClearAllowed, y
-
-
+		sta FirstKickOff, x
+		sta GRID.GridClearAllowed, x
 
 		rts
 	}
@@ -286,8 +287,8 @@ PANEL: {
 
 		ldx ZP.Player
 
-		lda #0
-		sta Mode, x
+		lda #STATE_CONTROL_BEANS
+		sta PLAYER.State, x
 
 
 

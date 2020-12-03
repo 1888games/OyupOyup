@@ -19,7 +19,17 @@ MemoryAddresses:
 .label GAME_MODE_SWITCH_SCORE = 7
 
 
-
+.label STATE_IDLE= 0
+.label STATE_SETUP_NEW_BEANS = 1
+.label STATE_NEW_BEANS = 2
+.label STATE_CONTROL_BEANS = 3
+.label STATE_AWAIT_CHECK_MATCHES = 4
+.label STATE_CHECK_MATCHES = 5
+.label STATE_POP_BEANS = 6
+.label STATE_AWAIT_FALL = 7
+.label STATE_DELIVER_ROCKS = 8
+.label STATE_AWAIT_ROCKS = 9
+.label STATE_DEAD = 10
 
 .label ZERO = 0
 .label ONE = 1

@@ -5,7 +5,7 @@ PLAYER: {
 	.label AutoDropTime = 18
 	.label FlashTime = 10
 	.label ControlCooldown = 6
-	.label FailsafeTime = 60
+	.label FailsafeTime = 45
 
 	.label PLAYER_STATUS_NORMAL = 0
 	.label PLAYER_STATUS_WAIT = 1
@@ -19,6 +19,11 @@ PLAYER: {
 	Beans: 			.byte 0, 0, 0, 0
 	GridPosition:	.byte 2, 2, 74, 74
 	Offset:			.byte 255, 255, 255, 255
+
+	State:			.byte 0, 0
+
+
+
 
 	
 	Status:				.byte 1, 1
@@ -60,6 +65,7 @@ PLAYER: {
 	CurrentRotation:	.byte 0, 0
 
 	CPUDanger: .byte 0
+	Debug: .byte 1
 
 
 	Reset: {
@@ -75,7 +81,9 @@ PLAYER: {
 		sta Beans + 1
 		sta Beans + 2
 		sta Beans + 3
-
+		sta State
+		sta State + 1
+	
 		sta ControlTimer
 		sta ControlTimer + 1
 		sta DoubleClickTimer
@@ -99,6 +107,7 @@ PLAYER: {
 
 
 
+
 		rts
 	}	
 
@@ -106,6 +115,27 @@ PLAYER: {
 	FrameUpdate: {
 
 		ldx #0
+
+		lda Debug
+		beq Skip	
+
+		lda State
+		adc #48
+		sta SCREEN_RAM + 0
+
+		lda State + 1
+		adc #48
+		sta SCREEN_RAM + 40
+
+		lda #WHITE
+		sta COLOR_RAM + 40
+
+		lda #CYAN
+		sta COLOR_RAM + 0
+
+
+
+		Skip:
 
 		Loop:
 
@@ -118,30 +148,8 @@ PLAYER: {
 
 			CheckActive:
 
-
-
-				lda Status, x
-				cmp #PLAYER_STATUS_NORMAL
-				bne EndLoop
-
-				lda FailsafeTimer, x
-				bmi NotPlaced
-				beq ForceCheck
-
-				dec FailsafeTimer, x
-				
-				ForceCheck:
-
-					//.break
-					//nop
-
-				NotPlaced:
-
-				lda #1
-				sta GRID.NumberMoving, x
-
-				lda Status, x
-				cmp #PLAYER_STATUS_NORMAL
+				lda PLAYER.State, x
+				cmp #STATE_CONTROL_BEANS
 				bne EndLoop
 
 			Moving:
@@ -174,10 +182,11 @@ PLAYER: {
 
 				jsr DropBeans
 
-				lda Status, x
+				ldx ZP.Player
+				lda PLAYER.State, x
+				cmp #STATE_CONTROL_BEANS
 				bne EndLoop
 
-				
 
 			CheckFlash:
 
@@ -1248,16 +1257,16 @@ PLAYER: {
 
 			Player2_:
 
-			cpx #72
-			bcs NotRoundOver_
+			cpx #68
+			bne NotRoundOver_
 
 				jsr LostRound
 				rts
 
 			Player1_:
 
-			cpx #180
-			bcc NotRoundOver_
+			cpx #252
+			bne NotRoundOver_
 
 				jsr LostRound
 				rts
@@ -1338,11 +1347,8 @@ PLAYER: {
 
 			ldy ZP.Player
 
-			lda #PLAYER_STATUS_PLACED
-			sta Status, y
-
-			lda #FailsafeTime
-			sta FailsafeTimer, y
+			lda #STATE_AWAIT_FALL
+			sta State, y
 			
 			rts
 
