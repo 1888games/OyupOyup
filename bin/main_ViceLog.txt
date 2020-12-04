@@ -50,7 +50,7 @@ Error - CRT header invalid.
 CART: 'bin/main.prg' is not a valid CRT file.
 AUTOSTART: Loading PRG file `bin/main.prg' with direct RAM injection.
 AUTOSTART: Resetting the machine to autostart '*'
-VIC-II: VSP Bug: safe channels are: 01456. Emulation of memory corruption is disabled.
+VIC-II: VSP Bug: safe channels are: 01356. Emulation of memory corruption is disabled.
 AUTOSTART: `bin/main.prg' recognized as program/p00 file.
 Main CPU: starting at ($FFFC).
 Main CPU: RESET.
@@ -95,5 +95,5 @@ VICE thread initiating shutdown
 VICE thread is exiting
 VICE thread has been joined.
 Writing configuration file `C:\Users\Nick\AppData\Roaming\vice\vice.ini'.
-VIC-II: VSP Bug: safe channels are: 037. Emulation of memory corruption is disabled.
+VIC-II: VSP Bug: safe channels are: 01367. Emulation of memory corruption is disabled.
 Sound: Closing device `dx'

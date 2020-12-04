@@ -52,7 +52,7 @@ ROCKS: {
 
 	GridOffset:		.byte 0, 66
 
-	DropTimeout:	.byte 0
+	DropTimeout:	.byte 0, 0
 	OnWayToUs:		.byte 0, 0
 
 

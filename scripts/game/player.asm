@@ -60,6 +60,8 @@ PLAYER: {
 	CurrentRotation:	.byte 0, 0
 
 	CPUDanger: .byte 0
+	Debug:	.byte 1
+	DebugCols:	.byte 0, 39
 
 
 	Reset: {
@@ -97,17 +99,91 @@ PLAYER: {
 		sta GridPosition + 2
 		sta GridPosition + 3
 
+		lda Debug
+		beq Skip
+
+		lda #1
+
+		sta COLOR_RAM + 0
+		sta COLOR_RAM + 80
+		sta COLOR_RAM + 160
+		sta COLOR_RAM + 240
+		sta COLOR_RAM + 320
+		sta COLOR_RAM + 400
+
+		ldx DebugCols + 1
+
+		sta COLOR_RAM + 0, x
+		sta COLOR_RAM + 80, x
+		sta COLOR_RAM + 160, x
+		sta COLOR_RAM + 240,x
+		sta COLOR_RAM + 320, x
+		sta COLOR_RAM + 400, x
+
+
+		Skip:
 
 
 		rts
 	}	
 
 
+
+	ShowDebug: {
+
+
+
+		lda DebugCols, x
+		tay
+
+		lda GRID.Mode, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 0, y
+
+		lda GRID.Active, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 80, y
+
+		lda PANEL.Mode, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 160, y
+
+		lda PLAYER.Status, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 240, y
+
+		lda ROCKS.Mode, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 320, y
+
+		lda ROCKS.OnWayToUs, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 400, y
+
+
+
+		rts
+	}
+
 	FrameUpdate: {
 
 		ldx #0
 
+	
 		Loop:
+
+			lda Debug
+			beq Skip
+
+			jsr ShowDebug
+
+			Skip:
 
 			stx ZP.Player
 
@@ -1248,19 +1324,28 @@ PLAYER: {
 
 			Player2_:
 
-			cpx #72
-			bcs NotRoundOver_
+				cpx #68
+				beq RoundOver_
 
-				jsr LostRound
-				rts
+				cpx #72
+				bcc DontAdd_
+
+				jmp NotRoundOver_
 
 			Player1_:
 
-			cpx #180
-			bcc NotRoundOver_
+				cpx #252
+				beq RoundOver_
 
-				jsr LostRound
-				rts
+				cpx #180
+				bcs DontAdd_
+
+				jmp NotRoundOver_
+
+			RoundOver_:
+
+			jsr LostRound
+			rts
 
 			NotRoundOver_:
 
@@ -1271,6 +1356,8 @@ PLAYER: {
 			sta GRID.PreviousType, x
 
 			sfx(SFX_LAND)
+
+		DontAdd_:
 
 			cpy #0
 			beq AddToY
@@ -1313,37 +1400,47 @@ PLAYER: {
 
 			Player2:
 
-			cpx #72
-			bcs NotRoundOver
+				cpx #68
+				beq RoundOver
 
-				jsr LostRound
-				rts
+				cpx #72
+				bcc DontAdd
+
+				jmp NotRoundOver
 
 			Player1:
 
-			cpx #180
-			bcc NotRoundOver
+				cpx #252
+				beq RoundOver
+
+				cpx #180
+				bcs DontAdd
+
+				jmp NotRoundOver
+
+			RoundOver:
 
 				jsr LostRound
 				rts
 
 			NotRoundOver:
 
+				lda Beans, y
+				sta GRID.PlayerOne, x
 
-			lda Beans, y
-			sta GRID.PlayerOne, x
+				lda #GRID.BeanLandedType
+				sta GRID.PreviousType, x
 
-			lda #GRID.BeanLandedType
-			sta GRID.PreviousType, x
+			DontAdd:
 
-			ldy ZP.Player
+				ldy ZP.Player
 
-			lda #PLAYER_STATUS_PLACED
-			sta Status, y
+				lda #PLAYER_STATUS_PLACED
+				sta Status, y
 
-			lda #FailsafeTime
-			sta FailsafeTimer, y
-			
+				lda #FailsafeTime
+				sta FailsafeTimer, y
+				
 			rts
 
 		Finish:
