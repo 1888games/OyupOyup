@@ -84,7 +84,7 @@ GRID: {
 	Combo:				.byte 0, 0
 	ErrorCheck:			.byte 0
 	StartLayers:		.byte 0, 0
-
+	IsPlaying:			.byte 0, 0
 
 
 	* = * "Grid"
@@ -115,7 +115,8 @@ GRID: {
 		sta GridClearAllowed + 1
 		sta BeanCount
 		sta BeanCount + 1
-
+		sta Active
+		sta Active + 1
 		
 		lda #1
 		sta NumberMoving
@@ -123,22 +124,20 @@ GRID: {
 		sta Mode
 		sta Mode + 1
 		sta MAIN.GameActive
-		sta Active
+		sta IsPlaying
 
-		lda #STATE_SETUP_NEW_BEANS
-		sta PLAYER.State
+		ldx #0
+		jsr STATE.StartGame
 
 		lda MENU.SelectedOption
 		cmp #PLAY_MODE_PRACTICE
 		beq NoSecondPlayer
 
 		lda #1
-		sta Active + 1
+		sta IsPlaying + 1
 
-
-		lda #STATE_SETUP_NEW_BEANS
-		sta PLAYER.State + 1
-
+		tax
+		jsr STATE.StartGame
 
 		NoSecondPlayer:
 		
@@ -217,6 +216,9 @@ GRID: {
 		UpdateLeftSide:
 
 			ldx CurrentSide
+
+			jsr UpdateReadyToCheck
+
 			lda Active, x
 			beq UpdateRightSide
 
@@ -226,6 +228,8 @@ GRID: {
 
 			inc CurrentSide
 			ldx CurrentSide
+			jsr UpdateReadyToCheck
+			
 			lda Active, x
 			beq PrepareForNextFrame
 
@@ -421,9 +425,6 @@ GRID: {
 
 
 	StartCheck: {
-
-		lda #STATE_AWAIT_CHECK_MATCHES
-		sta PLAYER.State, x
 
 		lda BottomRightIDs, x
 		sta CheckProgress, x
@@ -839,8 +840,7 @@ GRID: {
 			lda NumberPopped
 			beq NextBeans
 
-			WaitForDrop:
-
+			BeansPopped:
 				inc Combo, x		
 
 				lda NumberPopped
@@ -866,23 +866,18 @@ GRID: {
 
 				ldx CurrentSide
 
-				lda #STATE_DELIVER_ROCKS
-				sta PLAYER.State, x
-
-				lda #PLAYER.PLAYER_STATUS_WAIT
-				sta PLAYER.Status, x
-
-				lda #GRID_MODE_NORMAL
-				sta Mode, x
-
 				jsr SCORING.CalculateMultiplier
-
 
 				lda MENU.SelectedOption
 				cmp #PLAY_MODE_PRACTICE
 				beq Finish
 
 						jsr ROCKS.DecideWhereToSendFlare
+
+				ldx CurrentSide
+				jsr STATE.BeansPopping
+
+
 
 				jmp Finish
 
@@ -902,18 +897,20 @@ GRID: {
 				NoCheck:
 
 					lda ROCKS.OnWayToUs, y
-					bne Finish
+					beq Transfer
 
-				Transfer:
+					jsr STATE.Countering
+					jmp Finish
+				Transfer:	
 
 
-					jsr ROCKS.TransferCountToQueue
+					ldx CurrentSide
+					jsr STATE.NoBeansLeftToPop
 
 					ldx CurrentSide
 
 					lda #0
 					sta Combo, x
-					//sta Active, x
 
 					jsr SCORING.ResetMultipliers
 					jsr SCORING.DrawPlayer
@@ -996,7 +993,7 @@ GRID: {
 
 	UpdateReadyToCheck: {
 
-		lda PLAYER.State, x
+		lda STATE.Current, x
 		cmp #STATE_AWAIT_CHECK_MATCHES
 		bne Finish
 
@@ -1010,12 +1007,7 @@ GRID: {
 
 		ReadyToCheck:
 
-			lda #STATE_CHECK_MATCHES
-			sta PLAYER.State, x
-
-			.break
-
-			jmp Scan
+			jsr STATE.ReadyToCheck
 
 		Finish:
 
@@ -1066,6 +1058,20 @@ GRID: {
 	}
 
 
+	ResetCycle: {
+
+		lda #LastRowID
+		sta CurrentRow
+
+		lda #0
+		sta NumberMoving, x
+		sta NumberLanded, x
+		sta BeanCount, x
+
+		rts
+
+	}
+
 	EndOfCycle: {
 
 		lda #LastRowID
@@ -1079,7 +1085,7 @@ GRID: {
 		lda GridClear, x
 		beq NoClearCheck
 
-		jsr ClearCheck
+		//jsr ClearCheck
 
 		NoClearCheck:
 
@@ -1099,7 +1105,7 @@ GRID: {
 
 			NotGameOver:
 
-				jsr StartCheck
+				jsr STATE.BeansAllSettled
 
 		StillMoving:
 
@@ -1121,12 +1127,6 @@ GRID: {
 		lda Mode, x
 		cmp #GRID_MODE_END
 		beq Finish
-
-		jsr UpdateReadyToCheck
-
-		lda PLAYER.State, x
-		cmp #STATE_AWAIT_FALL
-		bne EndLoop
 
 		NormalMode:
 

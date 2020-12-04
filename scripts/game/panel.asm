@@ -119,11 +119,11 @@ PANEL: {
 
 			stx ZP.Player
 
-			lda PLAYER.State, x
+			lda STATE.Current, x
 			cmp #STATE_SETUP_NEW_BEANS
 			bne NotNew	
 
-			jsr KickOff
+			jsr STATE.ReadyForNewBeans
 			jmp EndLoop
 
 			NotNew:
@@ -133,10 +133,10 @@ PANEL: {
 		
 			jsr MoveBeans
 
-			ldx ZP.Player
-
+	
 			EndLoop:
 
+			ldx ZP.Player
 			inx
 			cpx #2
 			bcc Loop
@@ -148,25 +148,6 @@ PANEL: {
 
 
 	KickOff: {
-
-		lda #STATE_NEW_BEANS
-		sta PLAYER.State, x
-
-		cpy #0
-		beq NotCPU
-
-		lda PLAYER.CPU, x
-		beq NotCPU
-
-		jsr OPPONENTS.SetActive
-
-		NotCPU:
-
-		Finish:
-
-		lda #1
-		sta FirstKickOff, x
-		sta GRID.GridClearAllowed, x
 
 		rts
 	}
@@ -286,12 +267,8 @@ PANEL: {
 		jsr DrawBean
 
 		ldx ZP.Player
-
-		lda #STATE_CONTROL_BEANS
-		sta PLAYER.State, x
-
-
-
+		jsr STATE.AllowControl
+	
 
 		Finish:
 

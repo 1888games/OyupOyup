@@ -79,7 +79,8 @@ ROCKS: {
 
 	BaseLookup:				.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
 	ChainLookup:			.byte 0, 3, 10, 27, 68, 90		// 1 - 6
-	ComboLookup:			.byte 5, 14, 26, 41, 59 		// 1 - 6
+//	ComboLookup:			.byte 5, 14, 26, 41, 59 		// 1 - 6
+	ComboLookup:			.byte 5, 9, 12, 15, 18
 
 	BaseScore:				.byte 5, 18, 28, 40, 54, 70, 88, 108, 130   //4-12
 
@@ -149,14 +150,14 @@ ROCKS: {
 
 			stx ZP.Player
 
-			lda PLAYER.State, x
-			cmp #STATE_AWAIT_FALL
+			lda STATE.Current, x
+			cmp #STATE_AWAIT_ROCKS
+			beq Drop
+
+			cmp #STATE_CHECK_ROCKS
 			bne NoDrop
 
 			Drop:	
-
-				cmp #2
-				beq EndLoop
 
 				ldy ZP.Player
 				jsr TryQueue
@@ -290,11 +291,7 @@ ROCKS: {
 
 		NoRocks:
 
-			lda #1
-			sta PLAYER.Status, y
-
-			lda #STATE_SETUP_NEW_BEANS
-			sta PLAYER.State, y
+			jsr STATE.NoRocksLeftToDrop
 
 			lda #0
 			sta Mode, y
@@ -373,8 +370,8 @@ ROCKS: {
 
 		Finish:
 
-			lda #STATE_AWAIT_FALL
-			sta PLAYER.State, y
+			jsr STATE.WillBeRocksToDrop
+
 
 			ldx GRID.CurrentSide
 			lda #0
@@ -575,7 +572,9 @@ ROCKS: {
 			jsr Delete
 
 			lda #0
-			sta OnWayToUs, x 
+			sta OnWayToUs, x
+
+			jsr STATE.FinishedCountering 
 
 			rts
 
@@ -1152,6 +1151,7 @@ ROCKS: {
 		sta SecondsCounter
 
 		inc RockLookupAdd
+		inc RockLookupAdd
 
 		lda MENU.SelectedOption
 		cmp #PLAY_MODE_PRACTICE
@@ -1234,15 +1234,11 @@ ROCKS: {
 			lda ZP.Okay
 			beq Done
 
-			// lda DropTimeout
-			// bne NotDone
-
-			// lda #90
-			// sta DropTimeout
-
 			jmp NotDone
 
 		Done:
+	
+			rts
 
 			// lda #0
 			// sta DropTimeout
@@ -1261,6 +1257,8 @@ ROCKS: {
 		
 
 		NotDone:
+
+			jsr STATE.StillDroppingRocks
 
 			// ldy ZP.Player
 			// lda #GRID_MODE_NORMAL

@@ -19,20 +19,21 @@ Default-segment:
   $0ad4-$0f18 Draw
   $0f19-$0fe2 -Input
   $0fe3-$1102 Grid Data
-  $1103-$169a CurrentType
-  $169b-$1d82 Grid
-  $1d83-$1ddd -Random
-  $1dde-$1f25 Explosions
-  $1f26-$1f32 Rocks
-  $1f33-$25e5 Queue
-  $25e6-$2635 Panel
-  $2636-$28d0 Queue Data
-  $28d1-$2fc6 Player
-  $2fc7-$364d Title
+  $1103-$169c CurrentType
+  $169d-$1d89 Grid
+  $1d8a-$1de4 -Random
+  $1de5-$1f2c Explosions
+  $1f2d-$1f39 Rocks
+  $1f3a-$25ed Queue
+  $25ee-$263d Panel
+  $263e-$28bd Queue Data
+  $28be-$2f4d Player
+  $2f4e-$35d4 Title
   $3700-$3916 Grid Visuals
+  $3917-$3a23 State Machine
   $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
-  $3e00-$3f4b Main
+  $3e00-$3f51 Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data

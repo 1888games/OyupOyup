@@ -19,17 +19,21 @@ MemoryAddresses:
 .label GAME_MODE_SWITCH_SCORE = 7
 
 
-.label STATE_IDLE= 0
-.label STATE_SETUP_NEW_BEANS = 1
-.label STATE_NEW_BEANS = 2
-.label STATE_CONTROL_BEANS = 3
-.label STATE_AWAIT_CHECK_MATCHES = 4
-.label STATE_CHECK_MATCHES = 5
-.label STATE_POP_BEANS = 6
-.label STATE_AWAIT_FALL = 7
-.label STATE_DELIVER_ROCKS = 8
-.label STATE_AWAIT_ROCKS = 9
-.label STATE_DEAD = 10
+.label STATE_IDLE= 0  // A
+.label STATE_SETUP_NEW_BEANS = 1 // B
+.label STATE_NEW_BEANS = 2 // C
+.label STATE_CONTROL_BEANS = 3 // D
+.label STATE_AWAIT_CHECK_MATCHES = 4 // E
+.label STATE_CHECK_MATCHES = 5 // F
+.label STATE_POP_BEANS = 6 // G
+.label STATE_AWAIT_FALL = 7 // H
+.label STATE_DELIVER_ROCKS = 8 // I
+.label STATE_CHECK_ROCKS = 9 // J
+.label STATE_AWAIT_ROCKS = 10 // K
+.label STATE_AWAIT_SETTLE = 11 // L
+.label STATE_ROUND_LOST = 12 // M
+.label STATE_ROUND_WON = 13 // N
+.label STATE_COUNTERING = 14 // O
 
 .label ZERO = 0
 .label ONE = 1

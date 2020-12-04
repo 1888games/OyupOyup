@@ -33,6 +33,7 @@ MAIN: {
 
 	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
+		#import "/scripts/game/state.asm"
 
 
 
@@ -43,6 +44,7 @@ MAIN: {
 	#import "/scripts/game/instructions.asm"
 	#import "/scripts/game/scoring.asm"
 	#import "/scripts/game/hi_score.asm"
+
 	
 
 	* = $6900 "RoundOver"
@@ -54,7 +56,7 @@ MAIN: {
 	* = $9d00 "Disk"
 		//#import "/scripts/game/disk.asm"
 		#import "/scripts/game/disk2.asm"
-
+		
 
 
 	* = $3e00
@@ -152,6 +154,7 @@ MAIN: {
 		jsr SetupVIC
 		jsr SetupSprites
 
+		jsr STATE.Reset
 		jsr DRAW.GameScreen	
 		jsr EXPLOSIONS.Reset
 		jsr PANEL.Reset
@@ -343,6 +346,7 @@ MAIN: {
 		jsr SCORING.FrameUpdate
 		jsr ROUND_OVER.FrameUpdate
 		jsr OPPONENTS.FrameUpdate
+		jsr STATE.FrameUpdate
 		//jsr DRAW.CycleChars
 
 

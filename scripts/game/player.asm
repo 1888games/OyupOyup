@@ -65,7 +65,7 @@ PLAYER: {
 	CurrentRotation:	.byte 0, 0
 
 	CPUDanger: .byte 0
-	Debug: .byte 1
+	
 
 
 	Reset: {
@@ -116,26 +116,6 @@ PLAYER: {
 
 		ldx #0
 
-		lda Debug
-		beq Skip	
-
-		lda State
-		adc #48
-		sta SCREEN_RAM + 0
-
-		lda State + 1
-		adc #48
-		sta SCREEN_RAM + 40
-
-		lda #WHITE
-		sta COLOR_RAM + 40
-
-		lda #CYAN
-		sta COLOR_RAM + 0
-
-
-
-		Skip:
 
 		Loop:
 
@@ -148,7 +128,7 @@ PLAYER: {
 
 			CheckActive:
 
-				lda PLAYER.State, x
+				lda STATE.Current, x
 				cmp #STATE_CONTROL_BEANS
 				bne EndLoop
 
@@ -183,7 +163,7 @@ PLAYER: {
 				jsr DropBeans
 
 				ldx ZP.Player
-				lda PLAYER.State, x
+				lda STATE.Current, x
 				cmp #STATE_CONTROL_BEANS
 				bne EndLoop
 
@@ -1178,12 +1158,12 @@ PLAYER: {
 				lda #255
 				sta Offset, y
 
-				
 				jsr CheckCollision
 
 				ldx ZP.Player
 
-				lda Status, x
+				lda STATE.Current, x
+				cmp #STATE_CONTROL_BEANS
 				bne Finish
 
 
@@ -1345,11 +1325,9 @@ PLAYER: {
 			lda #GRID.BeanLandedType
 			sta GRID.PreviousType, x
 
-			ldy ZP.Player
-
-			lda #STATE_AWAIT_FALL
-			sta State, y
-			
+			ldx ZP.Player
+			jsr STATE.BeansPlaced
+		
 			rts
 
 		Finish:
@@ -1374,46 +1352,9 @@ PLAYER: {
 		lda #1
 		sta RoundOver
 
-		lda #GRID_MODE_END
-		sta GRID.Mode
-		sta GRID.Mode + 1
+		jsr STATE.RoundOver
 
-		lda #0
-		sta GRID.Active
-		sta GRID.Active + 1
 
-		ldy ZP.Player
-		lda #GRID_MODE_FALL
-		sta GRID.Mode, y
-
-		lda #1
-		sta GRID.NumberMoving, y
-		sta GRID.Active, y
-
-		lda #GRID.LastRowID
-		sta GRID.StartRow
-		sta GRID.CurrentRow
-
-		lda #PLAYER_STATUS_END
-		sta Status
-		sta Status + 1
-
-		lda #2
-		sta ROCKS.Mode
-		sta ROCKS.Mode + 1
-
-		lda #0
-		sta PANEL.Mode
-		sta PANEL.Mode + 1
-
-		lda #3
-		jsr sid.init
-
-		jsr ROUND_OVER.Show
-		
-		
-		lda #2
-		//sta GRID.RowsPerFrameUse
 
 		Finish:
 
