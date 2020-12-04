@@ -27,8 +27,8 @@ Default-segment:
   $1f34-$2625 Queue
   $2626-$2675 Panel
   $2676-$28fa Queue Data
-  $28fb-$3053 Player
-  $3054-$36da Title
+  $28fb-$3067 Player
+  $3068-$36ee Title
   $3700-$3916 Grid Visuals
   $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
@@ -39,7 +39,7 @@ Default-segment:
   $6400-$67e7 Bitmap Color RAM
   $6800-$68bf ---Sprites Title
   $6900-$68ff RoundOver
-  $6900-$7664 Round Over
+  $6900-$7682 Round Over
   $7700-$76ff Assets
   $7700-$77ff Game Colours
   $7800-$7be7 Game Map
@@ -57,9 +57,9 @@ Default-segment:
   $a134-$a16a Lookup
   $a16b-$a180 Rotations
   $a181-$a42e Lookups
-  $a42f-$a68f Text
-  $a690-$aab7 Settings
-  $aab8-$ae29 Scoring
+  $a42f-$a69a Text
+  $a69b-$aac2 Settings
+  $aac3-$ae34 Scoring
   $b000-$b45c Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win
@@ -70,7 +70,7 @@ Default-segment:
   $eb00-$efe9 Menu
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
-  $fa00-$fd68 Hi score_Code
+  $fa00-$fd6d Hi score_Code
   $ffff-$fffe End Of Memory
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

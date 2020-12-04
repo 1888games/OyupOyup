@@ -78,8 +78,9 @@ ROCKS: {
 	TargetColumns:			.byte 7, 32
 
 	BaseLookup:				.byte 1, 2, 4, 5, 7, 10, 14, 19, 25  //4-12
-	ChainLookup:			.byte 0, 3, 10, 27, 68, 90		// 1 - 6
-	ComboLookup:			.byte 5, 14, 26, 41, 59 		// 1 - 6
+	ChainLookup:			.byte 2, 6, 11, 17, 24		// 1 - 6
+//	ComboLookup:			.byte 5, 14, 26, 41, 59 		// 1 - 6
+	ComboLookup:			.byte 5, 9, 12, 15, 18
 
 	BaseScore:				.byte 5, 18, 28, 40, 54, 70, 88, 108, 130   //4-12
 
@@ -521,11 +522,11 @@ ROCKS: {
 			lda PendingCount, y
 			bne StillRocksLeft
 
-			jsr Delete
-
 			lda #0
 			sta OnWayToUs, x 
 
+			jsr Delete
+		
 			rts
 
 			StillRocksLeft:
@@ -995,10 +996,10 @@ ROCKS: {
 
 	CalculateChainRocks: {
 
-		cmp #6
+		cmp #5
 		bcc Okay
 
-		lda #5	
+		lda #4
 
 		Okay:
 
@@ -1006,7 +1007,6 @@ ROCKS: {
 
 		lda Opponent, x
 		tax	
-
 
 		lda PendingCount, x
 		clc
@@ -1048,10 +1048,10 @@ ROCKS: {
 
 			pla
 			
-			cmp #6
+			cmp #5
 			bcc Okay
 
-			lda #5	
+			lda #4	
 
 			Okay:
 

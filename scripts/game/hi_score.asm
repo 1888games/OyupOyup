@@ -578,6 +578,9 @@ HI_SCORE:  {
 
 				jsr DISK.SAVE	
 
+				lda #0
+				sta VIC.SPRITE_ENABLE
+
 
 			NoFire:
 

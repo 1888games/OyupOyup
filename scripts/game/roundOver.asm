@@ -639,7 +639,7 @@ ROUND_OVER: {
 
 			sfx(SFX_CHICK)
 
-			jsr DrawContinue
+			jsr DrawContinue.Okay
 			rts
 
 		Timeout:
@@ -670,34 +670,58 @@ ROUND_OVER: {
 
 		ldx #WHITE
 
+		lda ContinueSeconds
+		beq Remove
+
 		lda #52
+		jmp Draw
+
+		Remove:
+
+		lda #53
+
+		Draw:
 
 		jsr TEXT.Draw
 
 		lda ContinueSeconds
-		jsr TEXT.ByteToDigits
+		bne NoExpired
 
-		lda #6
-		sta ZP.TextColumn
+		Expired:
 
-		lda #14
-		sta ZP.TextRow
+			lda #0
+			sta SCREEN_RAM + 566
+			sta SCREEN_RAM + 606
+			sta SCREEN_RAM + 607
+			sta SCREEN_RAM + 608
+			sta SCREEN_RAM + 609
+			rts
 
-		ldy #YELLOW+ 8
-		ldx #3
-		lda #0
+		NoExpired:
 
-		jsr TEXT.DrawTallDigits
+			jsr TEXT.ByteToDigits
 
-		lda #42
-		sta SCREEN_RAM + 607
-		sta SCREEN_RAM + 608
-		sta SCREEN_RAM + 609
+			lda #6
+			sta ZP.TextColumn
 
-		lda #YELLOW +8
-		sta COLOR_RAM +607
-		sta COLOR_RAM +608
-		sta COLOR_RAM + 609
+			lda #14
+			sta ZP.TextRow
+
+			ldy #YELLOW+ 8
+			ldx #3
+			lda #0
+
+			jsr TEXT.DrawTallDigits
+
+			lda #42
+			sta SCREEN_RAM + 607
+			sta SCREEN_RAM + 608
+			sta SCREEN_RAM + 609
+
+			lda #YELLOW +8
+			sta COLOR_RAM +607
+			sta COLOR_RAM +608
+			sta COLOR_RAM + 609
 
 
 

@@ -7,7 +7,7 @@ TEXT: {
 			.word Na13, Na14, Na15, Na16, Na17, Na18, Na19, Na20, Na21, Na22, Na23, Na24
 			.word Na25, Na26, Na27, Na28, Na29, Na30, Na31, Na32, Na33, Na34, Na35, Na36
 			.word Na37, Na38, Na39, Na40, Na41, Na42, Na43, Na44, Na45, Na46, Na47, Na48
-			.word Name, Scen, TwoP, Prac, Conti
+			.word Name, Scen, TwoP, Prac, Conti, Ended
 
 	Bank2:	
 
@@ -86,6 +86,7 @@ TEXT: {
 	Prac:	.text @"PRACTICE\$00"	
 	
 	Conti:	.text @"CONTINUE\$00"	
+	Ended:	.text @"        \$00"	
 	
 
 
