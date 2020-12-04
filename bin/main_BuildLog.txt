@@ -20,16 +20,17 @@ Default-segment:
   $0f19-$0fe2 -Input
   $0fe3-$1102 Grid Data
   $1103-$169a CurrentType
-  $169b-$1d83 Grid
-  $1d84-$1dde -Random
-  $1ddf-$1f26 Explosions
-  $1f27-$1f33 Rocks
-  $1f34-$2625 Queue
-  $2626-$2675 Panel
-  $2676-$28fa Queue Data
-  $28fb-$3067 Player
-  $3068-$36ee Title
-  $3700-$3916 Grid Visuals
+  $169b-$1d8a Grid
+  $1d8b-$1de5 -Random
+  $1de6-$1f2d Explosions
+  $1f2e-$1f3a Rocks
+  $1f3b-$263e Queue
+  $263f-$268e Panel
+  $268f-$2937 Queue Data
+  $2938-$30c4 Player
+  $30c5-$322c Title
+  $322d-$374b Campaign
+  $3750-$3966 Grid Visuals
   $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
   $3e00-$3f4e Main

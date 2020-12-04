@@ -345,7 +345,15 @@ PLAYER: {
 
 		PositionOK:
 
+			 lda PANEL.FirstFourMatch
+			 beq NoSpeedUp
+
+			 jmp OpponentSpeed
+
+			 NoSpeedUp:
+
 			 jsr RANDOM.Get
+
 			// cmp #4
 			// bcc Left
 
@@ -359,6 +367,8 @@ PLAYER: {
 			 bcc Finish
 
 			 jsr RANDOM.Get
+
+			 OpponentSpeed:
 
 			 ldx CAMPAIGN.OpponentID
 			 cmp OPPONENTS.Speed, x
@@ -1344,6 +1354,11 @@ PLAYER: {
 
 			RoundOver_:
 
+			.break
+			lda #1
+			sta SCREEN_RAM + 520
+			sta COLOR_RAM + 520
+
 			jsr LostRound
 			rts
 
@@ -1419,6 +1434,11 @@ PLAYER: {
 				jmp NotRoundOver
 
 			RoundOver:
+
+				.break
+				lda #2
+				sta SCREEN_RAM + 520
+				sta COLOR_RAM + 520
 
 				jsr LostRound
 				rts
@@ -1549,6 +1569,13 @@ PLAYER: {
 
 		lda GRID.PlayerOne, x
 		beq SpaceAvailable
+
+		.break
+
+		lda #4
+		sta SCREEN_RAM + 520
+		sta COLOR_RAM + 520
+
 
 		jsr LostRound
 		jmp Finish

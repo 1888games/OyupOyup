@@ -948,6 +948,14 @@ GRID: {
 		CalculateGarbage:
 
 			ldx CurrentSide
+			beq NoSpeedCheck
+
+			lda #0
+			sta PANEL.FirstFourMatch
+
+
+			NoSpeedCheck:
+
 			lda MatchCount
 			sec
 			sbc #4

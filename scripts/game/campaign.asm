@@ -1,6 +1,7 @@
 CAMPAIGN: {
 
 
+	* = * "Campaign"
 	.label MaxLevels = 6
 	.label PlayerNamePointer = 48
 

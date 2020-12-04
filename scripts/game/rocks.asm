@@ -54,7 +54,7 @@ ROCKS: {
 
 	DropTimeout:	.byte 0, 0
 	OnWayToUs:		.byte 0, 0
-
+	Failsafe:		.byte 0, 0
 
 	ClearColumn:	.byte 6, 34
 
@@ -180,6 +180,9 @@ ROCKS: {
 
 			lda #1
 			sta OnWayToUs, x 
+
+			lda #60
+			sta Failsafe, x
 
 			jmp GetInitialPosition
 
@@ -519,11 +522,11 @@ ROCKS: {
 			lda #0
 			sta Count, x
 
-			lda PendingCount, y
-			bne StillRocksLeft
-
 			lda #0
 			sta OnWayToUs, x 
+
+			lda PendingCount, y
+			bne StillRocksLeft
 
 			jsr Delete
 		
@@ -1188,6 +1191,11 @@ ROCKS: {
 		lda DropTimeout
 		bne Okay2
 
+		.break
+		lda #3
+		sta SCREEN_RAM + 520
+		sta COLOR_RAM + 520
+
 		sty ZP.Player
 		jsr PLAYER.LostRound
 		rts
@@ -1257,7 +1265,7 @@ ROCKS: {
 			lda DropTimeout
 			bne NotDone
 
-			lda #150
+			lda #60
 			sta DropTimeout
 
 			jmp NotDone
@@ -1388,6 +1396,9 @@ ROCKS: {
 			SingleDone:
 
 				ldy ColumnsDrawn
+
+				lda Order, y
+				tay
 
 				lda BackgroundColourOrder, y
 				clc

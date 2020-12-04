@@ -1,6 +1,6 @@
 GRID_VISUALS: {
 
-		* = $3700 "Grid Visuals" 
+		* = $3750 "Grid Visuals" 
 
 
 

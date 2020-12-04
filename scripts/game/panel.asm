@@ -44,7 +44,8 @@ PANEL: {
 	FrameTimer:	.byte 0, 0
 	Offsets:	.byte 0, 4
 
-
+	FirstFourMatch:	.byte 0
+	LastBean:		.byte 0
 
 	Reset: {
 
@@ -61,6 +62,11 @@ PANEL: {
 		sta FirstKickOff
 		sta FirstKickOff + 1
 
+		lda #1
+		sta FirstFourMatch
+
+		lda #255
+		sta LastBean
 
 		jsr FillQueue
 		jsr StartMove
@@ -476,6 +482,8 @@ PANEL: {
 			cpx #2
 			bcc Loop
 
+
+
 		rts
 	}
 
@@ -497,6 +505,21 @@ PANEL: {
 
 		ldy MasterQueuePosition
 		sta QueueValues, y
+
+		lda LastBean
+		bmi Finish
+
+		lda QueueValues, y
+		cmp LastBean
+		beq Finish
+
+		lda #0
+		sta FirstFourMatch
+	
+		Finish:
+
+		lda QueueValues, y
+		sta LastBean
 
 
 		rts
