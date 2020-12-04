@@ -675,8 +675,9 @@ PLAYER: {
 		lda GridPosition, x
 		tay
 
+	
 		lda GRID_VISUALS.RowLookup, y
-		cmp #22
+		cmp #21
 		bcs Finish
 
 		lda GridPosition, x
