@@ -8,7 +8,7 @@ Writing prg file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.prg
 Memory Map
 ----------
 Default-segment:
-  *$0002-$0036 Temp vars zero page
+  *$0002-$0037 Temp vars zero page
   $0700-$075d Hi score_Data
   $0800-$0800 Upstart
   $0801-$080d Basic
@@ -19,18 +19,18 @@ Default-segment:
   $0ad4-$0f18 Draw
   $0f19-$0fe2 -Input
   $0fe3-$1102 Grid Data
-  $1103-$169a CurrentType
-  $169b-$1d8a Grid
-  $1d8b-$1de5 -Random
-  $1de6-$1f2d Explosions
-  $1f2e-$1f3a Rocks
-  $1f3b-$263e Queue
-  $263f-$268e Panel
-  $268f-$2937 Queue Data
-  $2938-$30c4 Player
-  $30c5-$322c Title
-  $322d-$374b Campaign
-  $3750-$3966 Grid Visuals
+  $1103-$169c CurrentType
+  $169d-$1d9c Grid
+  $1d9d-$1df7 -Random
+  $1df8-$1f3f Explosions
+  $1f40-$1f4c Rocks
+  $1f4d-$267e Queue
+  $267f-$26ce Panel
+  $26cf-$2977 Queue Data
+  $2978-$317c Player
+  $317d-$32e4 Title
+  $32e5-$3803 Campaign
+  $3804-$3a1a Grid Visuals
   $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
   $3e00-$3f4e Main

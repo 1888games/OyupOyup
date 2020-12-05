@@ -84,6 +84,7 @@ GRID: {
 	Combo:				.byte 0, 0
 	ErrorCheck:			.byte 0
 	StartLayers:		.byte 0, 0
+	RunningCount:		.byte 0, 0
 
 
 
@@ -115,6 +116,8 @@ GRID: {
 		sta GridClearAllowed + 1
 		sta BeanCount
 		sta BeanCount + 1
+		sta RunningCount
+		sta RunningCount + 1
 
 		
 		lda #1
@@ -278,6 +281,11 @@ GRID: {
 			sta PlayerOne + 3, x
 			sta PlayerOne + 4, x
 			sta PlayerOne + 5, x
+
+			lda RunningCount, x
+			clc
+			adc #5
+			sta RunningCount, x
 
 			EndLoop:
 
@@ -462,6 +470,11 @@ GRID: {
 		beq AlreadyPopped
 
 		CheckIfRock:
+
+			ldx CurrentSide
+			dec GRID.RunningCount, x
+
+			ldx ZP.BeanID
 
 			lda ZP.PreviousBeanColour
 			cmp #WHITE
@@ -870,6 +883,17 @@ GRID: {
 
 				jsr SCORING.CalculateMultiplier
 
+				ldx CurrentSide
+				lda RunningCount, x
+
+				bne NotEmpty2
+
+				jsr ROCKS.GridCleared
+
+				NotEmpty2:
+
+
+
 				// jsr StartCheck
 
 				// lda #CheckTime
@@ -887,25 +911,12 @@ GRID: {
 				jmp Finish
 
 			NextBeans:
-
-				ldy CurrentSide
-
-				lda GRID.GridClearAllowed, y
-				beq NoCheck
-
-				lda #1
-				sta GridClear, y
-
-				lda #0
-				sta GridClearAllowed, y
-
-				NoCheck:
-
+			
+					ldy CurrentSide
 					lda ROCKS.OnWayToUs, y
 					bne Finish
 
 				Transfer:
-
 
 					jsr ROCKS.TransferCountToQueue
 
@@ -1063,7 +1074,7 @@ GRID: {
 
 		//.break
 
-		lda BeanCount, x
+		lda RunningCount, x
 		bne Finish
 
 		jsr ROCKS.GridCleared
@@ -1090,7 +1101,7 @@ GRID: {
 		lda GridClear, x
 		beq NoClearCheck
 
-		jsr ClearCheck
+		//jsr ClearCheck
 
 		NoClearCheck:
 

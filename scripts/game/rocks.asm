@@ -616,6 +616,8 @@ ROCKS: {
 
 		// x = player
 
+		//.break
+
 		lda #15
 		sta ZP.Row
 
@@ -634,8 +636,8 @@ ROCKS: {
 		sta ComboFrame, x
 
 		jsr StartCombo
-		jsr ROCKS.DecideWhereToSendFlare
-
+		jsr DecideWhereToSendFlare
+	
 		ldx #0
 		sfxFromX()
 
@@ -1191,7 +1193,7 @@ ROCKS: {
 		lda DropTimeout
 		bne Okay2
 
-		.break
+		//.break
 		lda #3
 		sta SCREEN_RAM + 520
 		sta COLOR_RAM + 520
@@ -1204,9 +1206,11 @@ ROCKS: {
 
 		lda #0
 		sta ZP.Okay
+		sta ZP.Blocked
 
 		ldy ZP.Player
 		lda QueueOffset, y
+		sta ZP.StartID
 		tax
 		clc
 		adc #6
@@ -1227,8 +1231,46 @@ ROCKS: {
 			adc GridOffset, y
 			tay
 
-			lda GRID.PlayerOne, y
-			beq Okay
+			CheckIfColumnBlocked:
+
+				lda GRID.PlayerOne, y
+				beq Okay
+
+			ColumnBlocked:
+
+				cpx #2
+				beq MainColumnBlocked
+
+				cpx #8
+				beq MainColumnBlocked
+
+				txa
+				tay
+
+			MoveAlong:
+
+				iny
+				cpy #2
+				beq MoveAlong
+
+				cpy #8
+				beq MoveAlong
+
+				cpy ZP.EndID
+				bne CanMove
+
+				ldy ZP.StartID
+
+			CanMove:
+
+				dec Queue, x
+
+				lda Queue, y
+				clc
+				adc #1
+				sta Queue, y
+
+			MainColumnBlocked:
 
 			inc ZP.Okay
 			jmp EndLoop
@@ -1248,6 +1290,9 @@ ROCKS: {
 			adc Queue, x
 			sta ZP.Okay
 
+			ldx ZP.Player
+			inc GRID.RunningCount, x
+
 			EndLoop:
 
 				ldx ZP.Column
@@ -1265,7 +1310,7 @@ ROCKS: {
 			lda DropTimeout
 			bne NotDone
 
-			lda #60
+			lda #90
 			sta DropTimeout
 
 			jmp NotDone

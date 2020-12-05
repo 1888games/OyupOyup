@@ -61,7 +61,7 @@ PLAYER: {
 
 	CPUDanger: .byte 0
 	Debug:	.byte 1
-	DebugCols:	.byte 0, 39
+	DebugCols:	.byte 0, 38
 
 
 	Reset: {
@@ -110,6 +110,16 @@ PLAYER: {
 		sta COLOR_RAM + 240
 		sta COLOR_RAM + 320
 		sta COLOR_RAM + 400
+		sta COLOR_RAM + 440
+		sta COLOR_RAM + 441
+		sta COLOR_RAM + 481
+		sta COLOR_RAM + 521
+		sta COLOR_RAM + 561
+		sta COLOR_RAM + 601
+		sta COLOR_RAM + 641
+		sta COLOR_RAM + 681
+
+
 
 		ldx DebugCols + 1
 
@@ -119,6 +129,14 @@ PLAYER: {
 		sta COLOR_RAM + 240,x
 		sta COLOR_RAM + 320, x
 		sta COLOR_RAM + 400, x
+		sta COLOR_RAM + 440, x
+		sta COLOR_RAM + 441, x
+		sta COLOR_RAM + 481, x
+		sta COLOR_RAM + 521, x
+		sta COLOR_RAM + 561, x
+		sta COLOR_RAM + 601, x
+		sta COLOR_RAM + 641, x
+		sta COLOR_RAM + 681, x
 
 
 		Skip:
@@ -167,6 +185,53 @@ PLAYER: {
 		sta SCREEN_RAM + 400, y
 
 
+
+		txa
+		pha
+
+		lda ROCKS.QueueOffset, x
+		tax
+
+		
+
+
+		lda ROCKS.Queue + 0, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 441, y
+
+
+		lda ROCKS.Queue + 1, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 481, y
+
+
+		lda ROCKS.Queue + 2, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 521, y
+
+
+		lda ROCKS.Queue + 3, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 561, y
+
+
+		lda ROCKS.Queue + 4, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 601, y
+
+
+		lda ROCKS.Queue + 5, x
+		clc
+		adc #48
+		sta SCREEN_RAM + 641, y
+
+		pla
+		tax
 
 		rts
 	}
@@ -1355,7 +1420,7 @@ PLAYER: {
 
 			RoundOver_:
 
-			.break
+			//.break
 			lda #1
 			sta SCREEN_RAM + 520
 			sta COLOR_RAM + 520
@@ -1370,6 +1435,9 @@ PLAYER: {
 
 			lda #GRID.BeanLandedType
 			sta GRID.PreviousType, x
+
+			ldx ZP.Player
+			inc GRID.RunningCount, x
 
 			sfx(SFX_LAND)
 
@@ -1436,7 +1504,7 @@ PLAYER: {
 
 			RoundOver:
 
-				.break
+			//	.break
 				lda #2
 				sta SCREEN_RAM + 520
 				sta COLOR_RAM + 520
@@ -1449,8 +1517,12 @@ PLAYER: {
 				lda Beans, y
 				sta GRID.PlayerOne, x
 
+
 				lda #GRID.BeanLandedType
 				sta GRID.PreviousType, x
+
+				ldx ZP.Player
+				inc GRID.RunningCount, x
 
 			DontAdd:
 
@@ -1571,7 +1643,7 @@ PLAYER: {
 		lda GRID.PlayerOne, x
 		beq SpaceAvailable
 
-		.break
+		//.break
 
 		lda #4
 		sta SCREEN_RAM + 520

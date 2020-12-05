@@ -30,9 +30,9 @@ MAIN: {
 	#import "/scripts/game/player.asm"
 	#import "/scripts/game/title.asm"
 	#import "/scripts/game/campaign.asm"
-
-	#import "/scripts/game/menu.asm"
 	#import "/scripts/game/grid_visuals.asm"
+	#import "/scripts/game/menu.asm"
+
 
 
 

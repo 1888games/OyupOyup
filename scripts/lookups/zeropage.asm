@@ -50,6 +50,7 @@ ZP: {
 	FileStart:			.word $00
 	PoppedBean:			.byte $00
 	PoppedBeanNum:		.byte $00
+	Blocked:			.byte $00
 
 
 	
