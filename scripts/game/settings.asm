@@ -7,6 +7,9 @@ SETTINGS: {
 	BeanColours:	.byte 5, 5
 	RoundsToWin:	.byte 2, 2
 	Character:		.byte 0, 1
+	Music:			.byte 0
+	ColourSwitch:	.byte 0
+
 
 	SelectedOption:	.byte 0
 	PreviousOption:	.byte 0
@@ -14,16 +17,18 @@ SETTINGS: {
 
 	.label ControlCooldown = 10
 
-	Min:			.byte 1, 0, 3, 1, 0
-	Max:			.byte 9, 6, 6, 5, 47
+	Min:			.byte 1, 0, 3, 1, 0, 0
+	Max:			.byte 9, 6, 6, 5, 47, 1
 
 	OptionColours:	.byte YELLOW + 8 ,  GREEN +8, CYAN + 8, PURPLE + 8,BLUE + 8, RED+ 8 
 
-	SelectionRows:	.byte 5, 8, 11, 14, 17, 21
+	SelectionRows:	.byte 5, 8, 11, 14, 17, 20
 
 	SelectionColumns:	.byte 9, 29
 	SettingColumns:		.byte 4, 35
 	TextColumns:		.byte 5, 31
+
+	ColourLookup:		.byte GREEN, RED
 
 
 	.label UP = 0
@@ -37,7 +42,7 @@ SETTINGS: {
 	DropSpeeds:		.byte 24, 21, 18, 15, 12, 10, 8, 6, 4
 	DropSpeedsNTSC:	.byte 3,  3,  3,  3,  2,  2, 1, 1, 1
 
-	CheatTracker:	.byte UP, FIRE, DOWN, FIRE, LEFT, FIRE, RIGHT, FIRE
+	CheatTracker:	.byte UP, DOWN, LEFT, RIGHT, UP, DOWN, LEFT, RIGHT
 	CheatProgress: .byte 0
 
 
@@ -93,7 +98,9 @@ SETTINGS: {
 		
 
 		rts
+	
 	}
+
 
 	SetupSprites: {
 
@@ -226,6 +233,108 @@ SETTINGS: {
 			jsr TEXT.Draw
 
 		jsr DRAW.SettingsPlayerSprites
+		jsr SoundColour
+
+
+		rts
+	}
+
+
+	SoundColour: {
+
+		lda #20
+		sta ZP.TextRow
+
+		lda #2
+		sta ZP.TextColumn
+
+		ldx #WHITE
+		lda #TEXT.MUSIC
+		jsr TEXT.Draw
+
+		lda #32
+		sta ZP.TextColumn
+
+		ldx #WHITE
+		lda #TEXT.COLOUR
+		jsr TEXT.Draw
+
+
+		lda #21
+		sta ZP.TextRow
+
+		lda #32
+		sta ZP.TextColumn
+
+		ldy ColourSwitch
+		lda ColourLookup, y
+		tax
+
+		lda #TEXT.COLOUR_OPTIONS
+		clc
+		adc ColourSwitch
+
+		jsr TEXT.Draw
+
+
+		lda ColourSwitch
+		beq NormalColours
+
+		Switched:
+
+
+		ldx #0
+
+		Loop:
+
+			lda PANEL.Colours, x
+			tay
+			lda GRID.ColourBlind, y
+		
+			sta COLOR_RAM + 872, x
+
+			inx
+			cpx #6
+			bcc Loop
+
+		jmp Sound
+
+
+		NormalColours:
+
+		ldx #0
+
+		Loop2:
+
+			lda PANEL.Colours, x
+			tay
+			lda GRID.ColourLookup, y
+			sta COLOR_RAM + 872, x
+
+			inx
+			cpx #6
+			bcc Loop2
+
+
+		Sound:
+
+
+		lda #2
+		sta ZP.TextColumn
+
+		ldy Music
+		lda ColourLookup, y
+		tax
+
+		lda #TEXT.SOUND_OPTIONS
+		clc
+		adc Music
+
+		jsr TEXT.Draw
+
+
+
+
 
 
 		rts
@@ -638,8 +747,8 @@ SETTINGS: {
 			sta COLOR_RAM + 729, x
 
 			lda OptionColours + 5
+			sta COLOR_RAM + 809, x
 			sta COLOR_RAM + 849, x
-			sta COLOR_RAM + 889, x
 
 			inx
 			cpx #22
@@ -663,6 +772,19 @@ SETTINGS: {
 			cpx #8
 			bcc Loop2
 
+
+		lda #WHITE
+		ldx #1
+
+		Loop3:
+
+			sta COLOR_RAM + 920, x
+			inx 
+			cpx #39
+			bcc Loop3
+
+
+
 		rts
 	}
 
@@ -685,13 +807,6 @@ SETTINGS: {
 		ldy #1
 		lda INPUT.FIRE_UP_THIS_FRAME, y
 		beq Finish
-
-		lda #FIRE
-		jsr CheckCheat
-
-		lda SelectedOption
-		cmp #5
-		bne Finish
 
 		jmp MENU.Show
 

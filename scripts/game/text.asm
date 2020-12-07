@@ -7,7 +7,7 @@ TEXT: {
 			.word Na13, Na14, Na15, Na16, Na17, Na18, Na19, Na20, Na21, Na22, Na23, Na24
 			.word Na25, Na26, Na27, Na28, Na29, Na30, Na31, Na32, Na33, Na34, Na35, Na36
 			.word Na37, Na38, Na39, Na40, Na41, Na42, Na43, Na44, Na45, Na46, Na47, Na48
-			.word Name, Scen, TwoP, Prac, Conti, Ended
+			.word Name, Scen, TwoP, Prac, Conti, Ended, Music, Colour, On, Off, Normal, Switch
 
 	Bank2:	
 
@@ -86,8 +86,23 @@ TEXT: {
 	Prac:	.text @"PRACTICE\$00"	
 	
 	Conti:	.text @"CONTINUE\$00"	
-	Ended:	.text @"        \$00"	
+	Ended:	.text @"        \$00"
+
+
+	.label MUSIC = 54
+	Music:	.text @"JINGLE\$00"
+
+	.label COLOUR = 55
+	Colour:	.text @"COLOUR\$00"
+
+	.label SOUND_OPTIONS = 56
+
+	On:		.text @"DURING\$00"
+	Off:	.text @"SILENT\$00"
 	
+	.label COLOUR_OPTIONS = 58
+	Normal:	.text @"NORMAL\$00"
+	Switch:	.text @"BLIND\$00"
 
 
 	ByteToDigits: {

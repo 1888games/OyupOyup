@@ -60,7 +60,7 @@ PLAYER: {
 	CurrentRotation:	.byte 0, 0
 
 	CPUDanger: .byte 0
-	Debug:	.byte 1
+	Debug:	.byte 0
 	DebugCols:	.byte 0, 38
 
 
@@ -622,7 +622,7 @@ PLAYER: {
 
 			ldx ZP.Player
 			jsr SCORING.AddOne
-			sfx(SFX_MOVE)
+			sfx(SFX_DOWN)
 
 			NoScore:
 
@@ -1047,6 +1047,30 @@ PLAYER: {
 	}
 
 
+	ConvertColour: {
+
+		pha
+
+		stx ZP.Okay
+
+		ldx SETTINGS.ColourSwitch
+		beq Normal
+
+		tax
+		pla
+		lda GRID.ColourBlind, x
+		ldx ZP.Okay
+		rts
+		
+		Normal:
+
+		ldx ZP.Okay
+		pla
+
+		rts
+	}
+
+
 
 	DrawBean: {
 
@@ -1073,6 +1097,7 @@ PLAYER: {
 		GetColour:
 
 			lda Beans, y
+			jsr PLAYER.ConvertColour
 			clc
 			adc #8
 			sta ZP.BeanColour

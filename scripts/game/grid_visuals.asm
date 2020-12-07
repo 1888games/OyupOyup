@@ -127,6 +127,7 @@ GRID_VISUALS: {
 				jsr DRAW.PlotCharacter
 
 				lda ZP.BeanColour
+				jsr PLAYER.ConvertColour
 				clc
 				adc #8
 
@@ -142,6 +143,7 @@ GRID_VISUALS: {
 			sta (ZP.ScreenAddress), y
 
 			lda ZP.BeanColour
+			jsr PLAYER.ConvertColour
 			clc
 			adc #8
 			sta (ZP.ColourAddress), y
@@ -157,6 +159,7 @@ GRID_VISUALS: {
 			sta (ZP.ScreenAddress), y
 
 			lda ZP.BeanColour
+			jsr PLAYER.ConvertColour
 			clc
 			adc #8
 			sta (ZP.ColourAddress), y
@@ -172,6 +175,7 @@ GRID_VISUALS: {
 			sta (ZP.ScreenAddress), y
 
 			lda ZP.BeanColour
+			jsr PLAYER.ConvertColour
 			clc
 			adc #8
 			sta (ZP.ColourAddress), y

@@ -96,7 +96,7 @@ MAIN: {
 		//jmp GYPSY.Show
 		//jmp HI_SCORE.Show
 		jmp TITLE.Show
-		// jmp SETTINGS.Show	
+		 jmp SETTINGS.Show	
 		//jmp MENU.Show
 		//jmp CAMPAIGN.Show
 
@@ -142,8 +142,19 @@ MAIN: {
 
 	StartGame: {
 
-		lda #0
-		jsr ChangeTracks
+		lda SETTINGS.Music
+		beq Normal
+
+			lda #3
+			jsr ChangeTracks
+			jmp Skip
+
+		Normal:
+
+			lda #0
+			jsr ChangeTracks
+
+		Skip:
 
 		lda #0
 		sta IRQ.Mode

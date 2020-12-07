@@ -14,26 +14,26 @@ Default-segment:
   $0801-$080d Basic
   $080d-$080c End Of Basic
   $080e-$080d Basic End
-  $080e-$0950 -Macros
-  $0951-$0ad3 IRQ
-  $0ad4-$0f18 Draw
-  $0f19-$0fe2 -Input
-  $0fe3-$1102 Grid Data
-  $1103-$169c CurrentType
-  $169d-$1d9c Grid
-  $1d9d-$1df7 -Random
-  $1df8-$1f3f Explosions
-  $1f40-$1f4c Rocks
-  $1f4d-$267e Queue
-  $267f-$26ce Panel
-  $26cf-$2977 Queue Data
-  $2978-$317c Player
-  $317d-$32e4 Title
-  $32e5-$3803 Campaign
-  $3804-$3a1a Grid Visuals
+  $080e-$0973 -Macros
+  $0974-$0af6 IRQ
+  $0af7-$0f3b Draw
+  $0f3c-$1005 -Input
+  $1006-$1125 Grid Data
+  $1126-$16cf CurrentType
+  $16d0-$1dcf Grid
+  $1dd0-$1e2a -Random
+  $1e2b-$1f72 Explosions
+  $1f73-$1f7f Rocks
+  $1f80-$26b1 Queue
+  $26b2-$2701 Panel
+  $2702-$29ad Queue Data
+  $29ae-$31c9 Player
+  $31ca-$3331 Title
+  $3332-$3850 Campaign
+  $3851-$3a73 Grid Visuals
   $3c58-$3d77 Difficulty Map
   $3e00-$3dff Unnamed
-  $3e00-$3f4e Main
+  $3e00-$3f5e Main
   $4000-$5f3f Bitmap Data
   $6000-$63e7 Bitmap Screen RAM
   $6400-$63ff Bitmap Color Data
@@ -58,9 +58,9 @@ Default-segment:
   $a134-$a16a Lookup
   $a16b-$a180 Rotations
   $a181-$a42e Lookups
-  $a42f-$a69a Text
-  $a69b-$aac2 Settings
-  $aac3-$ae34 Scoring
+  $a42f-$a6cf Text
+  $a6d0-$ab71 Settings
+  $ab72-$aee3 Scoring
   $b000-$b45c Gypsy Data
   $b800-$b7ff Unnamed
   $b800-$bcbb Win

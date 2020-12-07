@@ -207,11 +207,12 @@ StopChannel0: {
 .label SFX_MOVE = 3
 .label SFX_ROTATE = 4
 .label SFX_CHICK = 5
+.label SFX_DOWN = 6
 
 channels:	.byte 2, 0, 1, 1, 0, 0, 0, 0, 0, 0
 
 sfx_land:
-.import binary "../../Assets/sfx/low_noise_hit.sfx"
+.import binary "../../Assets/sfx/low_bang_up.sfx" 
 
 sfx_bloop:
 .import binary "../../Assets/sfx/click_bloop.sfx"
@@ -232,11 +233,14 @@ hiss:
 chick:
 .import binary ".../../Assets/sfx/double_high_tink.sfx"
 
+down:
+ .import binary "../../Assets/sfx/hammer_hit.sfx"  // land bass
+
 
 wavetable_l:
-.byte  <whoosh, <sfx_land, <sfx_bloop, <blip, <hiss, <chick
+.byte  <whoosh, <sfx_land, <sfx_bloop, <blip, <hiss, <chick, <down
 wavetable_h:
-.byte  >whoosh, >sfx_land, >sfx_bloop, >blip, >hiss, >chick
+.byte  >whoosh, >sfx_land, >sfx_bloop, >blip, >hiss, >chick, >down
 
 
 

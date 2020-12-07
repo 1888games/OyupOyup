@@ -54,6 +54,9 @@ GRID: {
 	ScreenShakeValues:	.byte 3,4,3,5,3,6,3,6,3
 	ScreenShakeValue:	.byte 0
 
+	ColourLookup:		.byte 0, 1, 2, 3, 4, 5, 6, 7
+	ColourBlind:		.byte 4, 5, 2, 0, 3, 1, 6, 7
+
 
 
 	CurrentRow:			.byte LastRowID

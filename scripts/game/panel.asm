@@ -418,6 +418,7 @@ PANEL: {
 		sta ZP.Column
 
 		lda Queue, x
+		jsr PLAYER.ConvertColour
 		clc
 		adc #8
 		sta ZP.BeanColour
