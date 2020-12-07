@@ -17,7 +17,7 @@ al C:1f75 .PendingCount
 al C:6aaf .CPUWins
 al C:1dc1 .Up_Left_Right
 al C:ab38 .ColourRows__0
-al C:fd15 .ColourRows__1
+al C:fd17 .ColourRows__1
 al C:70ac .CalculateTimeBonus
 al C:a653 .SkipDraw
 al C:6cc5 .AllClear
@@ -59,7 +59,7 @@ al C:e031 .LegCounter
 al C:fab .DownUp
 al C:aaf .GetRasterOffScreen
 al C:2c19 .HandleControls
-al C:fd59 .DrawAll
+al C:fd5b .DrawAll
 al C:e94d .Dead
 al C:ad41 .ClearScorePanel
 al C:1 .GAME_MODE_PAUSE
@@ -83,7 +83,7 @@ al C:167c .CheckProgress
 al C:70bf .SetTo24
 al C:39e1 .TimeToDraw
 al C:3371 .LastOpponentID
-al C:fca4 .NoFire__0
+al C:fca6 .NoFire__0
 al C:6d0c .NoFire__1
 al C:e1cc .NotHigh
 al C:7678 .WinMode
@@ -147,7 +147,7 @@ al C:3005 .Draw__5
 al C:35dc .Draw__6
 al C:a632 .Draw__7
 al C:a679 .Draw__8
-al C:fc5b .Draw__9
+al C:fc5d .Draw__9
 al C:6d6a .Draw__10
 al C:6ed2 .Draw__11
 al C:73dc .Draw__12
@@ -175,10 +175,10 @@ al C:a9e0 .DrawSelection__1
 al C:6e23 .TryTen
 al C:80f .PlaySfx
 al C:efd6 .Make255
-al C:fce3 .NextColour
+al C:fce5 .NextColour
 al C:3e21 .DetectMachine
 al C:e00e .ScoreHigh
-al C:fd07 .Four
+al C:fd09 .Four
 al C:2907 .AddToQueue
 al C:5 .MaxBallHeadDistance
 al C:e516 .UpdateBalls
@@ -194,7 +194,7 @@ al C:ffbd .K_setnam
 al C:32d3 .AnimateSprites
 al C:b415 .GYPSY_MORE_EGGS
 al C:213d .Random
-al C:fbe5 .Third
+al C:fbe7 .Third
 al C:35d7 .Make233
 al C:e01 .OnePlayer
 al C:d01b .SPRITE_PRIORITY
@@ -202,7 +202,7 @@ al C:7408 .DrawPlayerOneRemaining
 al C:12 .MaxFlickDistance
 al C:6d36 .Timeout
 al C:26ca .QueueRows
-al C:fd00 .Three
+al C:fd02 .Three
 al C:0 .GAME_STATUS_MENU
 al C:937 .chick
 al C:a1ef .Bean1
@@ -325,7 +325,7 @@ al C:36f0 .PlotDigit__0
 al C:ac28 .PlotDigit__1
 al C:ac5a .PlotDigit__2
 al C:ac8c .PlotDigit__3
-al C:fb96 .PlotDigit__4
+al C:fb98 .PlotDigit__4
 al C:71b7 .PlotDigit__5
 al C:71ed .PlotDigit__6
 al C:72d6 .PlotDigit__7
@@ -350,7 +350,7 @@ al C:c29 .LevelNumber
 al C:1da7 .ResetForNextBean
 al C:304a .Player1___0
 al C:6fa6 .Player1___1
-al C:fc4b .First2
+al C:fc4d .First2
 al C:165d .ScreenShakeValue
 al C:a154 .RowsFreeColumn3
 al C:d008 .SPRITE_4_X
@@ -401,7 +401,7 @@ al C:a6bb .Write
 al C:5 .GAME_MODE_SWITCH_MENU
 al C:1d43 .NotAnimating
 al C:2218 .SetTarget
-al C:fb12 .Names
+al C:fb14 .Names
 al C:3f27 .NotGame
 al C:ab8a .CurrentBeans
 al C:1a .PlayerTwoStartColumn
@@ -441,8 +441,8 @@ al C:23fd .Dark
 al C:a6d6 .RoundsToWin
 al C:261e .DropRocks
 al C:24bf .PointerOutOfRange
-al C:fd53 .Not4
-al C:fd49 .Not3
+al C:fd55 .Not4
+al C:fd4b .Not3
 al C:d000 .SPRITE_0_X
 al C:e034 .FrameOrder
 al C:1a91 .CheckHowManyMatched
@@ -465,12 +465,12 @@ al C:2f57 .DeleteBean__1
 al C:a69f .DrawNow
 al C:714e .ShowTwoPlayerScore
 al C:e98c .CheckFrame
-al C:fbf7 .Second
+al C:fbf9 .Second
 al C:1db6 .Single__0
 al C:2678 .Single__1
-al C:fd3f .Not2
+al C:fd41 .Not2
 al C:2d0e .NoSound
-al C:fd35 .Not1
+al C:fd37 .Not1
 al C:34 .ComboEndPointer
 al C:6a51 .PlayerScore
 al C:1db8 .Left__0
@@ -480,7 +480,7 @@ al C:32eb .Left__3
 al C:e4f6 .Left__4
 al C:e5fd .MoveBall
 al C:42 .CloudPointer
-al C:fb7b .DrawScore__0
+al C:fb7d .DrawScore__0
 al C:e1fe .DrawScore__1
 al C:1d51 .CheckIfRockBelow
 al C:f69 .CheckFire__0
@@ -533,7 +533,7 @@ al C:3e3f .PAL
 al C:c5b .ColorCharacter
 al C:1dc3 .Right_Down_Up
 al C:18 .FlashBigTime
-al C:faf3 .PopulateHeader
+al C:faf5 .PopulateHeader
 al C:e493 .Rising
 al C:957 .down
 al C:e5b7 .GoingLeft__0
@@ -552,7 +552,7 @@ al C:f43 .JOY_DOWN_LAST
 al C:1ff5 .QueueOrder
 al C:2025 .SecondsCounter
 al C:a1a3 .TopScores
-al C:fccb .Flip
+al C:fccd .Flip
 al C:1672 .GridClear
 al C:a5ba .Conti
 al C:eb56 .MaxRows
@@ -576,7 +576,7 @@ al C:11 .EndID
 al C:22b5 .ClearOwn
 al C:b07 .ScreenRowLSB
 al C:3597 .UseTable
-al C:fb9e .HiScoreLoop
+al C:fba0 .HiScoreLoop
 al C:2d7a .NotOccupiedDown__0
 al C:2e05 .NotOccupiedDown__1
 al C:69 .SingleCharID
@@ -779,9 +779,9 @@ al C:abf7 .Finish__80
 al C:ad0d .Finish__81
 al C:ae45 .Finish__82
 al C:ae6e .Finish__83
-al C:faf2 .Finish__84
-al C:fbb4 .Finish__85
-al C:fc61 .Finish__86
+al C:faf4 .Finish__84
+al C:fbb6 .Finish__85
+al C:fc63 .Finish__86
 al C:6b58 .Finish__87
 al C:6c2b .Finish__88
 al C:6c56 .Finish__89
@@ -861,7 +861,7 @@ al C:30 .PlayerNamePointer
 al C:1b04 .EndOfRound
 al C:21df .GoLeft__0
 al C:e3b7 .GoLeft__1
-al C:fcf2 .One
+al C:fcf4 .One
 al C:4 .FrameTime__0
 al C:6 .FrameTime__1
 al C:2 .FrameTime__2
@@ -886,7 +886,7 @@ al C:36d9 .ScoreLoop__0
 al C:ac11 .ScoreLoop__1
 al C:ac43 .ScoreLoop__2
 al C:ac75 .ScoreLoop__3
-al C:fb7f .ScoreLoop__4
+al C:fb81 .ScoreLoop__4
 al C:71a0 .ScoreLoop__5
 al C:71d6 .ScoreLoop__6
 al C:72bf .ScoreLoop__7
@@ -919,9 +919,9 @@ al C:2c6d .CheckDown__4
 al C:2eb7 .CheckDown__5
 al C:ed9c .CheckDown__6
 al C:a8aa .CheckDown__7
-al C:fc2b .Third2
+al C:fc2d .Third2
 al C:266b .Full
-al C:fc78 .Third3
+al C:fc7a .Third3
 al C:e8e .MenuScreen__0
 al C:ece9 .MenuScreen__1
 al C:1246 .RocksAdjacent
@@ -949,8 +949,8 @@ al C:efe3 .EndLoop__17
 al C:a666 .EndLoop__18
 al C:a6c9 .EndLoop__19
 al C:a7d3 .EndLoop__20
-al C:fab7 .EndLoop__21
-al C:fd68 .EndLoop__22
+al C:fab9 .EndLoop__21
+al C:fd6a .EndLoop__22
 al C:6bcb .EndLoop__23
 al C:e525 .EndLoop__24
 al C:e72d .EndLoop__25
@@ -960,7 +960,7 @@ al C:3332 .ArlaPointer
 al C:25 .Adjacency
 al C:1ab1 .NoSfx__0
 al C:706a .NoSfx__1
-al C:fc09 .First
+al C:fc0b .First
 al C:336d .Remaining__0
 al C:6a57 .Remaining__1
 al C:ade2 .SinglePlayer
@@ -1032,8 +1032,8 @@ al C:a3d8 .Okay__19
 al C:a6b8 .Okay__20
 al C:a8d6 .Okay__21
 al C:acc7 .Okay__22
-al C:fcdd .Okay__23
-al C:fced .Okay__24
+al C:fcdf .Okay__23
+al C:fcef .Okay__24
 al C:6aee .Okay__25
 al C:6d54 .Okay__26
 al C:6f32 .Okay__27
@@ -1149,7 +1149,7 @@ al C:2403 .Done__0
 al C:25fb .Done__1
 al C:2972 .Done__2
 al C:ec18 .Done__3
-al C:fac0 .Done__4
+al C:fac2 .Done__4
 al C:fc .MaxLeftSpeed
 al C:e04f .Ball_X_Speed
 al C:1 .GAME_STATUS_PLAY
@@ -1183,7 +1183,7 @@ al C:e0b4 .Distance_To_X
 al C:4 .SFX_ROTATE
 al C:a20c .PlaceAbove
 al C:2fe2 .DropBeans
-al C:fa96 .BiggerHigh
+al C:fa98 .BiggerHigh
 al C:9d65 .error__0
 al C:9dad .error__1
 al C:9e09 .error__2
@@ -1304,7 +1304,7 @@ al C:d02a .SPRITE_COLOR_3
 al C:d029 .SPRITE_COLOR_2
 al C:d028 .SPRITE_COLOR_1
 al C:d027 .SPRITE_COLOR_0
-al C:faaa .EqualsMed
+al C:faac .EqualsMed
 al C:73ba .LevelClear
 al C:1ddd .init2
 al C:0 .PLAY_MODE_SCENARIO
@@ -1335,7 +1335,7 @@ al C:a802 .SoundColour
 al C:28ef .FillQueue
 al C:e735 .PositionHead
 al C:fa3b .ViewMode__0
-al C:fcb2 .ViewMode__1
+al C:fcb4 .ViewMode__1
 al C:fab .CheckRight__0
 al C:192e .CheckRight__1
 al C:1994 .CheckRight__2
@@ -1343,7 +1343,7 @@ al C:2c70 .CheckRight__3
 al C:2eaf .CheckRight__4
 al C:a22b .CheckRight__5
 al C:a968 .CheckRight__6
-al C:fbd3 .CheckRight__7
+al C:fbd5 .CheckRight__7
 al C:e566 .CheckRight__8
 al C:24cc .GetGarbage
 al C:4 .GAME_STATUS_OVER
@@ -1408,7 +1408,7 @@ al C:2827 .Loop2__3
 al C:a84f .Loop2__4
 al C:aab1 .Loop2__5
 al C:ad59 .Loop2__6
-al C:fb4b .Loop2__7
+al C:fb4d .Loop2__7
 al C:6af9 .Loop2__8
 al C:6f3d .Loop2__9
 al C:724c .Loop2__10
@@ -1420,7 +1420,7 @@ al C:e12c .Loop2__15
 al C:e62d .Loop2__16
 al C:ad49 .Loop1
 al C:a0d2 .Bean2_Slots
-al C:faa5 .BiggerMed
+al C:faa7 .BiggerMed
 al C:2895 .NoDraw__0
 al C:2f3f .NoDraw__1
 al C:380c .NoDraw__2
@@ -1509,7 +1509,7 @@ al C:1891 .PopBean
 al C:6d72 .Expired
 al C:ffcc .K_clrchn
 al C:1a25 .CompleteScan
-al C:fcf9 .Two
+al C:fcfb .Two
 al C:a356 .EndIteration
 al C:ffc3 .K_close
 al C:74e6 .PlayerTwoWinsOther
@@ -1525,7 +1525,7 @@ al C:2c30 .CheckLeft__4
 al C:2ebe .CheckLeft__5
 al C:a249 .CheckLeft__6
 al C:a92b .CheckLeft__7
-al C:fc1b .CheckLeft__8
+al C:fc1d .CheckLeft__8
 al C:e537 .CheckLeft__9
 al C:ee29 .LeftBean__0
 al C:ee67 .LeftBean__1
@@ -1549,7 +1549,7 @@ al C:6a4a .WaitTimer
 al C:a5cc .Music__0
 al C:a6da .Music__1
 al C:1c17 .MatchUp
-al C:fc8e .Fire__0
+al C:fc90 .Fire__0
 al C:e82e .Fire__1
 al C:24e6 .UpdateTime
 al C:f3f .JOY_RIGHT_LAST
@@ -1583,7 +1583,7 @@ al C:e075 .ScoreAddresses__1
 al C:6d84 .NoExpired
 al C:e888 .DisplayEggText
 al C:2e23 .DownToUp
-al C:fb41 .Score__0
+al C:fb43 .Score__0
 al C:e154 .Score__1
 al C:3e34 .NTSC
 al C:2243 .ClearFromOwnCount
@@ -1592,12 +1592,12 @@ al C:2028 .RampUpTime
 al C:23 .BeanID
 al C:2708 .FirstKickOff
 al C:193b .Scan
-al C:fc83 .Second3
+al C:fc85 .Second3
 al C:0 .BALL_STATUS_DEAD
 al C:1dbe .Up__0
 al C:e801 .Up__1
 al C:26b2 .COMBO
-al C:fc3b .Second2
+al C:fc3d .Second2
 al C:a0b4 .TempBeanIDS
 al C:1b9b .GetStartAndEnd
 al C:3312 .SwitchScreenBack
@@ -1605,7 +1605,7 @@ al C:354b .WaitForRasterLine__0
 al C:ec4c .WaitForRasterLine__1
 al C:aad3 .WaitForRasterLine__2
 al C:ab24 .WaitForRasterLine__3
-al C:fb9e .WaitForRasterLine__4
+al C:fba0 .WaitForRasterLine__4
 al C:2611 .NotDone
 al C:294a .CheckIfAheadOfMaster
 al C:264e .DoWhile
@@ -1677,9 +1677,9 @@ al C:a797 .Loop__49
 al C:a83b .Loop__50
 al C:aa74 .Loop__51
 al C:abf7 .Loop__52
-al C:fa88 .Loop__53
-al C:fb14 .Loop__54
-al C:fd25 .Loop__55
+al C:fa8a .Loop__53
+al C:fb16 .Loop__54
+al C:fd27 .Loop__55
 al C:6ad7 .Loop__56
 al C:6b24 .Loop__57
 al C:6b5f .Loop__58
@@ -1708,7 +1708,7 @@ al C:a70a .DropSpeedsNTSC
 al C:ab8c .CurrentGroupBonus
 al C:0 .SCORE_MODE_VIEW
 al C:3c58 .DIFF_MAP
-al C:fd0e .Five
+al C:fd10 .Five
 al C:31d2 .XPos__0
 al C:eb1b .XPos__1
 al C:bc94 .TITLE_2P
@@ -1730,7 +1730,7 @@ al C:1680 .NumberLanded
 al C:10 .joyFireMask
 al C:b .CYAN_MULTI
 al C:e5f7 .ClampLeft
-al C:fca7 .FrameCode__0
+al C:fca9 .FrameCode__0
 al C:ea2b .FrameCode__1
 al C:3f2a .FrameCode__2
 al C:17a4 .StartingRocks
@@ -1801,7 +1801,7 @@ al C:e9 .SquashedBean
 al C:aeb9 .StartIndexes
 al C:1dc0 .Up_Left
 al C:32 .MaxPerFrame
-al C:fa9b .EqualsHigh
+al C:fa9d .EqualsHigh
 al C:19 .GridPosition__0
 al C:29b2 .GridPosition__1
 al C:0 .CharacterSetStart__0
@@ -1847,7 +1847,7 @@ al C:e096 .SpeedReduceTimer
 al C:1b .Offset__0
 al C:29b6 .Offset__1
 al C:22b8 .AddToOpponent
-al C:fbb7 .EnterMode
+al C:fbb9 .EnterMode
 al C:0 .GAME_MODE_PLAY
 al C:ab58 .EndColumn
 al C:1a7c .Transfer__0
@@ -2008,9 +2008,9 @@ al C:ec8e .Ready__11
 al C:ed94 .Ready__12
 al C:efae .Ready__13
 al C:a8a2 .Ready__14
-al C:fbc2 .Ready__15
-al C:fcbd .Ready__16
-al C:fd1e .Ready__17
+al C:fbc4 .Ready__15
+al C:fcbf .Ready__16
+al C:fd20 .Ready__17
 al C:6b6a .Ready__18
 al C:6c86 .Ready__19
 al C:726f .Ready__20
@@ -2314,7 +2314,7 @@ al C:f4f .JOY_UP_NOW
 al C:16 .BeanFallingType
 al C:2731 .LastBean
 al C:7075 .AddToTempScore
-al C:fd2a .DrawOne
+al C:fd2c .DrawOne
 al C:1b92 .StartAgain
 al C:a0 .SPRITE_POINTER
 al C:a29c .ReachedBottom
@@ -2341,7 +2341,7 @@ al C:1dfa .Get2
 al C:2bca .RotationOK
 al C:a183 .ColoursInSameColumn
 al C:a6d8 .Character
-al C:fb07 .PopulateTable
+al C:fb09 .PopulateTable
 al C:20a7 .HeadForOwn
 al C:1682 .Active__0
 al C:eb52 .Active__1

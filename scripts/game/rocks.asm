@@ -1194,9 +1194,9 @@ ROCKS: {
 		bne Okay2
 
 		//.break
-		lda #3
-		sta SCREEN_RAM + 520
-		sta COLOR_RAM + 520
+	//	lda #3
+	//	sta SCREEN_RAM + 520
+	//	sta COLOR_RAM + 520
 
 		sty ZP.Player
 		jsr PLAYER.LostRound

@@ -139,6 +139,8 @@ HI_SCORE:  {
 		lda #255
 		sta ZP.Amount
 
+		ldx #0
+
 		Loop:
 
 			stx ZP.X

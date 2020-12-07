@@ -71,7 +71,7 @@ Default-segment:
   $eb00-$efe9 Menu
   $f000-$f7ff Charset
   $f800-$f967 Gypsy Charset
-  $fa00-$fd6d Hi score_Code
+  $fa00-$fd6f Hi score_Code
   $ffff-$fffe End Of Memory
 
 Writing Vice symbol file: C:\Users\Nick\Dropbox\C64\Projects\Oyup Oyup\bin\main.vs

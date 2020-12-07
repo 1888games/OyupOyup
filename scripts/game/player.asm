@@ -1446,9 +1446,9 @@ PLAYER: {
 			RoundOver_:
 
 			//.break
-			lda #1
-			sta SCREEN_RAM + 520
-			sta COLOR_RAM + 520
+			//lda #1
+			//sta SCREEN_RAM + 520
+			//sta COLOR_RAM + 520
 
 			jsr LostRound
 			rts
@@ -1530,9 +1530,9 @@ PLAYER: {
 			RoundOver:
 
 			//	.break
-				lda #2
-				sta SCREEN_RAM + 520
-				sta COLOR_RAM + 520
+			//	lda #2
+			//	sta SCREEN_RAM + 520
+				//sta COLOR_RAM + 520
 
 				jsr LostRound
 				rts
@@ -1670,9 +1670,9 @@ PLAYER: {
 
 		//.break
 
-		lda #4
-		sta SCREEN_RAM + 520
-		sta COLOR_RAM + 520
+		//lda #4
+		//sta SCREEN_RAM + 520
+		//sta COLOR_RAM + 520
 
 
 		jsr LostRound
